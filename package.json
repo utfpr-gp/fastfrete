@@ -1,0 +1,20 @@
+{
+    "name": "fastfrete-monorepo",
+    "version": "1.0.0",
+    "description": "Projeto FastFrete!",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ],
+    "scripts": {
+        "dev:api": "npm run start:dev -w apps/api",
+        "dev:web": "npm run start -w apps/web"
+    },
+    "keywords": [
+        "nestjs",
+        "vuejs",
+        "monorepo"
+    ],
+    "author": "Roni Fabio Banaszewski",
+    "license": "UNLICENSED"
+}
