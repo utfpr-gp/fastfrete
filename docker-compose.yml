@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fastfrete-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fastfrete
+      POSTGRES_PASSWORD: fastfrete
+      POSTGRES_DB: fastfrete
+    ports:
+      - "5432:5432"
+    volumes:
+      - fastfrete_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fastfrete -d fastfrete"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  fastfrete_pgdata:
