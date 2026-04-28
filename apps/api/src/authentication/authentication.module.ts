@@ -9,12 +9,14 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { PrismaModule } from '../prisma/prisma.module';
 import { CryptoModule } from '../common/crypto/crypto.module';
 import { AuthorizationModule } from '../authorization/authorization.module';
+import { MailerModule } from '../common/mailer/mailer.module';
 
 @Module({
   imports: [
     PrismaModule,
     CryptoModule,
     AuthorizationModule,
+    MailerModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: (): JwtModuleOptions => {

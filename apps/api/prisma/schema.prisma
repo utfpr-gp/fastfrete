@@ -15,17 +15,29 @@ enum UserStatus {
 }
 
 model User {
-  id          String     @id @default(uuid())
-  name        String
-  email       String     @unique
-  password    String
-  phoneNumber String     @map("phone_number")
-  status      UserStatus @default(ACTIVE)
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-  userRoles   UserRole[]
+  id                  String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String
+  phoneNumber         String               @map("phone_number")
+  status              UserStatus           @default(ACTIVE)
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  userRoles           UserRole[]
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
 }
 
 model RoleType {
