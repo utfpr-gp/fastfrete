@@ -5,6 +5,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { CryptoModule } from './common/crypto/crypto.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
     CryptoModule,
     AuthorizationModule,
     AuthenticationModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
