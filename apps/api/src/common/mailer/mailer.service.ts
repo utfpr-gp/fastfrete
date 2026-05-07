@@ -9,7 +9,11 @@ export class MailerService {
   private readonly isDev: boolean;
 
   constructor() {
-    this.isDev = !process.env.SMTP_HOST;
+    this.isDev = process.env.NODE_ENV !== 'production';
+
+    if (!this.isDev && !process.env.SMTP_HOST) {
+      throw new Error('SMTP_HOST is required in production');
+    }
 
     if (this.isDev) {
       this.transporter = nodemailer.createTransport({ jsonTransport: true });
@@ -31,8 +35,8 @@ export class MailerService {
     const resetUrl = `${appUrl}/auth/reset-password?token=${token}`;
 
     if (this.isDev) {
-      this.logger.warn(`[DEV] Password reset token para ${email}:`);
-      this.logger.warn(`[DEV] ${resetUrl}`);
+      this.logger.warn(`[DEV] Password reset email sent to ${email}`);
+      this.logger.debug(`[DEV] Reset URL: ${resetUrl}`);
       return;
     }
 

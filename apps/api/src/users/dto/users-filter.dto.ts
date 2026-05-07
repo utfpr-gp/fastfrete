@@ -8,13 +8,13 @@ import { UserStatus } from '../entities/user.entity.js';
  * Extends PaginationQueryDto to include page and limit.
  *
  * Filter behaviors:
- * - name: Partial match, case insensitive (contains)
+ * - name: Partial match (contains)
  * - email: Exact match
  * - status: Exact match (enum)
  */
 export class UsersFilterDto extends PaginationQueryDto {
   @ApiPropertyOptional({
-    description: 'Filter by name (partial match, case insensitive)',
+    description: 'Filter by name (partial match)',
     example: 'John',
   })
   @IsOptional()
