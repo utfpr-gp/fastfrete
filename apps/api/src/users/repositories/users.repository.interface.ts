@@ -15,6 +15,7 @@ export interface CreateUserData {
   email: string;
   password: string;
   phoneNumber: string;
+  cityId?: string;
 }
 
 /**

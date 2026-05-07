@@ -24,6 +24,8 @@ model User {
   createdAt           DateTime             @default(now()) @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
   userRoles           UserRole[]
+  city                City?                 @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  cityId              String?              @map("city_id")
   passwordResetTokens PasswordResetToken[]
 
   @@map("users")
@@ -102,4 +104,14 @@ model VehicleCategory {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("vehicle_categories")
+}
+
+model City {
+  id        String   @id @default(uuid())
+  name      String
+  state     String
+  users     User[]
+
+  @@unique([name, state])
+  @@map("cities")
 }

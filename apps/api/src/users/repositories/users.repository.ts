@@ -17,8 +17,9 @@ import {
   FilterMode,
 } from '../../common/pagination/index.js';
 
-// Include clause for user roles with all related data
-const includeUserRoles = {
+// Include clause for user relations
+const includeUserRelations = {
+  city: true,
   userRoles: {
     include: {
       role: {
@@ -53,6 +54,14 @@ export class UsersRepository implements IUsersRepository {
       throw new BadRequestException(`Role for type ${roleType} not found`);
     }
 
+    const cityId =
+      data.cityId ??
+      (
+        await this.prisma.city.findFirstOrThrow({
+          where: { name: 'Guarapuava', state: 'Paraná' },
+        })
+      ).id;
+
     // Create user with role assignment
     const prismaUser = await this.prisma.user.create({
       data: {
@@ -60,13 +69,14 @@ export class UsersRepository implements IUsersRepository {
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
+        cityId,
         userRoles: {
           create: {
             roleId: role.id,
           },
         },
       },
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     return UserMapper.toDomain(prismaUser);
@@ -74,7 +84,7 @@ export class UsersRepository implements IUsersRepository {
 
   async findAll(): Promise<User[]> {
     const prismaUsers = await this.prisma.user.findMany({
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     return UserMapper.toDomainList(prismaUsers);
@@ -100,7 +110,7 @@ export class UsersRepository implements IUsersRepository {
         where,
         skip,
         take,
-        include: includeUserRoles,
+        include: includeUserRelations,
         orderBy: { createdAt: 'desc' },
       }),
     ]);
@@ -114,7 +124,7 @@ export class UsersRepository implements IUsersRepository {
   async findById(id: string): Promise<User | null> {
     const prismaUser = await this.prisma.user.findUnique({
       where: { id },
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     if (!prismaUser) {
@@ -127,7 +137,7 @@ export class UsersRepository implements IUsersRepository {
   async findByEmail(email: string): Promise<User | null> {
     const prismaUser = await this.prisma.user.findUnique({
       where: { email },
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     if (!prismaUser) {
@@ -141,7 +151,7 @@ export class UsersRepository implements IUsersRepository {
     const prismaUser = await this.prisma.user.update({
       where: { id },
       data,
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     return UserMapper.toDomain(prismaUser);
@@ -150,7 +160,7 @@ export class UsersRepository implements IUsersRepository {
   async delete(id: string): Promise<User> {
     const prismaUser = await this.prisma.user.delete({
       where: { id },
-      include: includeUserRoles,
+      include: includeUserRelations,
     });
 
     return UserMapper.toDomain(prismaUser);

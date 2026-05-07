@@ -3,10 +3,7 @@ import {
   UserStatus as PrismaUserStatus,
 } from '../../../generated/prisma/client';
 import { User, UserRole, UserStatus } from '../entities/user.entity.js';
-import {
-  UserResponseDto,
-  UserRoleResponseDto,
-} from '../dto/user-response.dto.js';
+import { UserResponseDto, UserRoleResponseDto } from '../dto/user-response.dto.js';
 
 // Type for Prisma User with included relations
 interface PrismaUserWithRoles extends PrismaUser {
@@ -23,6 +20,11 @@ interface PrismaUserWithRoles extends PrismaUser {
       }[];
     };
   }[];
+  city?: {
+    id: string;
+    name: string;
+    state: string;
+  } | null;
 }
 
 export class UserMapper {
@@ -49,6 +51,11 @@ export class UserMapper {
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
       roles,
+      city: {
+        id: prismaUser.city?.id ?? '',
+        name: prismaUser.city?.name ?? '',
+        state: prismaUser.city?.state ?? '',
+      },
     });
   }
 
@@ -72,6 +79,11 @@ export class UserMapper {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       roles,
+      city: {
+        id: user.city.id,
+        name: user.city.name,
+        state: user.city.state,
+      },
     };
   }
 

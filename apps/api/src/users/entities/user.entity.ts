@@ -9,6 +9,12 @@ export interface UserRole {
   readonly permissions: string[];
 }
 
+export interface UserCity {
+  readonly id: string;
+  readonly name: string;
+  readonly state: string;
+}
+
 export class User {
   readonly id: string;
   readonly name: string;
@@ -19,6 +25,7 @@ export class User {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly roles: UserRole[];
+  readonly city: UserCity;
 
   constructor(props: User) {
     Object.assign(this, props);
