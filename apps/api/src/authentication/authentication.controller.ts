@@ -3,6 +3,8 @@ import { ApiTags, ApiResponse, ApiExtraModels } from '@nestjs/swagger';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { PasswordForgotDto } from './dto/password-forgot.dto';
+import { PasswordResetDto } from './dto/password-reset.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { Public } from '../authorization/decorators/public.decorator';
 import { ApiAuthorization } from '../common/swagger/api-authorization.decorator';
@@ -58,5 +60,44 @@ export class AuthenticationController {
   @ApiValidationError()
   async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
     return this.authenticationService.login(loginDto);
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiAuthorization({
+    summary: 'Solicitar redefinição de senha',
+    description:
+      'Envia um email com link para redefinir a senha. Sempre retorna 204 para não revelar se o email está cadastrado.',
+    isPublic: true,
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Solicitação processada',
+  })
+  @ApiValidationError()
+  async forgotPassword(@Body() dto: PasswordForgotDto): Promise<void> {
+    await this.authenticationService.forgotPassword(dto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiAuthorization({
+    summary: 'Redefinir senha',
+    description: 'Redefine a senha usando o token recebido por email.',
+    isPublic: true,
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Senha redefinida com sucesso',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Token inválido ou expirado',
+  })
+  @ApiValidationError()
+  async resetPassword(@Body() dto: PasswordResetDto): Promise<void> {
+    await this.authenticationService.resetPassword(dto);
   }
 }

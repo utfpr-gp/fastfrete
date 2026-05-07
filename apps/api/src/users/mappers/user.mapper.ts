@@ -1,8 +1,14 @@
-import type { User as PrismaUser } from '../../../generated/prisma/client';
-import * as PrismaEnums from '../../../generated/prisma/enums';
-import { User, UserRole, UserStatus } from '../entities/user.entity';
-import { UserResponseDto, UserRoleResponseDto } from '../dto/user-response.dto';
+import {
+  User as PrismaUser,
+  UserStatus as PrismaUserStatus,
+} from '../../../generated/prisma/client';
+import { User, UserRole, UserStatus } from '../entities/user.entity.js';
+import {
+  UserResponseDto,
+  UserRoleResponseDto,
+} from '../dto/user-response.dto.js';
 
+// Type for Prisma User with included relations
 interface PrismaUserWithRoles extends PrismaUser {
   userRoles?: {
     role: {
@@ -20,8 +26,8 @@ interface PrismaUserWithRoles extends PrismaUser {
 }
 
 export class UserMapper {
-  private static mapStatus(prismaStatus: PrismaEnums.UserStatus): UserStatus {
-    return UserStatus[prismaStatus as keyof typeof UserStatus];
+  private static mapStatus(prismaStatus: PrismaUserStatus): UserStatus {
+    return UserStatus[prismaStatus];
   }
 
   static toDomain(prismaUser: PrismaUserWithRoles): User {
@@ -46,6 +52,10 @@ export class UserMapper {
     });
   }
 
+  static toDomainList(prismaUsers: PrismaUserWithRoles[]): User[] {
+    return prismaUsers.map((user) => this.toDomain(user));
+  }
+
   static toResponse(user: User): UserResponseDto {
     const roles: UserRoleResponseDto[] = user.roles.map((role) => ({
       name: role.name,
@@ -63,5 +73,9 @@ export class UserMapper {
       updatedAt: user.updatedAt,
       roles,
     };
+  }
+
+  static toResponseList(users: User[]): UserResponseDto[] {
+    return users.map((user) => this.toResponse(user));
   }
 }
