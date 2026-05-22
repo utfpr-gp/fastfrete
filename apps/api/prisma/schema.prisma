@@ -14,6 +14,20 @@ enum UserStatus {
   SUSPENDED
 }
 
+enum FreightStatus {
+  OPEN
+  NEGOTIATING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum FreightDateMode {
+  IMMEDIATE
+  SCHEDULED
+  FLEXIBLE
+}
+
 model User {
   id                  String               @id @default(uuid())
   name                String
@@ -24,9 +38,10 @@ model User {
   createdAt           DateTime             @default(now()) @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
   userRoles           UserRole[]
-  city                City?                 @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  city                City?                @relation(fields: [cityId], references: [id], onDelete: SetNull)
   cityId              String?              @map("city_id")
   passwordResetTokens PasswordResetToken[]
+  freights            Freight[]
 
   @@map("users")
 }
@@ -107,11 +122,41 @@ model VehicleCategory {
 }
 
 model City {
-  id        String   @id @default(uuid())
-  name      String
-  state     String
-  users     User[]
+  id                 String    @id @default(uuid())
+  name               String
+  state              String
+  users              User[]
+  originFreights     Freight[] @relation("FreightOriginCity")
+  destinationFreights Freight[] @relation("FreightDestinationCity")
 
   @@unique([name, state])
   @@map("cities")
+}
+
+model Freight {
+  id                  String          @id @default(uuid())
+  clientId            String          @map("client_id")
+  title               String          @db.VarChar(150)
+  description         String          @db.Text
+  vehicleCategory     String          @map("vehicle_category") @db.VarChar(50)
+  originCityId        String          @map("origin_city_id")
+  originDistrict      String          @map("origin_district") @db.VarChar(100)
+  originStreet        String          @map("origin_street") @db.VarChar(150)
+  originNumber        String          @map("origin_number") @db.VarChar(20)
+  destinationCityId   String          @map("destination_city_id")
+  destinationDistrict String          @map("destination_district") @db.VarChar(100)
+  destinationStreet   String          @map("destination_street") @db.VarChar(150)
+  destinationNumber   String          @map("destination_number") @db.VarChar(20)
+  dateMode            FreightDateMode @map("date_mode")
+  exactDatetime       DateTime?       @map("exact_datetime")
+  availabilityWindow  String?         @map("availability_window") @db.VarChar(30)
+  status              FreightStatus   @default(OPEN)
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  client          User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  originCity      City @relation("FreightOriginCity", fields: [originCityId], references: [id])
+  destinationCity City @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
+
+  @@map("freights")
 }
