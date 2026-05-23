@@ -24,7 +24,7 @@ interface PrismaUserWithRoles extends PrismaUser {
     id: string;
     name: string;
     state: string;
-  } | null;
+  };
 }
 
 export class UserMapper {
@@ -41,6 +41,12 @@ export class UserMapper {
       ),
     }));
 
+    if (!prismaUser.city) {
+      throw new Error(
+        `User ${prismaUser.id} has no city relation loaded — include city in the query`,
+      );
+    }
+
     return new User({
       id: prismaUser.id,
       name: prismaUser.name,
@@ -52,9 +58,9 @@ export class UserMapper {
       updatedAt: prismaUser.updatedAt,
       roles,
       city: {
-        id: prismaUser.city?.id ?? '',
-        name: prismaUser.city?.name ?? '',
-        state: prismaUser.city?.state ?? '',
+        id: prismaUser.city.id,
+        name: prismaUser.city.name,
+        state: prismaUser.city.state,
       },
     });
   }

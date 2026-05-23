@@ -54,13 +54,14 @@ export class UsersRepository implements IUsersRepository {
       throw new BadRequestException(`Role for type ${roleType} not found`);
     }
 
-    const cityId =
-      data.cityId ??
-      (
-        await this.prisma.city.findFirstOrThrow({
-          where: { name: 'Guarapuava', state: 'Paraná' },
-        })
-      ).id;
+    const city = await this.prisma.city.findUnique({
+      where: { id: data.cityId },
+      select: { id: true },
+    });
+
+    if (!city) {
+      throw new BadRequestException(`City with id ${data.cityId} not found`);
+    }
 
     // Create user with role assignment
     const prismaUser = await this.prisma.user.create({
@@ -69,7 +70,7 @@ export class UsersRepository implements IUsersRepository {
         email: data.email,
         password: data.password,
         phoneNumber: data.phoneNumber,
-        cityId,
+        cityId: data.cityId,
         userRoles: {
           create: {
             roleId: role.id,

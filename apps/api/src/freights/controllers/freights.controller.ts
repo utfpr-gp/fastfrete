@@ -32,8 +32,10 @@ import { RoleTypeEnum } from '../../authorization/definitions/role-types.definit
 import { ApiAuthorization } from '../../common/swagger/api-authorization.decorator.js';
 import { ApiValidationError } from '../../common/swagger/api-validation-error.decorator.js';
 import { ValidationErrorResponseDto } from '../../common/swagger/validation-error-response.dto.js';
-import { ApiPaginatedResponse } from '../../common/pagination/index.js';
-import { PaginatedResponseDto } from '../../common/pagination/index.js';
+import {
+  ApiPaginatedResponse,
+  PaginatedResponseDto,
+} from '../../common/pagination/index.js';
 
 @ApiTags('Freights')
 @ApiBearerAuth('JWT-auth')
@@ -49,11 +51,16 @@ export class FreightsController {
   @Permissions(CUSTOMER_PERMISSIONS.FREIGHTS_CREATE)
   @ApiAuthorization({
     summary: 'Publicar um novo frete',
-    description: 'Cria um novo frete com status OPEN. Somente clientes podem publicar fretes.',
+    description:
+      'Cria um novo frete com status OPEN. Somente clientes podem publicar fretes.',
     roleTypes: [RoleTypeEnum.CUSTOMER],
     permissions: [CUSTOMER_PERMISSIONS.FREIGHTS_CREATE],
   })
-  @ApiResponse({ status: 201, description: 'Frete criado com sucesso', type: FreightResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Frete criado com sucesso',
+    type: FreightResponseDto,
+  })
   @ApiValidationError()
   async create(
     @Body() dto: CreateFreightDto,
@@ -82,11 +89,16 @@ export class FreightsController {
   @Permissions(CUSTOMER_PERMISSIONS.FREIGHTS_READ)
   @ApiAuthorization({
     summary: 'Obter um frete por ID',
-    description: 'Retorna os detalhes de um frete pertencente ao cliente autenticado.',
+    description:
+      'Retorna os detalhes de um frete pertencente ao cliente autenticado.',
     roleTypes: [RoleTypeEnum.CUSTOMER],
     permissions: [CUSTOMER_PERMISSIONS.FREIGHTS_READ],
   })
-  @ApiResponse({ status: 200, description: 'Frete encontrado', type: FreightResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Frete encontrado',
+    type: FreightResponseDto,
+  })
   @ApiResponse({ status: 404, description: 'Frete não encontrado' })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
@@ -99,12 +111,20 @@ export class FreightsController {
   @Permissions(CUSTOMER_PERMISSIONS.FREIGHTS_UPDATE)
   @ApiAuthorization({
     summary: 'Atualizar um frete',
-    description: 'Atualiza os dados de um frete. Permitido apenas quando o status é OPEN.',
+    description:
+      'Atualiza os dados de um frete. Permitido apenas quando o status é OPEN.',
     roleTypes: [RoleTypeEnum.CUSTOMER],
     permissions: [CUSTOMER_PERMISSIONS.FREIGHTS_UPDATE],
   })
-  @ApiResponse({ status: 200, description: 'Frete atualizado com sucesso', type: FreightResponseDto })
-  @ApiResponse({ status: 403, description: 'Frete não pode ser editado no status atual' })
+  @ApiResponse({
+    status: 200,
+    description: 'Frete atualizado com sucesso',
+    type: FreightResponseDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Frete não pode ser editado no status atual',
+  })
   @ApiResponse({ status: 404, description: 'Frete não encontrado' })
   @ApiValidationError()
   async update(
@@ -119,12 +139,20 @@ export class FreightsController {
   @Permissions(CUSTOMER_PERMISSIONS.FREIGHTS_CANCEL)
   @ApiAuthorization({
     summary: 'Cancelar um frete',
-    description: 'Cancela um frete. Permitido quando o status é OPEN ou NEGOTIATING.',
+    description:
+      'Cancela um frete. Permitido quando o status é OPEN ou NEGOTIATING.',
     roleTypes: [RoleTypeEnum.CUSTOMER],
     permissions: [CUSTOMER_PERMISSIONS.FREIGHTS_CANCEL],
   })
-  @ApiResponse({ status: 200, description: 'Frete cancelado com sucesso', type: FreightResponseDto })
-  @ApiResponse({ status: 403, description: 'Frete não pode ser cancelado no status atual' })
+  @ApiResponse({
+    status: 200,
+    description: 'Frete cancelado com sucesso',
+    type: FreightResponseDto,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Frete não pode ser cancelado no status atual',
+  })
   @ApiResponse({ status: 404, description: 'Frete não encontrado' })
   async cancel(
     @Param('id', ParseUUIDPipe) id: string,

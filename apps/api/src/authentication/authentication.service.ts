@@ -18,6 +18,7 @@ import { UserMapper } from '../users/mappers/user.mapper';
 import type { JwtPayload } from './strategies/jwt.strategy';
 
 const includeUserRoles = {
+  city: true,
   userRoles: {
     include: {
       role: {
@@ -44,7 +45,8 @@ export class AuthenticationService {
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
-    const { name, email, password, phoneNumber, roleType } = registerDto;
+    const { name, email, password, phoneNumber, roleType, cityId } =
+      registerDto;
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
@@ -66,6 +68,15 @@ export class AuthenticationService {
       throw new BadRequestException(`Role for type ${roleType} not found`);
     }
 
+    const city = await this.prisma.city.findUnique({
+      where: { id: cityId },
+      select: { id: true },
+    });
+
+    if (!city) {
+      throw new BadRequestException(`City with id ${cityId} not found`);
+    }
+
     const hashedPassword = await this.cryptoService.hashPassword(password);
 
     const user = await this.prisma.user.create({
@@ -74,6 +85,7 @@ export class AuthenticationService {
         email,
         password: hashedPassword,
         phoneNumber,
+        cityId,
         userRoles: {
           create: {
             roleId: role.id,

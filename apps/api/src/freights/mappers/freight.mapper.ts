@@ -4,7 +4,11 @@ import {
   FreightStatus as PrismaFreightStatus,
   FreightDateMode as PrismaFreightDateMode,
 } from '../../../generated/prisma/client';
-import { Freight, FreightStatus, FreightDateMode } from '../entities/freight.entity.js';
+import {
+  Freight,
+  FreightStatus,
+  FreightDateMode,
+} from '../entities/freight.entity.js';
 import { FreightResponseDto } from '../dto/freight-response.dto.js';
 
 interface PrismaFreightWithCities extends PrismaFreight {

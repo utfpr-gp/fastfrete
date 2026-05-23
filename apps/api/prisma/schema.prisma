@@ -38,8 +38,8 @@ model User {
   createdAt           DateTime             @default(now()) @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
   userRoles           UserRole[]
-  city                City?                @relation(fields: [cityId], references: [id], onDelete: SetNull)
-  cityId              String?              @map("city_id")
+  city                City                 @relation(fields: [cityId], references: [id], onDelete: Restrict)
+  cityId              String               @map("city_id")
   passwordResetTokens PasswordResetToken[]
   freights            Freight[]
 
@@ -158,5 +158,6 @@ model Freight {
   originCity      City @relation("FreightOriginCity", fields: [originCityId], references: [id])
   destinationCity City @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
 
+  @@index([clientId, createdAt(sort: Desc)])
   @@map("freights")
 }
