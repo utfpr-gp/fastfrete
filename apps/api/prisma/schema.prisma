@@ -28,6 +28,14 @@ enum FreightDateMode {
   FLEXIBLE
 }
 
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  COMPLETED
+}
+
 model User {
   id                  String               @id @default(uuid())
   name                String
@@ -42,6 +50,7 @@ model User {
   cityId              String               @map("city_id")
   passwordResetTokens PasswordResetToken[]
   freights            Freight[]
+  applications        Application[]
 
   @@map("users")
 }
@@ -153,11 +162,31 @@ model Freight {
   status              FreightStatus   @default(OPEN)
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
+  selectedApplicationId String?       @unique @map("selected_application_id")
 
-  client          User @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  originCity      City @relation("FreightOriginCity", fields: [originCityId], references: [id])
-  destinationCity City @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
+  client              User          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  originCity          City          @relation("FreightOriginCity", fields: [originCityId], references: [id])
+  destinationCity     City          @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
+  selectedApplication Application?  @relation("FreightSelectedApplication", fields: [selectedApplicationId], references: [id], onDelete: SetNull)
+  applications        Application[] @relation("FreightApplications")
 
   @@index([clientId, createdAt(sort: Desc)])
   @@map("freights")
+}
+
+model Application {
+  id            String            @id @default(uuid())
+  freightId     String            @map("freight_id")
+  freighterId   String            @map("freighter_id")
+  proposedPrice Decimal           @map("proposed_price") @db.Decimal(12, 2)
+  status        ApplicationStatus @default(PENDING)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  freight           Freight  @relation("FreightApplications", fields: [freightId], references: [id], onDelete: Cascade)
+  freighter         User     @relation(fields: [freighterId], references: [id], onDelete: Cascade)
+  selectedByFreight Freight? @relation("FreightSelectedApplication")
+
+  @@unique([freightId, freighterId])
+  @@map("applications")
 }
