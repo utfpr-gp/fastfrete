@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserStatus } from '../entities/user.entity';
 
+export class CityResponseDto {
+  @ApiProperty({ example: 'uuid' })
+  id!: string;
+
+  @ApiProperty({ example: 'Guarapuava' })
+  name!: string;
+
+  @ApiProperty({ example: 'Paraná' })
+  state!: string;
+}
+
 export class UserRoleResponseDto {
   @ApiProperty({ example: 'CUSTOMER' })
   name: string;
@@ -39,4 +50,7 @@ export class UserResponseDto {
 
   @ApiProperty({ type: [UserRoleResponseDto] })
   roles: UserRoleResponseDto[];
+
+  @ApiProperty({ type: CityResponseDto })
+  city!: CityResponseDto;
 }

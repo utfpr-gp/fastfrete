@@ -77,12 +77,19 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511999999999',
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       const mockRole = {
         id: 'role-id',
         name: RoleTypeEnum.CUSTOMER,
         roleTypeId: 'role-type-id',
+      };
+
+      const mockCity = {
+        id: registerDto.cityId,
+        name: 'Guarapuava',
+        state: 'Paraná',
       };
 
       const mockUserWithRoles = {
@@ -94,6 +101,8 @@ describe('AuthenticationController (Integration)', () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
+        cityId: mockCity.id,
+        city: mockCity,
         userRoles: [
           {
             userId: 'user-id',
@@ -131,6 +140,7 @@ describe('AuthenticationController (Integration)', () => {
 
       prisma.user.findUnique.mockResolvedValue(null);
       prisma.role.findFirst.mockResolvedValue(mockRole);
+      prisma.city.findUnique.mockResolvedValue(mockCity);
       prisma.user.create.mockResolvedValue(mockUserWithRoles);
 
       const response = await request(app.getHttpServer())
@@ -159,12 +169,19 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511888888888',
         roleType: RoleTypeEnum.CARRIER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       const mockRole = {
         id: 'role-id',
         name: RoleTypeEnum.CARRIER,
         roleTypeId: 'role-type-id',
+      };
+
+      const mockCity = {
+        id: registerDto.cityId,
+        name: 'Guarapuava',
+        state: 'Paraná',
       };
 
       const mockUserWithRoles = {
@@ -176,6 +193,8 @@ describe('AuthenticationController (Integration)', () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
+        cityId: mockCity.id,
+        city: mockCity,
         userRoles: [
           {
             userId: 'user-id',
@@ -201,6 +220,7 @@ describe('AuthenticationController (Integration)', () => {
 
       prisma.user.findUnique.mockResolvedValue(null);
       prisma.role.findFirst.mockResolvedValue(mockRole);
+      prisma.city.findUnique.mockResolvedValue(mockCity);
       prisma.user.create.mockResolvedValue(mockUserWithRoles);
 
       const response = await request(app.getHttpServer())
@@ -220,6 +240,7 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511999999999',
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       prisma.user.findUnique.mockResolvedValue({ id: 'existing-user' });
@@ -237,6 +258,7 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511999999999',
         roleType: 'ADMIN',
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       await request(app.getHttpServer())
@@ -258,6 +280,7 @@ describe('AuthenticationController (Integration)', () => {
         email: 'john@example.com',
         password: VALID_PASSWORD,
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       const response = await request(app.getHttpServer())
@@ -276,6 +299,7 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511999999999',
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       await request(app.getHttpServer())
@@ -291,6 +315,7 @@ describe('AuthenticationController (Integration)', () => {
         password: '12345678',
         phoneNumber: '+5511999999999',
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       const response = await request(app.getHttpServer())
@@ -309,6 +334,7 @@ describe('AuthenticationController (Integration)', () => {
         password: VALID_PASSWORD,
         phoneNumber: '+5511999999999',
         roleType: RoleTypeEnum.CUSTOMER,
+        cityId: '11111111-1111-4111-8111-111111111111',
       };
 
       const response = await request(app.getHttpServer())
@@ -337,6 +363,12 @@ describe('AuthenticationController (Integration)', () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
+        cityId: '11111111-1111-4111-8111-111111111111',
+        city: {
+          id: '11111111-1111-4111-8111-111111111111',
+          name: 'Guarapuava',
+          state: 'Paraná',
+        },
         userRoles: [
           {
             userId: 'user-id',
@@ -454,6 +486,12 @@ describe('AuthenticationController (Integration)', () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
+        cityId: '11111111-1111-4111-8111-111111111111',
+        city: {
+          id: '11111111-1111-4111-8111-111111111111',
+          name: 'Guarapuava',
+          state: 'Paraná',
+        },
         userRoles: [],
       };
 

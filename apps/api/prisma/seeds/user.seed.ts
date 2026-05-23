@@ -15,8 +15,10 @@ async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-export async function seedUsers(prisma: PrismaClient): Promise<SeedResult<SeededUser>> {
-  // Hash passwords before seeding
+export async function seedUsers(
+  prisma: PrismaClient,
+  defaultCityId: string,
+): Promise<SeedResult<SeededUser>> {
   const usersData = [
     {
       name: 'Admin User',
@@ -24,6 +26,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<SeedResult<Seeded
       password: await hashPassword('admin123456'),
       phoneNumber: '+5511999999999',
       status: UserStatus.ACTIVE,
+      cityId: defaultCityId,
     },
     {
       name: 'John Doe',
@@ -31,6 +34,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<SeedResult<Seeded
       password: await hashPassword('password123'),
       phoneNumber: '+5511888888888',
       status: UserStatus.ACTIVE,
+      cityId: defaultCityId,
     },
     {
       name: 'Jane Smith',
@@ -38,6 +42,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<SeedResult<Seeded
       password: await hashPassword('password123'),
       phoneNumber: '+5511777777777',
       status: UserStatus.ACTIVE,
+      cityId: defaultCityId,
     },
   ];
 

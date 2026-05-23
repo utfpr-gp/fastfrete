@@ -28,6 +28,11 @@ export const CUSTOMER_PERMISSIONS = {
   ORDERS_READ: 'orders:read',
   ORDERS_LIST: 'orders:list',
   ORDERS_CANCEL: 'orders:cancel',
+  FREIGHTS_CREATE: 'freights:create',
+  FREIGHTS_READ: 'freights:read',
+  FREIGHTS_LIST: 'freights:list',
+  FREIGHTS_UPDATE: 'freights:update',
+  FREIGHTS_CANCEL: 'freights:cancel',
 } as const;
 
 export const CARRIER_PERMISSIONS = {

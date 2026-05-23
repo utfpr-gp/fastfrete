@@ -6,6 +6,7 @@ import { CryptoModule } from './common/crypto/crypto.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UsersModule } from './users/users.module';
+import { FreightsModule } from './freights/freights.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
     AuthorizationModule,
     AuthenticationModule,
     UsersModule,
+    FreightsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

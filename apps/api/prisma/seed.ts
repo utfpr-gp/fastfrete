@@ -8,6 +8,7 @@ import { seedRoles } from './seeds/role.seed';
 import { seedRolePermissions } from './seeds/role-permission.seed';
 import { seedUserRoles } from './seeds/user-role.seed';
 import { seedVehicleCategories } from './seeds/vehicle-category.seed';
+import { seedCities, getDefaultCity } from './seeds/city.seed';
 
 // load .env from project root (cwd is apps/api when running the script)
 dotenv.config();
@@ -27,14 +28,16 @@ async function main(): Promise<void> {
     // ====================
     // Phase 1: Independent entities
     // ====================
+    const citiesResult = await seedCities(prisma);
+    const defaultCity = getDefaultCity(citiesResult.items);
     const roleTypes = await seedRoleTypes(prisma);
-    const usersResult = await seedUsers(prisma);
     const permissions = await seedPermissions(prisma);
     const vehicleCategories = await seedVehicleCategories(prisma);
 
     // ====================
     // Phase 2: Entities with single dependency
     // ====================
+    const usersResult = await seedUsers(prisma, defaultCity.id);
     const roles = await seedRoles(prisma, roleTypes);
 
     // ====================
@@ -45,6 +48,7 @@ async function main(): Promise<void> {
 
     console.log('\n✨ Database seeding completed successfully!');
     console.log('\n📊 Summary:');
+    console.log(`   - Cities: ${citiesResult.created} created, ${citiesResult.skipped} skipped`);
     console.log(`   - Role types: ${roleTypes.length}`);
     console.log(
       `   - Users: ${usersResult.created} created, ${usersResult.skipped} skipped`,

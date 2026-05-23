@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
+  IsUUID,
   MinLength,
   MaxLength,
   Matches,
@@ -72,4 +73,13 @@ export class CreateUserDto {
     message: 'O tipo de usuário deve ser ADMIN, CUSTOMER ou CARRIER',
   })
   roleType: RoleTypeEnum;
+
+  @ApiProperty({
+    description: 'Identificador da cidade do usuário',
+    example: '3b6c1e1c-2a8a-4b6c-9e7d-5f1a2b3c4d5e',
+    format: 'uuid',
+  })
+  @IsNotEmpty({ message: 'A cidade é obrigatória' })
+  @IsUUID('4', { message: 'A cidade deve ser um UUID válido' })
+  cityId: string;
 }

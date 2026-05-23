@@ -60,6 +60,14 @@ export type MockPrismaService = {
     update: jest.Mock;
     delete: jest.Mock;
   };
+  city: {
+    create: jest.Mock;
+    findMany: jest.Mock;
+    findUnique: jest.Mock;
+    findFirst: jest.Mock;
+    update: jest.Mock;
+    delete: jest.Mock;
+  };
 };
 
 export const createMockPrismaService = (): MockPrismaService =>
@@ -125,6 +133,14 @@ export const createMockPrismaService = (): MockPrismaService =>
       delete: jest.fn(),
     },
     vehicleCategory: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+    city: {
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),

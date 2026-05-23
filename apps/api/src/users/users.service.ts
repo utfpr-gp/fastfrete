@@ -43,6 +43,7 @@ export class UsersService {
         email: createUserDto.email,
         password: hashedPassword,
         phoneNumber: createUserDto.phoneNumber,
+        cityId: createUserDto.cityId,
       },
       createUserDto.roleType,
     );
