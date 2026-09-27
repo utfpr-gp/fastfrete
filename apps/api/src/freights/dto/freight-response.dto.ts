@@ -64,6 +64,9 @@ export class FreightResponseDto {
   @ApiProperty({ enum: FreightStatus })
   status!: FreightStatus;
 
+  @ApiProperty({ nullable: true })
+  selectedApplicationId!: string | null;
+
   @ApiProperty()
   createdAt!: Date;
 

@@ -13,5 +13,6 @@ import { FREIGHTS_REPOSITORY } from './repositories/freights.repository.interfac
       useClass: FreightsRepository,
     },
   ],
+  exports: [FREIGHTS_REPOSITORY],
 })
 export class FreightsModule {}

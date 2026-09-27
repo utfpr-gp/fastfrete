@@ -38,6 +38,7 @@ export class Freight {
   readonly status: FreightStatus;
   readonly createdAt: Date;
   readonly updatedAt: Date;
+  readonly selectedApplicationId: string | null;
   readonly originCity: FreightCity;
   readonly destinationCity: FreightCity;
 
