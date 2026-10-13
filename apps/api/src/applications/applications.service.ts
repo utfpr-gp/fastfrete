@@ -65,6 +65,18 @@ export class ApplicationsService {
       );
     }
 
+    const vehicleValid =
+      await this.applicationsRepository.validateVehicleOwnership(
+        dto.vehicleId,
+        freighterId,
+      );
+
+    if (!vehicleValid) {
+      throw new ForbiddenException(
+        'Veículo não encontrado ou não pertence ao fretista',
+      );
+    }
+
     const application = await this.applicationsRepository.create({
       freightId,
       freighterId,

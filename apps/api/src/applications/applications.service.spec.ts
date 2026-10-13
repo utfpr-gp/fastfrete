@@ -84,6 +84,7 @@ describe('ApplicationsService', () => {
             updateStatus: jest.fn(),
             acceptApplication: jest.fn(),
             completeApplication: jest.fn(),
+            validateVehicleOwnership: jest.fn(),
           },
         },
         {
@@ -116,6 +117,7 @@ describe('ApplicationsService', () => {
       const application = mockApplication();
       freightsRepo.findById.mockResolvedValue(freight);
       applicationsRepo.findByFreightAndFreighter.mockResolvedValue(null);
+      applicationsRepo.validateVehicleOwnership.mockResolvedValue(true);
       applicationsRepo.create.mockResolvedValue(application);
 
       const result = await service.create('freight-1', 'carrier-1', dto);

@@ -42,4 +42,8 @@ export interface IApplicationsRepository {
   updateStatus(id: string, status: ApplicationStatus): Promise<Application>;
   acceptApplication(applicationId: string): Promise<Application>;
   completeApplication(applicationId: string): Promise<Application>;
+  validateVehicleOwnership(
+    vehicleId: string,
+    freighterId: string,
+  ): Promise<boolean>;
 }
