@@ -33,6 +33,11 @@ export const CUSTOMER_PERMISSIONS = {
   FREIGHTS_LIST: 'freights:list',
   FREIGHTS_UPDATE: 'freights:update',
   FREIGHTS_CANCEL: 'freights:cancel',
+  APPLICATIONS_READ: 'applications:read',
+  APPLICATIONS_LIST: 'applications:list',
+  APPLICATIONS_ACCEPT: 'applications:accept',
+  APPLICATIONS_REJECT: 'applications:reject',
+  APPLICATIONS_COMPLETE: 'applications:complete',
 } as const;
 
 export const CARRIER_PERMISSIONS = {
@@ -42,6 +47,17 @@ export const CARRIER_PERMISSIONS = {
   DELIVERIES_LIST: 'deliveries:list',
   DELIVERIES_ACCEPT: 'deliveries:accept',
   DELIVERIES_UPDATE_STATUS: 'deliveries:update-status',
+  APPLICATIONS_CREATE: 'applications:create',
+  APPLICATIONS_READ: 'applications:read',
+  APPLICATIONS_LIST: 'applications:list',
+  APPLICATIONS_UPDATE: 'applications:update',
+  APPLICATIONS_WITHDRAW: 'applications:withdraw',
+  APPLICATIONS_COMPLETE: 'applications:complete',
+  VEHICLES_CREATE: 'vehicles:create',
+  VEHICLES_READ: 'vehicles:read',
+  VEHICLES_LIST: 'vehicles:list',
+  VEHICLES_UPDATE: 'vehicles:update',
+  VEHICLES_DELETE: 'vehicles:delete',
 } as const;
 
 function getPermissionValues<T extends Record<string, string>>(

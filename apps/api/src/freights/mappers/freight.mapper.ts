@@ -46,6 +46,7 @@ export class FreightMapper {
       status: this.mapStatus(prismaFreight.status),
       createdAt: prismaFreight.createdAt,
       updatedAt: prismaFreight.updatedAt,
+      selectedApplicationId: prismaFreight.selectedApplicationId,
       originCity: {
         id: prismaFreight.originCity.id,
         name: prismaFreight.originCity.name,
@@ -84,6 +85,7 @@ export class FreightMapper {
       status: freight.status,
       createdAt: freight.createdAt,
       updatedAt: freight.updatedAt,
+      selectedApplicationId: freight.selectedApplicationId,
     };
   }
 

@@ -19,5 +19,8 @@
         "monorepo"
     ],
     "author": "Roni Fabio Banaszewski",
-    "license": "UNLICENSED"
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@types/jest": "^30.0.0"
+    }
 }

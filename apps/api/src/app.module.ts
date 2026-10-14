@@ -7,6 +7,8 @@ import { AuthorizationModule } from './authorization/authorization.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UsersModule } from './users/users.module';
 import { FreightsModule } from './freights/freights.module';
+import { ApplicationsModule } from './applications/applications.module';
+import { VehiclesModule } from './vehicles/vehicles.module.js';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { FreightsModule } from './freights/freights.module';
     AuthenticationModule,
     UsersModule,
     FreightsModule,
+    ApplicationsModule,
+    VehiclesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
