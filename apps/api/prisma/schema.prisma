@@ -52,6 +52,8 @@ model User {
   freights            Freight[]
   applications        Application[]
   vehicles            Vehicle[]
+  reviewsByReviewer   Review[]    @relation("ReviewByReviewer")
+  reviewsByReviewed   Review[]    @relation("ReviewByReviewed")
 
   @@map("users")
 }
@@ -192,6 +194,8 @@ model Freight {
   destinationCity     City          @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
   selectedApplication Application?  @relation("FreightSelectedApplication", fields: [selectedApplicationId], references: [id], onDelete: SetNull)
   applications        Application[] @relation("FreightApplications")
+  reviews             Review[]
+  photos              FreightPhoto[]
 
   @@index([clientId, createdAt(sort: Desc)])
   @@map("freights")
@@ -207,11 +211,42 @@ model Application {
   createdAt     DateTime          @default(now()) @map("created_at")
   updatedAt     DateTime          @updatedAt @map("updated_at")
 
-  freight           Freight  @relation("FreightApplications", fields: [freightId], references: [id], onDelete: Cascade)
-  freighter         User     @relation(fields: [freighterId], references: [id], onDelete: Cascade)
-  vehicle           Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
-  selectedByFreight Freight? @relation("FreightSelectedApplication")
+  freight           Freight    @relation("FreightApplications", fields: [freightId], references: [id], onDelete: Cascade)
+  freighter         User       @relation(fields: [freighterId], references: [id], onDelete: Cascade)
+  vehicle           Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  selectedByFreight Freight?   @relation("FreightSelectedApplication")
 
   @@unique([freightId, freighterId])
   @@map("applications")
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  freightId   String   @map("freight_id")
+  reviewerId  String   @map("reviewer_id")
+  reviewedId  String   @map("reviewed_id")
+  rating      Int      @db.SmallInt
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  freight         Freight @relation(fields: [freightId], references: [id], onDelete: Cascade)
+  reviewer        User    @relation("ReviewByReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewed        User    @relation("ReviewByReviewed", fields: [reviewedId], references: [id], onDelete: Cascade)
+
+  @@unique([freightId, reviewerId])
+  @@index([reviewedId])
+  @@map("reviews")
+}
+
+model FreightPhoto {
+  id        String   @id @default(uuid())
+  freightId String   @map("freight_id")
+  url       String
+  order     Int      @db.SmallInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  freight Freight @relation(fields: [freightId], references: [id], onDelete: Cascade)
+
+  @@index([freightId])
+  @@map("freight_photos")
 }
