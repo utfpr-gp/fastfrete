@@ -19,6 +19,7 @@ export const ADMIN_PERMISSIONS = {
   VEHICLE_CATEGORIES_LIST: 'vehicle-categories:list',
   SYSTEM_SETTINGS: 'system:settings',
   SYSTEM_LOGS: 'system:logs',
+  REVIEWS_READ: 'reviews:read',
 } as const;
 
 export const CUSTOMER_PERMISSIONS = {

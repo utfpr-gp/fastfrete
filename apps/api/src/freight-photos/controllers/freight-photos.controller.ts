@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { FreightPhotosService } from '../freight-photos.service.js';
 import { FreightPhotoResponseDto } from '../dto/freight-photo-response.dto.js';
+import { FileValidationPipe } from '../pipes/file-validation.pipe.js';
 import { AuthorizationGuard } from '../../authorization/guards/authorization.guard.js';
 import { Permissions } from '../../authorization/decorators/permissions.decorator.js';
 import { RoleTypes } from '../../authorization/decorators/role-types.decorator.js';
@@ -82,7 +83,7 @@ export class FreightPhotosController {
   })
   async upload(
     @Param('freightId', ParseUUIDPipe) freightId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(FileValidationPipe) file: Express.Multer.File,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<FreightPhotoResponseDto> {
     return this.photosService.upload(freightId, currentUser.id, file);
@@ -97,7 +98,8 @@ export class FreightPhotosController {
   )
   @ApiAuthorization({
     summary: 'Listar fotos do frete',
-    description: 'Retorna todas as fotos de um frete específico, ordenadas.',
+    description:
+      'Retorna todas as fotos de um frete específico, ordenadas. Apenas o dono do frete, candidatas ao frete ou administradores podem visualizar.',
     roleTypes: [
       RoleTypeEnum.CUSTOMER,
       RoleTypeEnum.CARRIER,
@@ -115,10 +117,15 @@ export class FreightPhotosController {
     type: [FreightPhotoResponseDto],
   })
   @ApiResponse({ status: 404, description: 'Frete não encontrado' })
+  @ApiResponse({
+    status: 403,
+    description: 'Usuário não tem permissão para ver este frete',
+  })
   async findByFreight(
     @Param('freightId', ParseUUIDPipe) freightId: string,
+    @CurrentUser() currentUser: CurrentUserData,
   ): Promise<FreightPhotoResponseDto[]> {
-    return this.photosService.findByFreight(freightId);
+    return this.photosService.findByFreight(freightId, currentUser);
   }
 
   @Delete(':freightId/photos/:photoId')

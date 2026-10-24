@@ -4,9 +4,10 @@ import { FreightPhotosController } from './controllers/freight-photos.controller
 import { FreightPhotosRepository } from './repositories/freight-photos.repository.js';
 import { FREIGHT_PHOTOS_REPOSITORY } from './repositories/freight-photos.repository.interface.js';
 import { FreightsModule } from '../freights/freights.module.js';
+import { ApplicationsModule } from '../applications/applications.module.js';
 
 @Module({
-  imports: [FreightsModule],
+  imports: [FreightsModule, ApplicationsModule],
   controllers: [FreightPhotosController],
   providers: [
     FreightPhotosService,

@@ -9,12 +9,15 @@ import type { IFreightPhotosRepository } from './repositories/freight-photos.rep
 import { FREIGHT_PHOTOS_REPOSITORY } from './repositories/freight-photos.repository.interface.js';
 import type { IFreightsRepository } from '../freights/repositories/freights.repository.interface.js';
 import { FREIGHTS_REPOSITORY } from '../freights/repositories/freights.repository.interface.js';
+import type { IApplicationsRepository } from '../applications/repositories/applications.repository.interface.js';
+import { APPLICATIONS_REPOSITORY } from '../applications/repositories/applications.repository.interface.js';
 import { FreightPhotoMapper } from './mappers/freight-photo.mapper.js';
 import { FreightPhotoResponseDto } from './dto/freight-photo-response.dto.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
 const MAX_PHOTOS_PER_FREIGHT = 3;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB em bytes
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'freight-photos');
 
 @Injectable()
@@ -24,6 +27,8 @@ export class FreightPhotosService {
     private readonly photosRepository: IFreightPhotosRepository,
     @Inject(FREIGHTS_REPOSITORY)
     private readonly freightsRepository: IFreightsRepository,
+    @Inject(APPLICATIONS_REPOSITORY)
+    private readonly applicationsRepository: IApplicationsRepository,
   ) {
     if (!fs.existsSync(UPLOAD_DIR)) {
       fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -47,12 +52,8 @@ export class FreightPhotosService {
       );
     }
 
-    const count = await this.photosRepository.countByFreight(freightId);
-
-    if (count >= MAX_PHOTOS_PER_FREIGHT) {
-      throw new BadRequestException(
-        `Limite de ${MAX_PHOTOS_PER_FREIGHT} fotos por frete atingido`,
-      );
+    if (!file) {
+      throw new BadRequestException('Arquivo é obrigatório');
     }
 
     const extension = path.extname(file.originalname).toLowerCase();
@@ -67,26 +68,50 @@ export class FreightPhotosService {
     const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}${extension}`;
     const filepath = path.join(UPLOAD_DIR, filename);
 
-    fs.writeFileSync(filepath, file.buffer);
+    await fs.promises.writeFile(filepath, file.buffer);
 
     const url = `/uploads/freight-photos/${filename}`;
 
-    const photo = await this.photosRepository.create({
-      freightId,
-      url,
-      order: count + 1,
-    });
+    try {
+      const photo = await this.photosRepository.createWithLimitCheck(
+        freightId,
+        url,
+        MAX_PHOTOS_PER_FREIGHT,
+      );
 
-    return FreightPhotoMapper.toResponse(photo);
+      return FreightPhotoMapper.toResponse(photo);
+    } catch (error) {
+      fs.unlinkSync(filepath);
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findByFreight(
     freightId: string,
+    currentUser: CurrentUserData,
   ): Promise<FreightPhotoResponseDto[]> {
     const freight = await this.freightsRepository.findById(freightId);
 
     if (!freight) {
       throw new NotFoundException(`Frete com ID ${freightId} não encontrado`);
+    }
+
+    const isOwner = freight.clientId === currentUser.id;
+    const isAdmin = currentUser.role === 'ADMIN';
+
+    let hasApplication = false;
+    if (currentUser.role === 'CARRIER') {
+      const applications =
+        await this.applicationsRepository.findByFreight(freightId);
+      hasApplication = applications.some(
+        (app) => app.freighterId === currentUser.id,
+      );
+    }
+
+    if (!isOwner && !isAdmin && !hasApplication) {
+      throw new ForbiddenException(
+        'Você não tem permissão para visualizar as fotos deste frete',
+      );
     }
 
     const photos = await this.photosRepository.findByFreight(freightId);
@@ -106,9 +131,7 @@ export class FreightPhotosService {
     }
 
     if (freight.clientId !== clientId) {
-      throw new ForbiddenException(
-        'Apenas o dono do frete pode remover fotos',
-      );
+      throw new ForbiddenException('Apenas o dono do frete pode remover fotos');
     }
 
     const photo = await this.photosRepository.findById(photoId);

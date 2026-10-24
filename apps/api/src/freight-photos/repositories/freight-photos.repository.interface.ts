@@ -10,6 +10,11 @@ export interface CreateFreightPhotoData {
 
 export interface IFreightPhotosRepository {
   create(data: CreateFreightPhotoData): Promise<FreightPhoto>;
+  createWithLimitCheck(
+    freightId: string,
+    url: string,
+    maxPhotos: number,
+  ): Promise<FreightPhoto>;
   findById(id: string): Promise<FreightPhoto | null>;
   findByFreight(freightId: string): Promise<FreightPhoto[]>;
   countByFreight(freightId: string): Promise<number>;

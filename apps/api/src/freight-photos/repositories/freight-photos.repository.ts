@@ -47,6 +47,34 @@ export class FreightPhotosRepository implements IFreightPhotosRepository {
     });
   }
 
+  async createWithLimitCheck(
+    freightId: string,
+    url: string,
+    maxPhotos: number,
+  ): Promise<FreightPhoto> {
+    return this.prisma.$transaction(async (tx) => {
+      const count = await tx.freightPhoto.count({
+        where: { freightId },
+      });
+
+      if (count >= maxPhotos) {
+        throw new Error(
+          `Limite de ${maxPhotos} fotos por frete atingido`,
+        );
+      }
+
+      const prismaPhoto = await tx.freightPhoto.create({
+        data: {
+          freightId,
+          url,
+          order: count + 1,
+        },
+      });
+
+      return FreightPhotoMapper.toDomain(prismaPhoto);
+    });
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.freightPhoto.delete({
       where: { id },

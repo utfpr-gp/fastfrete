@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import { FreightsModule } from './freights/freights.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { VehiclesModule } from './vehicles/vehicles.module.js';
+import { ReviewsModule } from './reviews/reviews.module.js';
+import { FreightPhotosModule } from './freight-photos/freight-photos.module.js';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     FreightsModule,
     ApplicationsModule,
     VehiclesModule,
+    ReviewsModule,
+    FreightPhotosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

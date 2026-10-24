@@ -21,5 +21,6 @@ import { FreightsModule } from '../freights/freights.module.js';
       useClass: ApplicationsRepository,
     },
   ],
+  exports: [APPLICATIONS_REPOSITORY],
 })
 export class ApplicationsModule {}
