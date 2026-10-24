@@ -15,9 +15,9 @@ import { FreightPhotoMapper } from './mappers/freight-photo.mapper.js';
 import { FreightPhotoResponseDto } from './dto/freight-photo-response.dto.js';
 import * as fs from 'fs';
 import * as path from 'path';
+import { CurrentUserData } from 'src/authorization/decorators/current-user.decorator.js';
 
 const MAX_PHOTOS_PER_FREIGHT = 3;
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB em bytes
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'freight-photos');
 
 @Injectable()
@@ -97,10 +97,11 @@ export class FreightPhotosService {
     }
 
     const isOwner = freight.clientId === currentUser.id;
-    const isAdmin = currentUser.role === 'ADMIN';
+    const isAdmin = currentUser.roleTypes.includes('ADMIN');
+    const isCarrier = currentUser.roleTypes.includes('CARRIER');
 
     let hasApplication = false;
-    if (currentUser.role === 'CARRIER') {
+    if (isCarrier) {
       const applications =
         await this.applicationsRepository.findByFreight(freightId);
       hasApplication = applications.some(

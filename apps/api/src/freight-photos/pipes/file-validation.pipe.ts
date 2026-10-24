@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import * as FileType from 'file-type';
+import { fileTypeFromBuffer } from 'file-type';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB em bytes
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -21,7 +21,7 @@ export class FileValidationPipe implements PipeTransform {
       );
     }
 
-    const fileType = await FileType.fromBuffer(value.buffer);
+    const fileType = await fileTypeFromBuffer(value.buffer);
     
     if (!fileType) {
       throw new BadRequestException('Não foi possível determinar o tipo do arquivo');
