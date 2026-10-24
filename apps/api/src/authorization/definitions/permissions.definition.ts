@@ -19,6 +19,8 @@ export const ADMIN_PERMISSIONS = {
   VEHICLE_CATEGORIES_LIST: 'vehicle-categories:list',
   SYSTEM_SETTINGS: 'system:settings',
   SYSTEM_LOGS: 'system:logs',
+  REVIEWS_READ: 'reviews:read',
+  REVIEWS_LIST: 'reviews:list',
 } as const;
 
 export const CUSTOMER_PERMISSIONS = {
@@ -38,6 +40,8 @@ export const CUSTOMER_PERMISSIONS = {
   APPLICATIONS_ACCEPT: 'applications:accept',
   APPLICATIONS_REJECT: 'applications:reject',
   APPLICATIONS_COMPLETE: 'applications:complete',
+  REVIEWS_CREATE: 'reviews:create',
+  REVIEWS_LIST: 'reviews:list',
 } as const;
 
 export const CARRIER_PERMISSIONS = {
@@ -58,6 +62,8 @@ export const CARRIER_PERMISSIONS = {
   VEHICLES_LIST: 'vehicles:list',
   VEHICLES_UPDATE: 'vehicles:update',
   VEHICLES_DELETE: 'vehicles:delete',
+  REVIEWS_CREATE: 'reviews:create',
+  REVIEWS_LIST: 'reviews:list',
 } as const;
 
 function getPermissionValues<T extends Record<string, string>>(
