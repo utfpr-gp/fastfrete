@@ -6,12 +6,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiExtraModels,
-} from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiExtraModels } from '@nestjs/swagger';
 import { ReviewsService } from '../reviews.service.js';
 import { ReviewResponseDto } from '../dto/review-response.dto.js';
 import { ReviewsFilterDto } from '../dto/reviews-filter.dto.js';

@@ -42,9 +42,7 @@ export class ReviewsService {
     }
 
     if (freight.status !== FreightStatus.COMPLETED) {
-      throw new ForbiddenException(
-        'Só é possível avaliar fretes concluídos',
-      );
+      throw new ForbiddenException('Só é possível avaliar fretes concluídos');
     }
 
     if (!freight.selectedApplicationId) {
@@ -85,9 +83,7 @@ export class ReviewsService {
     );
 
     if (existing) {
-      throw new ConflictException(
-        'Você já avaliou este frete',
-      );
+      throw new ConflictException('Você já avaliou este frete');
     }
 
     const review = await this.reviewsRepository.create({
@@ -101,9 +97,7 @@ export class ReviewsService {
     return ReviewMapper.toResponse(review);
   }
 
-  async findByFreight(
-    freightId: string,
-  ): Promise<ReviewResponseDto[]> {
+  async findByFreight(freightId: string): Promise<ReviewResponseDto[]> {
     const freight = await this.freightsRepository.findById(freightId);
 
     if (!freight) {
