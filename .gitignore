@@ -137,3 +137,11 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.qwen
+QWEN.md
+docs/diagnostico-status.md
+docs/backlog-sprints.md
+.vscode
+apps/api/uploads/freight-photos/*
+
