@@ -86,15 +86,22 @@ export class ReviewsService {
       throw new ConflictException('Você já avaliou este frete');
     }
 
-    const review = await this.reviewsRepository.create({
-      freightId,
-      reviewerId,
-      reviewedId,
-      rating: dto.rating,
-      comment: dto.comment,
-    });
+    try {
+      const review = await this.reviewsRepository.create({
+        freightId,
+        reviewerId,
+        reviewedId,
+        rating: dto.rating,
+        comment: dto.comment,
+      });
 
-    return ReviewMapper.toResponse(review);
+      return ReviewMapper.toResponse(review);
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        throw new ConflictException('Você já avaliou este frete');
+      }
+      throw error;
+    }
   }
 
   async findByFreight(freightId: string): Promise<ReviewResponseDto[]> {
