@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpCode } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './authorization/decorators/public.decorator';
 
@@ -8,7 +8,8 @@ export class AppController {
 
   @Public()
   @Get()
-  getHello(): string {
+  @HttpCode(200)
+  getHello(): { message: string } {
     return this.appService.getHello();
   }
 }
