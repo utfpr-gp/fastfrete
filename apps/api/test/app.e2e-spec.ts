@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/api')
       .expect(200)
-      .expect('Hello World!');
+      .expect({ message: 'Hello World!' });
   });
 
   afterEach(async () => {

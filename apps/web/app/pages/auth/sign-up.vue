@@ -4,11 +4,6 @@ import CustomInput from '~/components/forms/CustomInput.vue'
 definePageMeta({
   layout: 'auth'
 })
-
-const nameInput = ref('')
-const emailInput = ref('')
-const passwordInput = ref('')
-const confirmPasswordInput = ref('')
 </script>
 
 <template>
@@ -20,35 +15,35 @@ const confirmPasswordInput = ref('')
     </p>
 
     <form class="flex flex-col gap-4">
-      <CustomInputAccept
+      <CustomInput
         id="name"
-        v-model="nameInput"
-        label="Name"
+        label="Nome"
         type="text"
+        name="name"
         class="input input-lg w-full rounded-xl placeholder:text-sm text-sm"
       />
 
       <CustomInput
         id="email"
-        v-model="emailInput"
         label="Email"
         type="email"
+        name="email"
         class="input input-lg w-full rounded-xl placeholder:text-sm text-sm"
       />
 
       <CustomInput
         id="password"
-        v-model="passwordInput"
         label="Password"
         type="password"
+        name="password"
         class="input input-lg w-full rounded-xl placeholder:text-sm text-sm"
       />
 
       <CustomInput
         id="confirm-password"
-        v-model="confirmPasswordInput"
         label="Confirmar senha"
         type="password"
+        name="confirmPassword"
         class="input input-lg w-full rounded-xl placeholder:text-sm text-sm"
       />
 

@@ -8,7 +8,7 @@ watch(meta, (value) => {
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-  emit('submit', { ...values, ...actions })
+  emit('submit', { ...actions, controlledValues: values })
 })
 </script>
 

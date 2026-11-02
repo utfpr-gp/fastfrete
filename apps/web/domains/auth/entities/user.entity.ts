@@ -1,10 +1,25 @@
 export interface User {
   id: string
-  email: string
   name: string
-  role: UserRole
+  email: string
+  phoneNumber: string
+  status: UserStatus
   createdAt: Date
   updatedAt: Date
+  roles: UserRoleResponseDto[]
+  city: CityResponseDto
 }
 
-export type UserRole = 'CUSTOMER' | 'CARRIER' | 'ADMIN'
+export type UserStatus = 'ACTIVE' | 'SUSPENDED'
+
+export interface UserRoleResponseDto {
+  name: string
+  roleType: string
+  permissions: string[]
+}
+
+export interface CityResponseDto {
+  id: string
+  name: string
+  state: string
+}

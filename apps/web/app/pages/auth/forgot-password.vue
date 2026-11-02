@@ -4,8 +4,6 @@ import CustomInput from '~/components/forms/CustomInput.vue'
 definePageMeta({
   layout: 'auth'
 })
-
-const emailInput = ref('')
 </script>
 
 <template>
@@ -19,7 +17,6 @@ const emailInput = ref('')
     <form class="flex flex-col gap-4">
       <CustomInput
         id="email"
-        v-model="emailInput"
         label="Email"
         type="email"
         name="email"

@@ -4,9 +4,6 @@ import CustomInput from '~/components/forms/CustomInput.vue'
 definePageMeta({
   layout: 'auth'
 })
-
-const passwordInput = ref('')
-const confirmPasswordInput = ref('')
 </script>
 
 <template>
@@ -18,7 +15,6 @@ const confirmPasswordInput = ref('')
     <form class="flex flex-col gap-4">
       <CustomInput
         id="teste"
-        v-model="passwordInput"
         label="Senha"
         placeholder="Digite sua senha"
         type="password"
@@ -28,7 +24,6 @@ const confirmPasswordInput = ref('')
 
       <CustomInput
         id="password"
-        v-model="confirmPasswordInput"
         label="Confirmar senha"
         placeholder="Confirme sua senha"
         type="password"

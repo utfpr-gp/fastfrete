@@ -13,7 +13,7 @@ export default defineNuxtPlugin(() => {
     if (!value || !value.length) {
       return true
     }
-    if (!/^(?=.[0-9])(?=.[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,22}$/.test(value)) {
+    if (!/^(?=.*[0-9])(?=.*[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,22}$/.test(value)) {
       return 'Insira uma senha forte'
     }
     return true

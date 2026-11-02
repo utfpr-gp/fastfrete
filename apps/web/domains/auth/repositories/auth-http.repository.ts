@@ -16,6 +16,6 @@ export class AuthHttpRepository implements IAuthRepository {
   }
 
   async signup(data: SignupRequestDTO): Promise<HttpResult<void>> {
-    return this.httpClient.post<void>('/api/auth/signup', data)
+    return this.httpClient.post<void>('/api/auth/register', data)
   }
 }

@@ -1,6 +1,6 @@
 import type { User } from '../entities/user.entity'
 
 export interface LoginResponseDTO {
-  token: string
+  accessToken: string
   user: User
 }
