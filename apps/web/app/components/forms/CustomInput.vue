@@ -5,6 +5,7 @@ const props = defineProps<{
   id: string
   name: string
   rules?: string
+  required?: boolean
 }>()
 
 defineOptions({
@@ -17,7 +18,7 @@ const { value, errorMessage } = useField(() => props.name, props.rules)
 <template>
   <div class="flex flex-col space-y-1.5">
     <label v-if="label" :for="id" class="block text-sm font-medium">
-      {{ label }}
+      {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
 
     <div class="relative" :class="{ 'pb-5 mb-0.5': !errorMessage }">

@@ -1,4 +1,6 @@
 export default {
   password: 'senha',
-  email: 'email'
+  email: 'email',
+  name: 'nome',
+  confirmPassword: 'confirmar senha'
 }

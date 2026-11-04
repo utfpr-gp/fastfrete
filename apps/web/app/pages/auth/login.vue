@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import CustomInput from '~/components/forms/CustomInput.vue'
 import FormData from '~/components/forms/FormData.vue'
-import { createAuthService } from '../../../domains/auth/composition'
+import { createAuthService } from '~~/domains/auth/composition'
+import type { LoginRequestDTO } from '~~/domains/auth/dtos/login-request.dto'
 
 definePageMeta({
   layout: 'auth'
@@ -16,8 +17,8 @@ function updateIsValid(isValid: boolean) {
   submitDisabled.value = !isValid
 }
 
-async function handleFormSubmit(form: { email: string; password: string }) {
-  const result = await authService.login(form.email, form.password)
+async function handleFormSubmit(form: LoginRequestDTO) {
+  const result = await authService.login(form)
 
   if (result.success) {
     toast.success({ title: 'Login realizado com sucesso!' })
@@ -36,7 +37,7 @@ async function handleFormSubmit(form: { email: string; password: string }) {
     </p>
 
     <FormData
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-2"
       @submit="handleFormSubmit($event.controlledValues)"
       @is-valid="updateIsValid"
     >
@@ -46,6 +47,7 @@ async function handleFormSubmit(form: { email: string; password: string }) {
         placeholder="Digite seu email"
         type="email"
         name="email"
+        required
         rules="required|email"
         class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
       >
@@ -63,6 +65,7 @@ async function handleFormSubmit(form: { email: string; password: string }) {
         placeholder="Digite sua senha"
         :type="showPassword ? 'text' : 'password'"
         name="password"
+        required
         rules="required"
         class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
       >
