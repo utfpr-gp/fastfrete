@@ -2,6 +2,7 @@
 import CustomInput from '~/components/forms/CustomInput.vue'
 import InputRadio from '~/components/forms/InputRadio.vue'
 import FormData from '~/components/forms/FormData.vue'
+import SubmitButton from '~/components/forms/SubmitButton.vue'
 import { createAuthService } from '~~/domains/auth/composition'
 import { vMaska } from 'maska/vue'
 import CustomSelect from '~/components/forms/CustomSelect.vue'
@@ -20,6 +21,7 @@ const toast = useToast()
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const submitDisabled = ref(false)
+const requestIsPending = ref(false)
 
 function updateIsValid(isValid: boolean) {
   submitDisabled.value = !isValid
@@ -32,6 +34,7 @@ function formatPhoneNumber(phoneNumber: string) {
 async function handleFormSubmit(form: formType) {
   const { confirmPassword, ...userForm } = form
   userForm.phoneNumber = formatPhoneNumber(userForm.phoneNumber)
+  requestIsPending.value = true
   const result = await authService.signup(userForm)
 
   if (result.success) {
@@ -39,6 +42,7 @@ async function handleFormSubmit(form: formType) {
   } else {
     toast.error({ title: 'Erro ao criar conta!' })
   }
+  requestIsPending.value = false
 }
 </script>
 
@@ -177,13 +181,7 @@ async function handleFormSubmit(form: formType) {
         ]"
       ></InputRadio>
 
-      <button
-        type="submit"
-        class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="submitDisabled"
-      >
-        Criar
-      </button>
+      <SubmitButton label="Criar" :loading="requestIsPending" :disabled="submitDisabled" />
 
       <a href="/auth/login" class="btn btn-ghost btn-lg text-sm w-full text-gray-800 rounded-xl"
         >Voltar para o login</a

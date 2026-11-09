@@ -1,30 +1,35 @@
 <script setup lang="ts">
 import CustomInput from '~/components/forms/CustomInput.vue'
 import FormData from '~/components/forms/FormData.vue'
-import { createAuthService } from '~~/domains/auth/composition'
-import type { LoginRequestDTO } from '~~/domains/auth/dtos/login-request.dto'
+import SubmitButton from '~/components/forms/SubmitButton.vue'
+import { useAuthStore } from '~~/stores/auth'
 
 definePageMeta({
   layout: 'auth'
 })
 
-const authService = createAuthService()
 const toast = useToast()
 const showPassword = ref(false)
 const submitDisabled = ref(false)
+const requestIsPending = ref(false)
 
 function updateIsValid(isValid: boolean) {
   submitDisabled.value = !isValid
 }
 
-async function handleFormSubmit(form: LoginRequestDTO) {
-  const result = await authService.login(form)
+async function handleFormSubmit(form: { email: string; password: string }) {
+  const authStore = useAuthStore()
+  requestIsPending.value = true
+  const result = await authStore.login(form)
 
   if (result.success) {
     toast.success({ title: 'Login realizado com sucesso!' })
+    navigateTo('/')
   } else {
     toast.error({ title: 'Usuário ou senha inválidos!' })
   }
+
+  requestIsPending.value = false
 }
 </script>
 
@@ -89,13 +94,7 @@ async function handleFormSubmit(form: LoginRequestDTO) {
         >
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="submitDisabled"
-      >
-        Login
-      </button>
+      <SubmitButton label="Login" :loading="requestIsPending" :disabled="submitDisabled" />
 
       <p class="text-sm text-center text-gray-500">
         Ainda não tem uma conta?

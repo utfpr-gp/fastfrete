@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CustomInput from '~/components/forms/CustomInput.vue'
 import FormData from '~/components/forms/FormData.vue'
+import SubmitButton from '~/components/forms/SubmitButton.vue'
 import { createAuthService } from '~~/domains/auth/composition'
 import type { ResetPasswordRequestDTO } from '~~/domains/auth/dtos/reset-password-request.dto'
 
@@ -13,6 +14,7 @@ const toast = useToast()
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const submitDisabled = ref(false)
+const requestIsPending = ref(false)
 const urlToken = useRoute().query['token'] as string
 
 function updateIsValid(isValid: boolean) {
@@ -21,6 +23,7 @@ function updateIsValid(isValid: boolean) {
 
 async function handleFormSubmit(form: { password: string; confirmPassword: string }) {
   const formReset: ResetPasswordRequestDTO = { token: urlToken, password: form.password }
+  requestIsPending.value = true
   const result = await authService.resetPassword(formReset)
 
   if (result.success) {
@@ -28,6 +31,7 @@ async function handleFormSubmit(form: { password: string; confirmPassword: strin
   } else {
     toast.error({ title: 'Usuário ou senha inválidos!' })
   }
+  requestIsPending.value = false
 }
 </script>
 
@@ -90,13 +94,7 @@ async function handleFormSubmit(form: { password: string; confirmPassword: strin
         </template>
       </CustomInput>
 
-      <button
-        type="submit"
-        class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="submitDisabled"
-      >
-        Redefinir
-      </button>
+      <SubmitButton label="Redefinir" :loading="requestIsPending" :disabled="submitDisabled" />
     </FormData>
   </div>
 </template>

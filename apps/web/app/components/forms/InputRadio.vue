@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import FormFieldError from './FormFieldError.vue'
+import FormFieldLabel from './FormFieldLabel.vue'
+
 const props = defineProps<{
   label?: string
   error?: string
@@ -24,9 +27,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col space-y-1.5">
-    <label v-if="label" :for="id" class="block text-sm font-medium">
-      {{ label }} <span v-if="required" class="text-red-500">*</span>
-    </label>
+    <FormFieldLabel :id="id" :label="label" :required="required" />
 
     <div class="flex gap-4 mb-5">
       <div v-for="option in props.options" :key="option.value">
@@ -43,8 +44,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <span v-if="errorMessage" class="block text-xs text-red-500 font-medium">
-      {{ errorMessage }}
-    </span>
+    <FormFieldError :message="errorMessage" />
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CustomInput from '~/components/forms/CustomInput.vue'
 import FormData from '~/components/forms/FormData.vue'
+import SubmitButton from '~/components/forms/SubmitButton.vue'
 import { createAuthService } from '~~/domains/auth/composition'
 import type { ForgotPasswordRequestDTO } from '~~/domains/auth/dtos/forgot-password-request.dto'
 
@@ -11,12 +12,14 @@ definePageMeta({
 const authService = createAuthService()
 const toast = useToast()
 const submitDisabled = ref(false)
+const requestIsPending = ref(false)
 
 function updateIsValid(isValid: boolean) {
   submitDisabled.value = !isValid
 }
 
 async function handleFormSubmit(form: ForgotPasswordRequestDTO) {
+  requestIsPending.value = true
   const result = await authService.forgotPassword(form)
 
   if (result.success) {
@@ -24,6 +27,7 @@ async function handleFormSubmit(form: ForgotPasswordRequestDTO) {
   } else {
     toast.error({ title: 'Erro ao enviar link de redefinição de senha!' })
   }
+  requestIsPending.value = false
 }
 </script>
 
@@ -58,13 +62,7 @@ async function handleFormSubmit(form: ForgotPasswordRequestDTO) {
         </template>
       </CustomInput>
 
-      <button
-        type="submit"
-        class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="submitDisabled"
-      >
-        Enviar link
-      </button>
+      <SubmitButton label="Enviar link" :loading="requestIsPending" :disabled="submitDisabled" />
 
       <a href="/auth/login" class="btn btn-ghost btn-lg text-sm w-full text-gray-800 rounded-xl"
         >Voltar para o login</a
