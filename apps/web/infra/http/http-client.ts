@@ -1,3 +1,4 @@
+import { getAuthCookie } from '~/support/auth-cookie'
 import type { IHttpClient, RequestOptions, HttpResult, HttpError } from './http-client.interface'
 
 export class HttpClient implements IHttpClient {
@@ -30,11 +31,13 @@ export class HttpClient implements IHttpClient {
     options?: RequestOptions
   ): Promise<HttpResult<T>> {
     try {
+      const token = this.getStoredToken()
       const data = await $fetch<T>(this.buildUrl(path, options?.params), {
         method,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
           ...options?.headers
         },
         body: body as any
@@ -46,6 +49,15 @@ export class HttpClient implements IHttpClient {
         message: error?.statusMessage || error?.message || 'Unknown error'
       }
       return { success: false, error: httpError }
+    }
+  }
+
+  private getStoredToken(): string | null {
+    try {
+      const cookieData = getAuthCookie()
+      return cookieData?.accessToken || null
+    } catch {
+      return null
     }
   }
 

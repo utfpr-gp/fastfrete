@@ -31,7 +31,7 @@ export class MailerService {
   }
 
   async sendPasswordReset(email: string, token: string): Promise<void> {
-    const appUrl = process.env.APP_URL || 'http://localhost:3000';
+    const appUrl = process.env.APP_URL || 'http://localhost:3001';
     const resetUrl = `${appUrl}/auth/reset-password?token=${token}`;
 
     if (this.isDev) {

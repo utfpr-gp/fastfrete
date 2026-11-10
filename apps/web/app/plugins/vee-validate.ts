@@ -9,12 +9,12 @@ export default defineNuxtPlugin(() => {
     if (Rules[rule] instanceof Function) defineRule(rule, Rules[rule])
   })
 
-  defineRule('strongPassword', (value : string) => {
+  defineRule('strongPassword', (value: string) => {
     if (!value || !value.length) {
       return true
     }
-    if (!/^(?=.*[0-9])(?=.*[!@#$%^&])[a-zA-Z0-9!@#$%^&]{8,22}$/.test(value)) {
-      return 'Insira uma senha forte'
+    if (!/^(?=.*[0-9])(?=.*[!@#$%^&])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&]{8,50}$/.test(value)) {
+      return 'A senha deve conter no mínimo 8 caracteres e pelo menos um número, um caractere especial, um maiúsculo e um minúsculo.'
     }
     return true
   })
