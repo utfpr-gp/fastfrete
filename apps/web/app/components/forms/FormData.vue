@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const emit = defineEmits(['submit', 'isValid'])
 
-const { handleSubmit, meta } = useForm()
+const { handleSubmit, meta, values, validate, resetForm, setFieldValue } = useForm()
 
 watch(meta, (value) => {
   emit('isValid', value?.valid)
@@ -9,6 +9,13 @@ watch(meta, (value) => {
 
 const onSubmit = handleSubmit((values, actions) => {
   emit('submit', { ...actions, controlledValues: values })
+})
+
+defineExpose({
+  values,
+  validate,
+  setFieldValue,
+  resetForm
 })
 </script>
 

@@ -20,6 +20,10 @@ export class HttpClient implements IHttpClient {
     return this.request<T>('PUT', url, body, options)
   }
 
+  async patch<T>(url: string, body?: unknown, options?: RequestOptions): Promise<HttpResult<T>> {
+    return this.request<T>('PATCH', url, body, options)
+  }
+
   async delete<T>(url: string, options?: RequestOptions): Promise<HttpResult<T>> {
     return this.request<T>('DELETE', url, undefined, options)
   }
@@ -32,14 +36,21 @@ export class HttpClient implements IHttpClient {
   ): Promise<HttpResult<T>> {
     try {
       const token = this.getStoredToken()
+      const isFormData = body instanceof FormData
+
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options?.headers
+      }
+
+      if (!isFormData) {
+        headers['Content-Type'] = 'application/json'
+      }
+
       const data = await $fetch<T>(this.buildUrl(path, options?.params), {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          ...options?.headers
-        },
+        headers,
         body: body as any
       })
       return { success: true, data }

@@ -2,6 +2,7 @@ export interface IHttpClient {
   get<T>(url: string, options?: RequestOptions): Promise<HttpResult<T>>
   post<T>(url: string, body?: unknown, options?: RequestOptions): Promise<HttpResult<T>>
   put<T>(url: string, body?: unknown, options?: RequestOptions): Promise<HttpResult<T>>
+  patch<T>(url: string, body?: unknown, options?: RequestOptions): Promise<HttpResult<T>>
   delete<T>(url: string, options?: RequestOptions): Promise<HttpResult<T>>
 }
 
