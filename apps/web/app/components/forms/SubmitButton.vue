@@ -9,7 +9,7 @@ defineProps<{
 <template>
   <button
     type="submit"
-    class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed"
+    class="btn btn-lg text-sm w-full text-white bg-amber-500 rounded-xl hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-nowrap"
     :disabled="disabled || loading"
   >
     <span v-if="!loading">{{ label }}</span>

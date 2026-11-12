@@ -33,19 +33,19 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Todos | **História:** Como cliente, fretista ou administrador, quero fazer login, logout e recuperar senha, para acessar as funcionalidades conforme meu papel.
 
 **✅ Critérios de Aceitação:**
-* [ ] Formulário com campos obrigatórios: e-mail e senha.
-* [ ] Exibir mensagem de erro em caso de credenciais inválidas.
-* [ ] Função "Esqueci minha senha" deve enviar link de redefinição por e-mail.
-* [ ] Direcionar o usuário para sua área inicial após login.
+* [x] Formulário com campos obrigatórios: e-mail e senha.
+* [x] Exibir mensagem de erro em caso de credenciais inválidas.
+* [x] Função "Esqueci minha senha" deve enviar link de redefinição por e-mail.
+* [x] Direcionar o usuário para sua área inicial após login.
 
 ### 🔴 US02 - Cadastro de Cliente (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero criar uma conta informando meus dados pessoais, para solicitar fretes.
 
 **✅ Critérios de Aceitação:**
-* [ ] Campos obrigatórios: nome, telefone, cidade, e-mail e senha.
-* [ ] A cidade disponível deve ser apenas Guarapuava.
-* [ ] Validar se o e-mail informado já está cadastrado.
-* [ ] Exibir mensagem de confirmação após conclusão do cadastro.
+* [x] Campos obrigatórios: nome, telefone, cidade, e-mail e senha.
+* [x] A cidade disponível deve ser apenas Guarapuava.
+* [x] Validar se o e-mail informado já está cadastrado.
+* [x] Exibir mensagem de confirmação após conclusão do cadastro.
 
 ### 🔴 US03 - Cadastro de Fretista (Must Have)
 **Ator:** Fretista | **História:** Como fretista, quero criar uma conta com meus dados pessoais, tipo de veículo e capacidade de carga, para receber solicitações de clientes.
