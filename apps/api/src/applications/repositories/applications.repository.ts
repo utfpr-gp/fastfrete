@@ -31,6 +31,7 @@ export class ApplicationsRepository implements IApplicationsRepository {
         freighterId: data.freighterId,
         vehicleId: data.vehicleId,
         proposedPrice: data.proposedPrice,
+        message: data.message,
       },
       include: {
         vehicle: {

@@ -22,6 +22,7 @@ export class Application {
   readonly vehicleId: string;
   readonly vehicle: ApplicationVehicle | null;
   readonly proposedPrice: string;
+  readonly message: string | null;
   readonly status: ApplicationStatus;
   readonly createdAt: Date;
   readonly updatedAt: Date;

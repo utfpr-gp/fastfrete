@@ -14,6 +14,7 @@ export interface CreateApplicationData {
   freighterId: string;
   vehicleId: string;
   proposedPrice: string;
+  message?: string;
 }
 
 export interface UpdateApplicationData {
