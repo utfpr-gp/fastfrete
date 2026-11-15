@@ -41,6 +41,7 @@ export class Freight {
   readonly selectedApplicationId: string | null;
   readonly originCity: FreightCity;
   readonly destinationCity: FreightCity;
+  readonly coverPhoto: string | null;
 
   constructor(props: Freight) {
     Object.assign(this, props);

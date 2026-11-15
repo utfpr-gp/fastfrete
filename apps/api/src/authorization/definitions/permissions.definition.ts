@@ -47,6 +47,8 @@ export const CUSTOMER_PERMISSIONS = {
 export const CARRIER_PERMISSIONS = {
   PROFILE_READ: 'profile:read',
   PROFILE_UPDATE: 'profile:update',
+  FREIGHTS_LIST: 'freights:list',
+  FREIGHTS_READ: 'freights:read',
   DELIVERIES_READ: 'deliveries:read',
   DELIVERIES_LIST: 'deliveries:list',
   DELIVERIES_ACCEPT: 'deliveries:accept',

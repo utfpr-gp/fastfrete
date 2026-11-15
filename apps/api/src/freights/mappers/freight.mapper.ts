@@ -3,6 +3,7 @@ import {
   City as PrismaCity,
   FreightStatus as PrismaFreightStatus,
   FreightDateMode as PrismaFreightDateMode,
+  FreightPhoto as PrismaFreightPhoto,
 } from '../../../generated/prisma/client';
 import {
   Freight,
@@ -14,6 +15,7 @@ import { FreightResponseDto } from '../dto/freight-response.dto.js';
 interface PrismaFreightWithCities extends PrismaFreight {
   originCity: PrismaCity;
   destinationCity: PrismaCity;
+  photos?: PrismaFreightPhoto[];
 }
 
 export class FreightMapper {
@@ -26,6 +28,8 @@ export class FreightMapper {
   }
 
   static toDomain(prismaFreight: PrismaFreightWithCities): Freight {
+    const coverPhoto = prismaFreight.photos?.[0]?.url ?? null;
+
     return new Freight({
       id: prismaFreight.id,
       clientId: prismaFreight.clientId,
@@ -57,6 +61,7 @@ export class FreightMapper {
         name: prismaFreight.destinationCity.name,
         state: prismaFreight.destinationCity.state,
       },
+      coverPhoto,
     });
   }
 
@@ -86,6 +91,7 @@ export class FreightMapper {
       createdAt: freight.createdAt,
       updatedAt: freight.updatedAt,
       selectedApplicationId: freight.selectedApplicationId,
+      coverPhoto: freight.coverPhoto,
     };
   }
 

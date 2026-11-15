@@ -1,5 +1,6 @@
 import { Freight, FreightStatus, FreightDateMode } from '../entities/freight.entity.js';
 import { PaginationOptions, PaginatedResult } from '../../common/pagination/index.js';
+import { FreightOrderBy } from '../dto/freights-filter.dto.js';
 
 export const FREIGHTS_REPOSITORY = Symbol('FREIGHTS_REPOSITORY');
 
@@ -41,12 +42,17 @@ export interface UpdateFreightData {
 export interface FreightsFilters {
   status?: FreightStatus;
   vehicleCategory?: string;
+  orderBy?: FreightOrderBy;
 }
 
 export interface IFreightsRepository {
   create(data: CreateFreightData): Promise<Freight>;
   findAllByClient(
     clientId: string,
+    filters: FreightsFilters,
+    pagination: PaginationOptions,
+  ): Promise<PaginatedResult<Freight>>;
+  findAllOpen(
     filters: FreightsFilters,
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<Freight>>;

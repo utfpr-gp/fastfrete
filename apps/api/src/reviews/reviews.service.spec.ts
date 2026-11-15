@@ -65,6 +65,7 @@ const mockFreight = (overrides: Partial<Freight> = {}): Freight =>
     selectedApplicationId: 'app-1',
     originCity: { id: 'city-1', name: 'Curitiba', state: 'PR' },
     destinationCity: { id: 'city-2', name: 'Londrina', state: 'PR' },
+    coverPhoto: null,
     ...overrides,
   });
 

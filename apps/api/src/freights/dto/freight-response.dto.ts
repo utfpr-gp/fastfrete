@@ -72,4 +72,7 @@ export class FreightResponseDto {
 
   @ApiProperty()
   updatedAt!: Date;
+
+  @ApiProperty({ nullable: true, example: '/uploads/freight-photos/abc-123.jpg' })
+  coverPhoto!: string | null;
 }
