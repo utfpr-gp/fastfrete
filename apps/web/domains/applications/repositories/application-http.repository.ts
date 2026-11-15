@@ -1,5 +1,6 @@
 import type { IApplicationRepository } from './application.repository.interface'
 import type { Application } from '../entities/application.entity'
+import type { CreateApplicationDto } from '../dtos/create-application.dto'
 import type { UpdateApplicationDto } from '../dtos/update-application.dto'
 import type { IHttpClient, HttpResult } from '~~/infra/http/http-client.interface'
 
@@ -8,6 +9,10 @@ export class ApplicationHttpRepository implements IApplicationRepository {
 
   constructor(httpClient: IHttpClient) {
     this.httpClient = httpClient
+  }
+
+  async create(freightId: string, data: CreateApplicationDto): Promise<HttpResult<Application>> {
+    return this.httpClient.post<Application>(`/api/freights/${freightId}/applications`, data)
   }
 
   async findByFreight(freightId: string): Promise<HttpResult<Application[]>> {

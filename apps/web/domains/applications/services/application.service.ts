@@ -1,5 +1,6 @@
 import type { IApplicationRepository } from '../repositories/application.repository.interface'
 import type { Application } from '../entities/application.entity'
+import type { CreateApplicationDto } from '../dtos/create-application.dto'
 import type { UpdateApplicationDto } from '../dtos/update-application.dto'
 import type { HttpResult } from '~~/infra/http/http-client.interface'
 
@@ -8,6 +9,10 @@ export class ApplicationService {
 
   constructor(repository: IApplicationRepository) {
     this.repository = repository
+  }
+
+  async create(freightId: string, data: CreateApplicationDto): Promise<HttpResult<Application>> {
+    return this.repository.create(freightId, data)
   }
 
   async findByFreight(freightId: string): Promise<HttpResult<Application[]>> {
