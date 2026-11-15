@@ -35,6 +35,7 @@ const { value, errorMessage } = useField(() => props.name, props.rules)
           :value="category.value"
           class="peer sr-only"
           :name="props.name"
+          :checked="value === category.value"
           @input="value = category.value"
         />
         <div
