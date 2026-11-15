@@ -27,15 +27,10 @@ function logout() {
             class="btn bg-amber-500 text-white rounded-2xl"
             >Publicar Anúncio</a
           >
-          <a
-            v-if="isCarrier"
-            class="btn btn-outline btn-primary text-white rounded-2xl"
-            @click="logout"
-            >Meus fretes</a
-          >
-          <div class="flex justify-center items-center w-10 h-10 bg-gray-200 rounded-full">
+          <a v-if="isCarrier" class="btn btn-outline btn-primary rounded-2xl">Meus fretes</a>
+          <!-- <div class="flex justify-center items-center w-10 h-10 bg-gray-200 rounded-full">
             <Icon name="uil:bell" class="text-gray-500" />
-          </div>
+          </div> -->
           <div class="dropdown dropdown-end cursor-pointer">
             <div
               tabindex="0"

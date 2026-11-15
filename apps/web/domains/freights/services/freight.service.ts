@@ -23,6 +23,14 @@ export class FreightService {
     return this.repository.findOne(id)
   }
 
+  async findAllOpen(filter: FreightsFilterDto): Promise<HttpResult<PaginatedResponse<Freight>>> {
+    return this.repository.findAllOpen(filter)
+  }
+
+  async findOneOpen(id: string): Promise<HttpResult<Freight>> {
+    return this.repository.findOneOpen(id)
+  }
+
   async create(data: CreateFreightDto): Promise<HttpResult<Freight>> {
     return this.repository.create(data)
   }

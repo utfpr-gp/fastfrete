@@ -29,4 +29,5 @@ export interface Freight {
   selectedApplicationId: string | null
   createdAt: string
   updatedAt: string
+  coverPhoto: string | null
 }

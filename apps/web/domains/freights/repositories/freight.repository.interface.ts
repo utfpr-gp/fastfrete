@@ -15,6 +15,8 @@ export interface PaginatedResponse<T> {
 export interface IFreightRepository {
   findAll(filter: FreightsFilterDto): Promise<HttpResult<PaginatedResponse<Freight>>>
   findOne(id: string): Promise<HttpResult<Freight>>
+  findAllOpen(filter: FreightsFilterDto): Promise<HttpResult<PaginatedResponse<Freight>>>
+  findOneOpen(id: string): Promise<HttpResult<Freight>>
   create(data: CreateFreightDto): Promise<HttpResult<Freight>>
   update(id: string, data: UpdateFreightDto): Promise<HttpResult<Freight>>
   cancel(id: string): Promise<HttpResult<Freight>>
