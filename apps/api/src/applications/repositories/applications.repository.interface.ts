@@ -20,7 +20,7 @@ export interface CreateApplicationData {
 export interface UpdateApplicationData {
   proposedPrice?: string;
   vehicleId?: string;
-  message?: string;
+  message?: string | null;
   status?: ApplicationStatus;
 }
 

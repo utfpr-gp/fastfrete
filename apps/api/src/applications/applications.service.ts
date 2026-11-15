@@ -91,7 +91,7 @@ export class ApplicationsService {
       const updated = await this.applicationsRepository.update(existing.id, {
         vehicleId: dto.vehicleId,
         proposedPrice: dto.proposedValue.toString(),
-        message: dto.message,
+        message: dto.message ?? null,
         status: ApplicationStatus.PENDING,
       });
       return ApplicationMapper.toResponse(updated);
