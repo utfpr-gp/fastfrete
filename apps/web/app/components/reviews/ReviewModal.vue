@@ -19,6 +19,17 @@ const rating = ref(5)
 const comment = ref('')
 const submitting = ref(false)
 
+const ratingLabel = computed(() => {
+  const labels: Record<number, string> = {
+    1: 'Péssimo',
+    2: 'Ruim',
+    3: 'Regular',
+    4: 'Bom',
+    5: 'Excelente'
+  }
+  return labels[rating.value] || ''
+})
+
 function resetForm() {
   rating.value = 5
   comment.value = ''
@@ -94,11 +105,7 @@ async function submitReview() {
               </button>
             </div>
             <p class="text-sm text-gray-500 mt-1">
-              {{ rating === 1 && 'Péssimo' }}
-              {{ rating === 2 && 'Ruim' }}
-              {{ rating === 3 && 'Regular' }}
-              {{ rating === 4 && 'Bom' }}
-              {{ rating === 5 && 'Excelente' }}
+              {{ ratingLabel }}
             </p>
           </div>
 
