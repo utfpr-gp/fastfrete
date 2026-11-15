@@ -84,10 +84,17 @@ await loadFreights()
     <main>
       <!-- Saudação -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">
-          👋 {{ getGreeting() }}, {{ user?.name || 'Fretista' }}!
-        </h1>
-        <p class="text-gray-600 mt-2">Confira as oportunidades de frete para o seu veículo hoje.</p>
+        <div class="flex justify-between items-start">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">
+              👋 {{ getGreeting() }}, {{ user?.name || 'Fretista' }}!
+            </h1>
+            <p class="text-gray-600 mt-2">Confira as oportunidades de frete para o seu veículo hoje.</p>
+          </div>
+          <a href="/carrier/applications" class="btn btn-outline btn-sm">
+            Minhas Candidaturas
+          </a>
+        </div>
       </div>
 
       <!-- Métricas -->
