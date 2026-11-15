@@ -23,6 +23,8 @@ export class FreightHttpRepository implements IFreightRepository {
       }
     }
 
+    if (filter.vehicleCategory) params.vehicleCategory = filter.vehicleCategory
+    if (filter.orderBy) params.orderBy = filter.orderBy
     if (filter.page) params.page = filter.page
     if (filter.limit) params.limit = filter.limit
 
@@ -31,6 +33,21 @@ export class FreightHttpRepository implements IFreightRepository {
 
   async findOne(id: string): Promise<HttpResult<Freight>> {
     return this.httpClient.get<Freight>(`/api/freights/${id}`)
+  }
+
+  async findAllOpen(filter: FreightsFilterDto): Promise<HttpResult<PaginatedResponse<Freight>>> {
+    const params: Record<string, string | number> = {}
+
+    if (filter.vehicleCategory) params.vehicleCategory = filter.vehicleCategory
+    if (filter.orderBy) params.orderBy = filter.orderBy
+    if (filter.page) params.page = filter.page
+    if (filter.limit) params.limit = filter.limit
+
+    return this.httpClient.get<PaginatedResponse<Freight>>('/api/carrier/freights', { params })
+  }
+
+  async findOneOpen(id: string): Promise<HttpResult<Freight>> {
+    return this.httpClient.get<Freight>(`/api/carrier/freights/${id}`)
   }
 
   async create(data: CreateFreightDto): Promise<HttpResult<Freight>> {

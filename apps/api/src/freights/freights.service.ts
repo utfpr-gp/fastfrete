@@ -50,11 +50,29 @@ export class FreightsService {
     clientId: string,
     filterDto: FreightsFilterDto,
   ): Promise<PaginatedResponseDto<FreightResponseDto>> {
-    const { page = 1, limit = 10, status, vehicleCategory } = filterDto;
+    const { page = 1, limit = 10, status, vehicleCategory, orderBy } = filterDto;
 
     const result = await this.freightsRepository.findAllByClient(
       clientId,
-      { status, vehicleCategory },
+      { status, vehicleCategory, orderBy },
+      { page, limit },
+    );
+
+    return PaginatedResponseDto.create({
+      data: FreightMapper.toResponseList(result.data),
+      total: result.total,
+      page,
+      limit,
+    });
+  }
+
+  async findAllOpen(
+    filterDto: FreightsFilterDto,
+  ): Promise<PaginatedResponseDto<FreightResponseDto>> {
+    const { page = 1, limit = 10, vehicleCategory, orderBy } = filterDto;
+
+    const result = await this.freightsRepository.findAllOpen(
+      { vehicleCategory, orderBy },
       { page, limit },
     );
 
@@ -71,6 +89,16 @@ export class FreightsService {
 
     if (!freight) {
       throw new NotFoundException(`Frete com ID ${id} não encontrado`);
+    }
+
+    return FreightMapper.toResponse(freight);
+  }
+
+  async findOneOpen(id: string): Promise<FreightResponseDto> {
+    const freight = await this.freightsRepository.findOpenById(id);
+
+    if (!freight) {
+      throw new NotFoundException(`Frete com ID ${id} não encontrado ou não está disponível`);
     }
 
     return FreightMapper.toResponse(freight);

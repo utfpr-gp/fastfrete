@@ -15,11 +15,23 @@ import {
   buildWhereClause,
   FilterMode,
 } from '../../common/pagination/index.js';
+import { FreightOrderBy } from '../dto/freights-filter.dto.js';
+import type { Prisma } from '../../../generated/prisma/client.js';
 
 const includeFreightRelations = {
   originCity: true,
   destinationCity: true,
+  photos: {
+    take: 1,
+    orderBy: { order: 'asc' },
+  },
 } as const;
+
+function getOrderBy(filters: FreightsFilters): Prisma.FreightOrderByWithRelationInput {
+  return {
+    createdAt: filters.orderBy === FreightOrderBy.OLDEST ? 'asc' : 'desc',
+  };
+}
 
 @Injectable()
 export class FreightsRepository implements IFreightsRepository {
@@ -72,7 +84,37 @@ export class FreightsRepository implements IFreightsRepository {
         skip,
         take,
         include: includeFreightRelations,
-        orderBy: { createdAt: 'desc' },
+        orderBy: getOrderBy(filters),
+      }),
+    ]);
+
+    return {
+      data: FreightMapper.toDomainList(prismaFreights),
+      total,
+    };
+  }
+
+  async findAllOpen(
+    filters: FreightsFilters,
+    pagination: PaginationOptions,
+  ): Promise<PaginatedResult<Freight>> {
+    const { skip, take } = buildPrismaPagination(pagination);
+
+    const where = {
+      status: FreightStatus.OPEN,
+      ...buildWhereClause([
+        { field: 'vehicleCategory', mode: FilterMode.EQUALS, value: filters.vehicleCategory },
+      ]),
+    };
+
+    const [total, prismaFreights] = await Promise.all([
+      this.prisma.freight.count({ where }),
+      this.prisma.freight.findMany({
+        where,
+        skip,
+        take,
+        include: includeFreightRelations,
+        orderBy: getOrderBy(filters),
       }),
     ]);
 
@@ -85,6 +127,16 @@ export class FreightsRepository implements IFreightsRepository {
   async findById(id: string): Promise<Freight | null> {
     const prismaFreight = await this.prisma.freight.findUnique({
       where: { id },
+      include: includeFreightRelations,
+    });
+
+    if (!prismaFreight) return null;
+    return FreightMapper.toDomain(prismaFreight);
+  }
+
+  async findOpenById(id: string): Promise<Freight | null> {
+    const prismaFreight = await this.prisma.freight.findFirst({
+      where: { id, status: FreightStatus.OPEN },
       include: includeFreightRelations,
     });
 
