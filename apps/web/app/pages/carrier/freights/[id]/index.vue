@@ -22,8 +22,10 @@ const vehicleService = createVehicleService()
 const freightId = route.params.id as string
 const freight = ref<Freight | null>(null)
 const vehicles = ref<Vehicle[]>([])
+const myApplication = ref<any>(null)
 const loading = ref(true)
 const submitting = ref(false)
+const completing = ref(false)
 
 async function loadFreight() {
   loading.value = true
@@ -31,12 +33,36 @@ async function loadFreight() {
 
   if (result.success) {
     freight.value = result.data
+    // Carregar candidatura do fretista neste frete
+    await loadMyApplication()
   } else {
     toast.error({ title: 'Erro ao carregar frete', message: result.error.message })
     router.push('/carrier')
   }
 
   loading.value = false
+}
+
+async function loadMyApplication() {
+  const result = await applicationService.findMyApplications({ freightId: freightId, limit: 1 })
+  if (result.success && result.data.data.length > 0) {
+    myApplication.value = result.data.data[0]
+  }
+}
+
+async function completeFreight() {
+  if (!myApplication.value) return
+
+  completing.value = true
+  const result = await applicationService.complete(myApplication.value.id)
+  completing.value = false
+
+  if (result.success) {
+    toast.success({ title: 'Frete concluído com sucesso!' })
+    await loadFreight()
+  } else {
+    toast.error({ title: 'Erro ao concluir frete', message: result.error.message })
+  }
 }
 
 async function loadVehicles() {
@@ -182,7 +208,52 @@ await loadVehicles()
 
         <!-- Coluna Lateral -->
         <div class="lg:col-span-1">
+          <!-- Candidatura Aceita - Botão Concluir -->
+          <div v-if="myApplication?.status === 'ACCEPTED'" class="bg-white rounded-xl p-6 shadow-sm space-y-4">
+            <div class="text-center">
+              <div class="text-4xl mb-2">🚚</div>
+              <h3 class="text-lg font-bold text-gray-900">Proposta Aceita!</h3>
+              <p class="text-sm text-gray-600 mt-1">Você foi escolhido para este frete.</p>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+              <span class="text-sm text-green-700 font-medium">Valor proposto:</span>
+              <div class="text-xl font-bold text-green-700">
+                R$ {{ parseFloat(myApplication.proposedPrice).toFixed(2).replace('.', ',') }}
+              </div>
+            </div>
+            <button
+              class="btn bg-amber-500 text-white border-none hover:bg-amber-600 w-full"
+              :disabled="completing"
+              @click="completeFreight"
+            >
+              <span v-if="completing" class="loading loading-spinner loading-sm"></span>
+              <span v-else>Concluir Frete</span>
+            </button>
+          </div>
+
+          <!-- Candidatura Pendente -->
+          <div v-else-if="myApplication?.status === 'PENDING'" class="bg-white rounded-xl p-6 shadow-sm text-center">
+            <div class="text-4xl mb-2">⏳</div>
+            <h3 class="text-lg font-bold text-gray-900">Proposta Enviada</h3>
+            <p class="text-sm text-gray-600 mt-1">Aguardando resposta do cliente.</p>
+            <div class="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <span class="text-sm text-yellow-700 font-medium">Status: Pendente</span>
+            </div>
+          </div>
+
+          <!-- Frete não aceita mais propostas -->
+          <div v-else-if="freight.status !== 'OPEN'" class="bg-white rounded-xl p-6 shadow-sm text-center">
+            <div class="text-4xl mb-2">🔒</div>
+            <h3 class="text-lg font-bold text-gray-900">Frete Indisponível</h3>
+            <p class="text-sm text-gray-600 mt-1">Este frete não está mais aceitando propostas.</p>
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <span class="text-sm text-gray-700 font-medium">Status: {{ freight.status }}</span>
+            </div>
+          </div>
+
+          <!-- Sem Candidatura e Frete OPEN - Formulário -->
           <ProposalForm
+            v-else
             :vehicles="getVehicleOptions()"
             :loading="submitting"
             @submit="handleSubmitProposal"

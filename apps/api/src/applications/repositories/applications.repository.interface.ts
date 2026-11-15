@@ -19,6 +19,9 @@ export interface CreateApplicationData {
 
 export interface UpdateApplicationData {
   proposedPrice?: string;
+  vehicleId?: string;
+  message?: string | null;
+  status?: ApplicationStatus;
 }
 
 export interface ApplicationsFilters {

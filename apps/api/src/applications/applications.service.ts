@@ -59,9 +59,14 @@ export class ApplicationsService {
         freighterId,
       );
 
-    if (existing) {
+    // Só bloqueia se a candidatura existente estiver ativa (PENDING ou ACCEPTED)
+    if (
+      existing &&
+      (existing.status === ApplicationStatus.PENDING ||
+        existing.status === ApplicationStatus.ACCEPTED)
+    ) {
       throw new ConflictException(
-        'Você já enviou uma proposta para este frete',
+        'Você já enviou uma proposta ativa para este frete',
       );
     }
 
@@ -77,6 +82,22 @@ export class ApplicationsService {
       );
     }
 
+    // Se existe candidatura anterior retirada ou rejeitada, reutiliza
+    if (
+      existing &&
+      (existing.status === ApplicationStatus.WITHDRAWN ||
+        existing.status === ApplicationStatus.REJECTED)
+    ) {
+      const updated = await this.applicationsRepository.update(existing.id, {
+        vehicleId: dto.vehicleId,
+        proposedPrice: dto.proposedValue.toString(),
+        message: dto.message ?? null,
+        status: ApplicationStatus.PENDING,
+      });
+      return ApplicationMapper.toResponse(updated);
+    }
+
+    // Cria nova candidatura
     const application = await this.applicationsRepository.create({
       freightId,
       freighterId,

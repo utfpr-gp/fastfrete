@@ -18,6 +18,8 @@ import { FreightResponseDto } from '../dto/freight-response.dto.js';
 import { AuthorizationGuard } from '../../authorization/guards/authorization.guard.js';
 import { Permissions } from '../../authorization/decorators/permissions.decorator.js';
 import { RoleTypes } from '../../authorization/decorators/role-types.decorator.js';
+import { CurrentUser } from '../../authorization/decorators/current-user.decorator.js';
+import type { CurrentUserData } from '../../authorization/decorators/current-user.decorator.js';
 import { CARRIER_PERMISSIONS } from '../../authorization/definitions/permissions.definition.js';
 import { RoleTypeEnum } from '../../authorization/definitions/role-types.definition.js';
 import { ApiAuthorization } from '../../common/swagger/api-authorization.decorator.js';
@@ -56,7 +58,7 @@ export class CarrierFreightsController {
   @ApiAuthorization({
     summary: 'Obter detalhes de um frete',
     description:
-      'Retorna os detalhes de um frete disponível para o fretista visualizar antes de se candidatar.',
+      'Retorna os detalhes de um frete. Fretes OPEN são acessíveis a qualquer fretista. Fretes não-OPEN só são acessíveis se o fretista tiver candidatura ativa.',
     roleTypes: [RoleTypeEnum.CARRIER],
     permissions: [CARRIER_PERMISSIONS.FREIGHTS_READ],
   })
@@ -68,7 +70,8 @@ export class CarrierFreightsController {
   @ApiResponse({ status: 404, description: 'Frete não encontrado ou não está disponível' })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: CurrentUserData,
   ): Promise<FreightResponseDto> {
-    return this.freightsService.findOneOpen(id);
+    return this.freightsService.findOneForCarrier(id, currentUser.id);
   }
 }
