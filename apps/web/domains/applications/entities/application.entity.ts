@@ -16,6 +16,7 @@ export interface Application {
   vehicleId: string
   vehicle: ApplicationVehicle | null
   proposedPrice: string
+  message?: string | null
   status: ApplicationStatus
   createdAt: string
   updatedAt: string
