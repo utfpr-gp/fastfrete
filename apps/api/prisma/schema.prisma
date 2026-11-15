@@ -207,6 +207,7 @@ model Application {
   freighterId   String            @map("freighter_id")
   vehicleId     String            @map("vehicle_id")
   proposedPrice Decimal           @map("proposed_price") @db.Decimal(12, 2)
+  message       String?
   status        ApplicationStatus @default(PENDING)
   createdAt     DateTime          @default(now()) @map("created_at")
   updatedAt     DateTime          @updatedAt @map("updated_at")

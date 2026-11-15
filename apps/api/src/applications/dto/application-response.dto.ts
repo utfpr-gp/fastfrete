@@ -43,6 +43,9 @@ export class ApplicationResponseDto {
   @ApiProperty({ example: '500.00' })
   proposedPrice!: string;
 
+  @ApiPropertyOptional({ example: 'Olá, tenho ajudante e o veículo está limpo.' })
+  message!: string | null;
+
   @ApiProperty({ enum: ApplicationStatus })
   status!: ApplicationStatus;
 

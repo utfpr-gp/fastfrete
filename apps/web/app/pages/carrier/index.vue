@@ -80,8 +80,8 @@ await loadFreights()
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <main class="max-w-7xl mx-auto">
+  <div class="min-h-screen">
+    <main>
       <!-- Saudação -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">

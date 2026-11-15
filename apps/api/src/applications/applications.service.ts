@@ -82,6 +82,7 @@ export class ApplicationsService {
       freighterId,
       vehicleId: dto.vehicleId,
       proposedPrice: dto.proposedValue.toString(),
+      message: dto.message,
     });
 
     return ApplicationMapper.toResponse(application);
