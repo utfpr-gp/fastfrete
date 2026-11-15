@@ -6,25 +6,40 @@ import {
 } from '@nestjs/common';
 import type { IFreightsRepository } from './repositories/freights.repository.interface.js';
 import { FREIGHTS_REPOSITORY } from './repositories/freights.repository.interface.js';
+import type { IApplicationsRepository } from '../applications/repositories/applications.repository.interface.js';
+import { APPLICATIONS_REPOSITORY } from '../applications/repositories/applications.repository.interface.js';
+import { ApplicationStatus } from '../applications/entities/application.entity.js';
 import { CreateFreightDto } from './dto/create-freight.dto.js';
 import { UpdateFreightDto } from './dto/update-freight.dto.js';
 import { FreightsFilterDto } from './dto/freights-filter.dto.js';
-import { Freight, FreightStatus, FreightDateMode } from './entities/freight.entity.js';
+import {
+  Freight,
+  FreightStatus,
+  FreightDateMode,
+} from './entities/freight.entity.js';
 import { FreightMapper } from './mappers/freight.mapper.js';
 import { FreightResponseDto } from './dto/freight-response.dto.js';
 import { PaginatedResponseDto } from '../common/pagination/index.js';
 
 const UPDATABLE_STATUSES: FreightStatus[] = [FreightStatus.OPEN];
-const CANCELLABLE_STATUSES: FreightStatus[] = [FreightStatus.OPEN, FreightStatus.NEGOTIATING];
+const CANCELLABLE_STATUSES: FreightStatus[] = [
+  FreightStatus.OPEN,
+  FreightStatus.NEGOTIATING,
+];
 
 @Injectable()
 export class FreightsService {
   constructor(
     @Inject(FREIGHTS_REPOSITORY)
     private readonly freightsRepository: IFreightsRepository,
+    @Inject(APPLICATIONS_REPOSITORY)
+    private readonly applicationsRepository: IApplicationsRepository,
   ) {}
 
-  async create(dto: CreateFreightDto, clientId: string): Promise<FreightResponseDto> {
+  async create(
+    dto: CreateFreightDto,
+    clientId: string,
+  ): Promise<FreightResponseDto> {
     const freight = await this.freightsRepository.create({
       clientId,
       title: dto.title,
@@ -50,7 +65,13 @@ export class FreightsService {
     clientId: string,
     filterDto: FreightsFilterDto,
   ): Promise<PaginatedResponseDto<FreightResponseDto>> {
-    const { page = 1, limit = 10, status, vehicleCategory, orderBy } = filterDto;
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      vehicleCategory,
+      orderBy,
+    } = filterDto;
 
     const result = await this.freightsRepository.findAllByClient(
       clientId,
@@ -84,8 +105,14 @@ export class FreightsService {
     });
   }
 
-  async findOneByClient(id: string, clientId: string): Promise<FreightResponseDto> {
-    const freight = await this.freightsRepository.findByIdAndClient(id, clientId);
+  async findOneByClient(
+    id: string,
+    clientId: string,
+  ): Promise<FreightResponseDto> {
+    const freight = await this.freightsRepository.findByIdAndClient(
+      id,
+      clientId,
+    );
 
     if (!freight) {
       throw new NotFoundException(`Frete com ID ${id} não encontrado`);
@@ -98,7 +125,43 @@ export class FreightsService {
     const freight = await this.freightsRepository.findOpenById(id);
 
     if (!freight) {
-      throw new NotFoundException(`Frete com ID ${id} não encontrado ou não está disponível`);
+      throw new NotFoundException(
+        `Frete com ID ${id} não encontrado ou não está disponível`,
+      );
+    }
+
+    return FreightMapper.toResponse(freight);
+  }
+
+  async findOneForCarrier(
+    id: string,
+    freighterId: string,
+  ): Promise<FreightResponseDto> {
+    // Primeiro tenta buscar como OPEN (qualquer carrier pode ver)
+    const openFreight = await this.freightsRepository.findOpenById(id);
+    if (openFreight) {
+      return FreightMapper.toResponse(openFreight);
+    }
+
+    // Se não é OPEN, verifica se o fretista tem candidatura no frete
+    const freight = await this.freightsRepository.findById(id);
+    if (!freight) {
+      throw new NotFoundException(`Frete com ID ${id} não encontrado`);
+    }
+
+    // Verifica se o fretista tem candidatura ativa (PENDING, ACCEPTED ou COMPLETED)
+    const application =
+      await this.applicationsRepository.findByFreightAndFreighter(
+        id,
+        freighterId,
+      );
+    if (
+      !application ||
+      (application.status !== ApplicationStatus.PENDING &&
+        application.status !== ApplicationStatus.ACCEPTED &&
+        application.status !== ApplicationStatus.COMPLETED)
+    ) {
+      throw new NotFoundException(`Frete com ID ${id} não está disponível`);
     }
 
     return FreightMapper.toResponse(freight);
@@ -130,7 +193,9 @@ export class FreightsService {
       destinationStreet: dto.destinationStreet,
       destinationNumber: dto.destinationNumber,
       dateMode: dto.dateMode ? FreightDateMode[dto.dateMode] : undefined,
-      exactDatetime: dto.exactDatetime ? new Date(dto.exactDatetime) : undefined,
+      exactDatetime: dto.exactDatetime
+        ? new Date(dto.exactDatetime)
+        : undefined,
       availabilityWindow: dto.availabilityWindow,
     });
 
@@ -154,8 +219,14 @@ export class FreightsService {
     return FreightMapper.toResponse(cancelled);
   }
 
-  private async getOwnedFreight(id: string, clientId: string): Promise<Freight> {
-    const freight = await this.freightsRepository.findByIdAndClient(id, clientId);
+  private async getOwnedFreight(
+    id: string,
+    clientId: string,
+  ): Promise<Freight> {
+    const freight = await this.freightsRepository.findByIdAndClient(
+      id,
+      clientId,
+    );
 
     if (!freight) {
       throw new NotFoundException(`Frete com ID ${id} não encontrado`);
