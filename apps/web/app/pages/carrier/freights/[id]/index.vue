@@ -51,6 +51,7 @@ async function loadVehicles() {
 
 function formatDateLabel(freight: Freight): string {
   if (freight.dateMode === 'IMMEDIATE') return 'O mais rápido possível'
+  if (freight.dateMode === 'FLEXIBLE') return freight.availabilityWindow || 'Janela flexível'
   if (!freight.exactDatetime) return 'Não informada'
 
   const date = new Date(freight.exactDatetime)
@@ -124,7 +125,7 @@ await loadVehicles()
       <span class="loading loading-spinner loading-lg text-amber-500"></span>
     </div>
 
-    <div v-else-if="freight" class="max-w-8xl">
+    <div v-else-if="freight">
       <!-- Header -->
       <div class="mb-8">
         <button
@@ -165,12 +166,12 @@ await loadVehicles()
           <FreightRoute
             :origin="{
               label: 'ORIGEM',
-              address: `${freight.originDistrict}, ${freight.originCity.name} - ${freight.originCity.state}`,
+              address: `${freight.originDistrict}, ${freight.originNumber}, ${freight.originCity.name} - ${freight.originCity.state}`,
               reference: `Próximo ao ${freight.originStreet}`
             }"
             :destination="{
               label: 'DESTINO',
-              address: `${freight.destinationDistrict}, ${freight.destinationCity.name} - ${freight.destinationCity.state}`,
+              address: `${freight.destinationDistrict}, ${freight.destinationNumber}, ${freight.destinationCity.name} - ${freight.destinationCity.state}`,
               reference: `Próximo ao ${freight.destinationStreet}`
             }"
           />
@@ -182,7 +183,6 @@ await loadVehicles()
         <!-- Coluna Lateral -->
         <div class="lg:col-span-1">
           <ProposalForm
-            :suggested-price="90"
             :vehicles="getVehicleOptions()"
             :loading="submitting"
             @submit="handleSubmitProposal"
