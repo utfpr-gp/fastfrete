@@ -17,6 +17,7 @@ const freights = ref<Record<string, Freight>>({})
 const loadingFreights = ref<Record<string, boolean>>({})
 const loading = ref(true)
 const withdrawing = ref<string | null>(null)
+const completing = ref<string | null>(null)
 
 const statusFilter = computed({
   get: () => (route.query.status as string) || null,
@@ -42,9 +43,8 @@ async function loadApplications() {
 
   if (result.success) {
     applications.value = result.data.data
-    // Load freight data for each application
     for (const app of applications.value) {
-      loadFreightForApplication(app.id, app.freightId)
+      loadFreightForApplication(app.id, app.freightId, app.status)
     }
   } else {
     toast.error({ title: 'Erro ao carregar candidaturas', message: result.error.message })
@@ -53,8 +53,12 @@ async function loadApplications() {
   loading.value = false
 }
 
-async function loadFreightForApplication(applicationId: string, freightId: string) {
+async function loadFreightForApplication(applicationId: string, freightId: string, status: string) {
   if (freights.value[freightId]) return // Already loaded
+
+  // Skip freight loading for WITHDRAWN/REJECTED — the carrier endpoint
+  // returns 404 for non-OPEN freights unless the application is active
+  if (status === 'WITHDRAWN' || status === 'REJECTED') return
 
   loadingFreights.value[applicationId] = true
   const result = await freightService.findOneOpen(freightId)
@@ -81,6 +85,7 @@ async function withdrawApplication(applicationId: string) {
 }
 
 async function completeApplication(applicationId: string) {
+  completing.value = applicationId
   const result = await applicationService.complete(applicationId)
 
   if (result.success) {
@@ -89,6 +94,8 @@ async function completeApplication(applicationId: string) {
   } else {
     toast.error({ title: 'Erro ao concluir frete', message: result.error.message })
   }
+
+  completing.value = null
 }
 
 const statusOptions = [
@@ -160,6 +167,8 @@ await loadApplications()
         :application="application"
         :freight="freights[application.freightId] || null"
         :loading="loadingFreights[application.id]"
+        :withdrawing="withdrawing === application.id"
+        :completing="completing === application.id"
         @withdraw="withdrawApplication"
         @complete="completeApplication"
       />
