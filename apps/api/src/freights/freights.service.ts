@@ -94,11 +94,11 @@ export class FreightsService {
     return FreightMapper.toResponse(freight);
   }
 
-  async findOne(id: string): Promise<FreightResponseDto> {
-    const freight = await this.freightsRepository.findById(id);
+  async findOneOpen(id: string): Promise<FreightResponseDto> {
+    const freight = await this.freightsRepository.findOpenById(id);
 
     if (!freight) {
-      throw new NotFoundException(`Frete com ID ${id} não encontrado`);
+      throw new NotFoundException(`Frete com ID ${id} não encontrado ou não está disponível`);
     }
 
     return FreightMapper.toResponse(freight);

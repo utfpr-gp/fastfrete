@@ -57,6 +57,7 @@ export interface IFreightsRepository {
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<Freight>>;
   findById(id: string): Promise<Freight | null>;
+  findOpenById(id: string): Promise<Freight | null>;
   findByIdAndClient(id: string, clientId: string): Promise<Freight | null>;
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;

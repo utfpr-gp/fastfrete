@@ -134,6 +134,16 @@ export class FreightsRepository implements IFreightsRepository {
     return FreightMapper.toDomain(prismaFreight);
   }
 
+  async findOpenById(id: string): Promise<Freight | null> {
+    const prismaFreight = await this.prisma.freight.findFirst({
+      where: { id, status: FreightStatus.OPEN },
+      include: includeFreightRelations,
+    });
+
+    if (!prismaFreight) return null;
+    return FreightMapper.toDomain(prismaFreight);
+  }
+
   async findByIdAndClient(id: string, clientId: string): Promise<Freight | null> {
     const prismaFreight = await this.prisma.freight.findFirst({
       where: { id, clientId },

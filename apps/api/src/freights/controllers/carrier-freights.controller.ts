@@ -65,10 +65,10 @@ export class CarrierFreightsController {
     description: 'Frete encontrado',
     type: FreightResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Frete não encontrado' })
+  @ApiResponse({ status: 404, description: 'Frete não encontrado ou não está disponível' })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<FreightResponseDto> {
-    return this.freightsService.findOne(id);
+    return this.freightsService.findOneOpen(id);
   }
 }
