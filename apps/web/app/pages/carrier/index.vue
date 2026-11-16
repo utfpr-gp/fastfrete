@@ -89,11 +89,12 @@ await loadFreights()
             <h1 class="text-3xl font-bold text-gray-900">
               👋 {{ getGreeting() }}, {{ user?.name || 'Fretista' }}!
             </h1>
-            <p class="text-gray-600 mt-2">Confira as oportunidades de frete para o seu veículo hoje.</p>
+            <p class="text-gray-600 mt-2">
+              Confira as oportunidades de frete para o seu veículo hoje.
+            </p>
           </div>
-          <a href="/carrier/applications" class="btn btn-outline btn-sm">
-            Minhas Candidaturas
-          </a>
+          <a href="/carrier/applications" class="btn btn-outline btn-sm"> Minhas Candidaturas </a>
+          <a href="/carrier/vehicles" class="btn btn-outline btn-sm"> Meus Veículos </a>
         </div>
       </div>
 
