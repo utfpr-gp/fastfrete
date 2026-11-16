@@ -28,7 +28,10 @@ async function loadFreight() {
 
   if (result.success) {
     if (result.data.status !== 'OPEN') {
-      toast.error({ title: 'Frete não pode ser editado', message: 'Somente fretes com status "Aguardando Propostas" podem ser editados.' })
+      toast.error({
+        title: 'Frete não pode ser editado',
+        message: 'Somente fretes com status "Aguardando Propostas" podem ser editados.'
+      })
       router.push(`/client/freights/${freightId}`)
       return
     }
@@ -156,7 +159,11 @@ await loadFreight()
         </div>
       </div>
 
-      <FormData ref="form" :initial-values="getInitialValues()" class="bg-white rounded-xl p-8 shadow-sm">
+      <FormData
+        ref="form"
+        :initial-values="getInitialValues()"
+        class="bg-white rounded-xl p-8 shadow-sm"
+      >
         <div v-show="currentStep === 1">
           <h2 class="text-2xl font-bold mb-6">Editar informações do frete</h2>
 
@@ -372,11 +379,15 @@ await loadFreight()
                 </div>
                 <div>
                   <span class="text-sm font-medium text-gray-600">Conteúdo:</span>
-                  <span class="text-sm text-gray-900 ml-2">{{ formComponent?.values.description }}</span>
+                  <span class="text-sm text-gray-900 ml-2">{{
+                    formComponent?.values.description
+                  }}</span>
                 </div>
                 <div>
                   <span class="text-sm font-medium text-gray-600">Tipo de Veículo:</span>
-                  <span class="text-sm text-gray-900 ml-2">{{ formComponent?.values.vehicleCategory }}</span>
+                  <span class="text-sm text-gray-900 ml-2">{{
+                    formComponent?.values.vehicleCategory
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -403,10 +414,19 @@ await loadFreight()
                 <div>
                   <span class="text-sm font-medium text-gray-600">Prazo de entrega:</span>
                   <span class="text-sm text-gray-900 ml-2">
-                    {{ formComponent?.values.dateMode === 'IMMEDIATE' ? 'O mais rápido possível' : 'Agendado' }}
+                    {{
+                      formComponent?.values.dateMode === 'IMMEDIATE'
+                        ? 'O mais rápido possível'
+                        : 'Agendado'
+                    }}
                   </span>
                 </div>
-                <div v-if="formComponent?.values.dateMode === 'SCHEDULED' && formComponent?.values.exactDatetime">
+                <div
+                  v-if="
+                    formComponent?.values.dateMode === 'SCHEDULED' &&
+                    formComponent?.values.exactDatetime
+                  "
+                >
                   <span class="text-sm font-medium text-gray-600">Data:</span>
                   <span class="text-sm text-gray-900 ml-2">
                     {{ new Date(formComponent?.values.exactDatetime).toLocaleDateString('pt-BR') }}

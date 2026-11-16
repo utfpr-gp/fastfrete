@@ -13,7 +13,12 @@ defineProps<Props>()
     <div class="flex items-center gap-4">
       <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
         <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
         </svg>
       </div>
 
@@ -27,8 +32,6 @@ defineProps<Props>()
       </div>
     </div>
 
-    <a href="#" class="text-amber-600 hover:text-amber-700 text-sm font-medium">
-      Ver Perfil
-    </a>
+    <a href="#" class="text-amber-600 hover:text-amber-700 text-sm font-medium"> Ver Perfil </a>
   </div>
 </template>

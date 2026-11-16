@@ -22,7 +22,10 @@ export class ReviewHttpRepository implements IReviewRepository {
     if (filter.page) params.page = filter.page
     if (filter.limit) params.limit = filter.limit
 
-    return this.httpClient.get<PaginatedResponse<Review>>(`/api/reviews/users/${filter.reviewedId}`, { params })
+    return this.httpClient.get<PaginatedResponse<Review>>(
+      `/api/reviews/users/${filter.reviewedId}`,
+      { params }
+    )
   }
 
   async findByFreight(freightId: string): Promise<HttpResult<Review[]>> {

@@ -14,7 +14,9 @@ const loading = ref(false)
 const activeTab = ref<'active' | 'history'>('active')
 
 const activeFreights = computed(() =>
-  freights.value.filter((f) => f.status === 'OPEN' || f.status === 'NEGOTIATING' || f.status === 'IN_PROGRESS')
+  freights.value.filter(
+    (f) => f.status === 'OPEN' || f.status === 'NEGOTIATING' || f.status === 'IN_PROGRESS'
+  )
 )
 
 const historyFreights = computed(() =>

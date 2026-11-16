@@ -25,7 +25,9 @@ export interface ApplicationsFilterDto {
 export interface IApplicationRepository {
   create(freightId: string, data: CreateApplicationDto): Promise<HttpResult<Application>>
   findByFreight(freightId: string): Promise<HttpResult<Application[]>>
-  findMyApplications(filter: ApplicationsFilterDto): Promise<HttpResult<PaginatedResponse<Application>>>
+  findMyApplications(
+    filter: ApplicationsFilterDto
+  ): Promise<HttpResult<PaginatedResponse<Application>>>
   findOne(id: string): Promise<HttpResult<Application>>
   update(id: string, data: UpdateApplicationDto): Promise<HttpResult<Application>>
   accept(id: string): Promise<HttpResult<Application>>

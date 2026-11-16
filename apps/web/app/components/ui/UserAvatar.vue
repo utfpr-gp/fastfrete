@@ -34,12 +34,7 @@ const iconSizeClasses = computed(() => {
     class="bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
     :class="sizeClasses"
   >
-    <img
-      v-if="imageUrl"
-      :src="imageUrl"
-      :alt="alt"
-      class="w-full h-full object-cover"
-    />
+    <img v-if="imageUrl" :src="imageUrl" :alt="alt" class="w-full h-full object-cover" />
     <svg
       v-else
       xmlns="http://www.w3.org/2000/svg"

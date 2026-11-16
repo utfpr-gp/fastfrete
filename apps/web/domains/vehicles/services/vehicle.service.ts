@@ -1,4 +1,8 @@
-import type { IVehicleRepository, PaginatedResponse, VehicleCategory } from '../repositories/vehicle.repository.interface'
+import type {
+  IVehicleRepository,
+  PaginatedResponse,
+  VehicleCategory
+} from '../repositories/vehicle.repository.interface'
 import type { Vehicle } from '../entities/vehicle.entity'
 import type { CreateVehicleDto } from '../dtos/create-vehicle.dto'
 import type { UpdateVehicleDto } from '../dtos/update-vehicle.dto'

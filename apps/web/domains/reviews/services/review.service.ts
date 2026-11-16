@@ -1,4 +1,7 @@
-import type { IReviewRepository, PaginatedResponse } from '../repositories/review.repository.interface'
+import type {
+  IReviewRepository,
+  PaginatedResponse
+} from '../repositories/review.repository.interface'
 import type { Review } from '../entities/review.entity'
 import type { CreateReviewDto } from '../dtos/create-review.dto'
 import type { ReviewsFilterDto } from '../dtos/reviews-filter.dto'

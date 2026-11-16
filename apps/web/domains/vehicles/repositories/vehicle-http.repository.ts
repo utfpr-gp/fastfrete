@@ -1,4 +1,8 @@
-import type { IVehicleRepository, PaginatedResponse, VehicleCategory } from './vehicle.repository.interface'
+import type {
+  IVehicleRepository,
+  PaginatedResponse,
+  VehicleCategory
+} from './vehicle.repository.interface'
 import type { Vehicle } from '../entities/vehicle.entity'
 import type { IHttpClient, HttpResult } from '~~/infra/http/http-client.interface'
 import type { CreateVehicleDto } from '../dtos/create-vehicle.dto'

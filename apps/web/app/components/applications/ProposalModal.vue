@@ -37,10 +37,7 @@ function formatDate(date: string) {
       <div class="p-6">
         <div class="flex justify-between items-start mb-6">
           <h2 class="text-xl font-bold">Detalhes da Proposta</h2>
-          <button
-            class="btn btn-ghost btn-sm btn-circle"
-            @click="emit('close')"
-          >
+          <button class="btn btn-ghost btn-sm btn-circle" @click="emit('close')">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -74,7 +71,8 @@ function formatDate(date: string) {
                 <span class="text-sm text-gray-600">12 avaliações</span>
               </div>
               <p class="text-sm text-gray-600">
-                Fretista experiente com avaliações positivas. Disponível para fretes na região de Guarapuava.
+                Fretista experiente com avaliações positivas. Disponível para fretes na região de
+                Guarapuava.
               </p>
             </div>
           </div>
@@ -85,19 +83,27 @@ function formatDate(date: string) {
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span class="text-gray-500">Categoria:</span>
-                <span class="ml-2 font-medium">{{ application.vehicle?.vehicleCategoryName || 'Não informado' }}</span>
+                <span class="ml-2 font-medium">{{
+                  application.vehicle?.vehicleCategoryName || 'Não informado'
+                }}</span>
               </div>
               <div>
                 <span class="text-gray-500">Modelo:</span>
-                <span class="ml-2 font-medium">{{ application.vehicle?.model || 'Não informado' }}</span>
+                <span class="ml-2 font-medium">{{
+                  application.vehicle?.model || 'Não informado'
+                }}</span>
               </div>
               <div>
                 <span class="text-gray-500">Placa:</span>
-                <span class="ml-2 font-medium">{{ application.vehicle?.plate || 'Não informado' }}</span>
+                <span class="ml-2 font-medium">{{
+                  application.vehicle?.plate || 'Não informado'
+                }}</span>
               </div>
               <div>
                 <span class="text-gray-500">Capacidade:</span>
-                <span class="ml-2 font-medium">{{ application.vehicle?.capacityKg || 'Não informado' }} kg</span>
+                <span class="ml-2 font-medium"
+                  >{{ application.vehicle?.capacityKg || 'Não informado' }} kg</span
+                >
               </div>
             </div>
           </div>
@@ -121,10 +127,7 @@ function formatDate(date: string) {
 
         <!-- Ações -->
         <div v-if="freightStatus === 'OPEN'" class="flex gap-3 mt-6 pt-6 border-t">
-          <button
-            class="btn btn-outline btn-error flex-1"
-            @click="emit('reject', application.id)"
-          >
+          <button class="btn btn-outline btn-error flex-1" @click="emit('reject', application.id)">
             Rejeitar Proposta
           </button>
           <button

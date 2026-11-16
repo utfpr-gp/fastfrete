@@ -56,9 +56,9 @@ async function submitReview() {
   } else {
     const toast = useToast()
     if (result.error.code === 409) {
-      toast.error({ 
-        title: 'Avaliação já enviada', 
-        message: 'Você já avaliou este frete.' 
+      toast.error({
+        title: 'Avaliação já enviada',
+        message: 'Você já avaliou este frete.'
       })
       emit('close')
     } else {
@@ -77,10 +77,7 @@ async function submitReview() {
       <div class="p-6">
         <div class="flex justify-between items-start mb-6">
           <h2 class="text-xl font-bold">{{ props.title }}</h2>
-          <button
-            class="btn btn-ghost btn-sm btn-circle"
-            @click="emit('close')"
-          >
+          <button class="btn btn-ghost btn-sm btn-circle" @click="emit('close')">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -135,11 +132,7 @@ async function submitReview() {
 
         <!-- Actions -->
         <div class="flex gap-3 mt-6 pt-6 border-t">
-          <button
-            class="btn btn-outline flex-1"
-            :disabled="submitting"
-            @click="emit('close')"
-          >
+          <button class="btn btn-outline flex-1" :disabled="submitting" @click="emit('close')">
             Cancelar
           </button>
           <button
