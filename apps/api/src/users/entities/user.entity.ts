@@ -22,6 +22,7 @@ export class User {
   readonly password: string;
   readonly phoneNumber: string;
   readonly status: UserStatus;
+  readonly suspensionReason?: string | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly roles: UserRole[];

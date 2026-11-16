@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { UserStatus } from '../entities/user.entity';
 
 export class CityResponseDto {
@@ -41,6 +41,12 @@ export class UserResponseDto {
 
   @ApiProperty({ enum: UserStatus })
   status: UserStatus;
+
+  @ApiPropertyOptional({
+    description: 'Motivo da suspensão (apenas presente quando status = SUSPENDED)',
+    example: 'Violação das regras da plataforma',
+  })
+  suspensionReason: string | null;
 
   @ApiProperty()
   createdAt: Date;

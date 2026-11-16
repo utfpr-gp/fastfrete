@@ -26,6 +26,8 @@ export interface UpdateUserData {
   email?: string;
   password?: string;
   phoneNumber?: string;
+  status?: UserStatus;
+  suspensionReason?: string | null;
 }
 
 /**

@@ -119,6 +119,12 @@ export class AuthenticationService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    if (user.status === 'SUSPENDED') {
+      throw new UnauthorizedException(
+        'Conta suspensa. Entre em contato com o suporte.',
+      );
+    }
+
     const isPasswordValid = await this.cryptoService.comparePassword(
       password,
       user.password,
