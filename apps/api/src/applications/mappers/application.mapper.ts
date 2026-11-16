@@ -69,8 +69,9 @@ export class ApplicationMapper {
       vehicleId: application.vehicleId,
       vehicle: application.vehicle,
       proposedPrice: application.proposedPrice,
-message: application.message ?? null,
+      message: application.message ?? null,
       status: application.status,
+      hasReviewed: application.hasReviewed ?? false,
       createdAt: application.createdAt,
       updatedAt: application.updatedAt,
     };

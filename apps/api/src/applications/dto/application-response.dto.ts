@@ -49,6 +49,9 @@ export class ApplicationResponseDto {
   @ApiProperty({ enum: ApplicationStatus })
   status!: ApplicationStatus;
 
+  @ApiPropertyOptional({ description: 'Indica se o fretista já avaliou este frete', default: false })
+  hasReviewed?: boolean;
+
   @ApiProperty()
   createdAt!: Date;
 

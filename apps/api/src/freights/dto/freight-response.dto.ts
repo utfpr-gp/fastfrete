@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FreightStatus, FreightDateMode } from '../entities/freight.entity.js';
 
 export class FreightCityDto {
@@ -66,6 +66,9 @@ export class FreightResponseDto {
 
   @ApiProperty({ nullable: true })
   selectedApplicationId!: string | null;
+
+  @ApiPropertyOptional({ description: 'Indica se o cliente já avaliou este frete', default: false })
+  hasReviewed?: boolean;
 
   @ApiProperty()
   createdAt!: Date;

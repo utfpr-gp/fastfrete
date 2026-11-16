@@ -9,6 +9,8 @@ import type { IApplicationsRepository } from './repositories/applications.reposi
 import { APPLICATIONS_REPOSITORY } from './repositories/applications.repository.interface.js';
 import type { IFreightsRepository } from '../freights/repositories/freights.repository.interface.js';
 import { FREIGHTS_REPOSITORY } from '../freights/repositories/freights.repository.interface.js';
+import type { IReviewsRepository } from '../reviews/repositories/reviews.repository.interface.js';
+import { REVIEWS_REPOSITORY } from '../reviews/repositories/reviews.repository.interface.js';
 import { ApplicationMapper } from './mappers/application.mapper.js';
 import {
   Application,
@@ -34,6 +36,8 @@ export class ApplicationsService {
     private readonly applicationsRepository: IApplicationsRepository,
     @Inject(FREIGHTS_REPOSITORY)
     private readonly freightsRepository: IFreightsRepository,
+    @Inject(REVIEWS_REPOSITORY)
+    private readonly reviewsRepository: IReviewsRepository,
   ) {}
 
   async create(
@@ -125,7 +129,21 @@ export class ApplicationsService {
     const applications =
       await this.applicationsRepository.findByFreight(freightId);
 
-    return ApplicationMapper.toResponseList(applications);
+    // Para cada candidatura, verificar se o cliente já avaliou aquele fretista
+    const responses = await Promise.all(
+      applications.map(async (app) => {
+        const response = ApplicationMapper.toResponse(app);
+        const review = await this.reviewsRepository.findByFreightAndReviewer(
+          freightId,
+          clientId,
+        );
+        // hasReviewed indica se o cliente já avaliou ESTE fretista neste frete
+        response.hasReviewed = review?.reviewedId === app.freighterId;
+        return response;
+      }),
+    );
+
+    return responses;
   }
 
   async findOne(id: string, userId: string): Promise<ApplicationResponseDto> {
@@ -160,8 +178,35 @@ export class ApplicationsService {
       { page, limit },
     );
 
+    // Buscar avaliações feitas pelo fretista para marcar hasReviewed
+    const reviewedFreightIds = new Set<string>();
+    const completedApplications = result.data.filter(
+      (a) => a.status === ApplicationStatus.COMPLETED,
+    );
+
+    if (completedApplications.length > 0) {
+      const freightIds = completedApplications.map((a) => a.freightId);
+      // Para cada frete concluído, verificar se o fretista já avaliou
+      for (const fid of freightIds) {
+        const review = await this.reviewsRepository.findByFreightAndReviewer(
+          fid,
+          freighterId,
+        );
+        if (review) {
+          reviewedFreightIds.add(fid);
+        }
+      }
+    }
+
+    // Mapear respostas com hasReviewed
+    const responses = result.data.map((app) => {
+      const response = ApplicationMapper.toResponse(app);
+      response.hasReviewed = reviewedFreightIds.has(app.freightId);
+      return response;
+    });
+
     return PaginatedResponseDto.create({
-      data: ApplicationMapper.toResponseList(result.data),
+      data: responses,
       total: result.total,
       page,
       limit,

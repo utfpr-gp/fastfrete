@@ -92,6 +92,7 @@ export class FreightMapper {
       updatedAt: freight.updatedAt,
       selectedApplicationId: freight.selectedApplicationId,
       coverPhoto: freight.coverPhoto,
+      hasReviewed: freight.hasReviewed ?? false,
     };
   }
 
