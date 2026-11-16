@@ -8,6 +8,13 @@ export interface FreightCity {
   state: string
 }
 
+export interface FreightClientSummary {
+  name: string
+  averageRating: number
+  totalReviews: number
+  completedFreights: number
+}
+
 export interface Freight {
   id: string
   clientId: string
@@ -28,6 +35,7 @@ export interface Freight {
   status: FreightStatus
   selectedApplicationId: string | null
   hasReviewed?: boolean
+  client?: FreightClientSummary
   createdAt: string
   updatedAt: string
   coverPhoto: string | null

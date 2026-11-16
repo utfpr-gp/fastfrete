@@ -12,6 +12,20 @@ export class FreightCityDto {
   state!: string;
 }
 
+export class FreightClientSummaryDto {
+  @ApiProperty({ example: 'Ana S.' })
+  name!: string;
+
+  @ApiProperty({ example: 4.8 })
+  averageRating!: number;
+
+  @ApiProperty({ example: 12 })
+  totalReviews!: number;
+
+  @ApiProperty({ example: 15 })
+  completedFreights!: number;
+}
+
 export class FreightResponseDto {
   @ApiProperty()
   id!: string;
@@ -69,6 +83,12 @@ export class FreightResponseDto {
 
   @ApiPropertyOptional({ description: 'Indica se o cliente já avaliou este frete', default: false })
   hasReviewed?: boolean;
+
+  @ApiPropertyOptional({
+    type: FreightClientSummaryDto,
+    description: 'Resumo público do cliente, retornado apenas na visão do fretista',
+  })
+  client?: FreightClientSummaryDto;
 
   @ApiProperty()
   createdAt!: Date;

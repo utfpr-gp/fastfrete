@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
+import { formatStreetAddress } from '~/support/address'
 
 interface Props {
   freight: Freight
@@ -74,7 +75,13 @@ function formatSchedule(freight: Freight) {
           <div class="text-xs">
             <div class="font-medium text-gray-700">Retirada</div>
             <div>
-              {{ freight.originStreet }}, {{ freight.originNumber }} - {{ freight.originDistrict }}
+              {{
+                formatStreetAddress(
+                  freight.originStreet,
+                  freight.originNumber,
+                  freight.originDistrict
+                )
+              }}
             </div>
             <div>{{ freight.originCity.name }} - {{ freight.originCity.state }}</div>
           </div>
@@ -86,8 +93,13 @@ function formatSchedule(freight: Freight) {
           <div class="text-xs">
             <div class="font-medium text-gray-700">Entrega</div>
             <div>
-              {{ freight.destinationStreet }}, {{ freight.destinationNumber }} -
-              {{ freight.destinationDistrict }}
+              {{
+                formatStreetAddress(
+                  freight.destinationStreet,
+                  freight.destinationNumber,
+                  freight.destinationDistrict
+                )
+              }}
             </div>
             <div>{{ freight.destinationCity.name }} - {{ freight.destinationCity.state }}</div>
           </div>

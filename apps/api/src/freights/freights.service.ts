@@ -117,7 +117,7 @@ export class FreightsService {
     );
 
     return PaginatedResponseDto.create({
-      data: FreightMapper.toResponseList(result.data),
+      data: FreightMapper.toCarrierResponseList(result.data),
       total: result.total,
       page,
       limit,
@@ -167,19 +167,19 @@ export class FreightsService {
     id: string,
     freighterId: string,
   ): Promise<FreightResponseDto> {
-    // Primeiro tenta buscar como OPEN (qualquer carrier pode ver)
     const openFreight = await this.freightsRepository.findOpenById(id);
     if (openFreight) {
-      return FreightMapper.toResponse(openFreight);
+      return this.withClientSummary(
+        FreightMapper.toCarrierResponse(openFreight),
+        openFreight.clientId,
+      );
     }
 
-    // Se não é OPEN, verifica se o fretista tem candidatura no frete
     const freight = await this.freightsRepository.findById(id);
     if (!freight) {
       throw new NotFoundException(`Frete com ID ${id} não encontrado`);
     }
 
-    // Verifica se o fretista tem candidatura ativa (PENDING, ACCEPTED ou COMPLETED)
     const application =
       await this.applicationsRepository.findByFreightAndFreighter(
         id,
@@ -194,7 +194,37 @@ export class FreightsService {
       throw new NotFoundException(`Frete com ID ${id} não está disponível`);
     }
 
-    return FreightMapper.toResponse(freight);
+    const revealFullAddress =
+      application.status === ApplicationStatus.ACCEPTED ||
+      application.status === ApplicationStatus.COMPLETED;
+
+    return this.withClientSummary(
+      FreightMapper.toCarrierResponse(freight, revealFullAddress),
+      freight.clientId,
+    );
+  }
+
+  private async withClientSummary(
+    response: FreightResponseDto,
+    clientId: string,
+  ): Promise<FreightResponseDto> {
+    const summary = await this.freightsRepository.getClientSummary(clientId);
+    if (summary) {
+      response.client = {
+        ...summary,
+        name: this.abbreviateName(summary.name),
+        averageRating: Math.round(summary.averageRating * 10) / 10,
+      };
+    }
+    return response;
+  }
+
+  private abbreviateName(fullName: string): string {
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length < 2) {
+      return parts[0];
+    }
+    return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
   }
 
   async update(

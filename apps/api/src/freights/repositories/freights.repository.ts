@@ -5,6 +5,7 @@ import {
   CreateFreightData,
   UpdateFreightData,
   FreightsFilters,
+  ClientSummary,
 } from './freights.repository.interface.js';
 import { Freight, FreightStatus } from '../entities/freight.entity.js';
 import { FreightMapper } from '../mappers/freight.mapper.js';
@@ -172,5 +173,33 @@ export class FreightsRepository implements IFreightsRepository {
     });
 
     return FreightMapper.toDomain(prismaFreight);
+  }
+
+  async getClientSummary(clientId: string): Promise<ClientSummary | null> {
+    const [user, reviews, completedFreights] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: clientId },
+        select: { name: true },
+      }),
+      this.prisma.review.aggregate({
+        where: { reviewedId: clientId },
+        _avg: { rating: true },
+        _count: { rating: true },
+      }),
+      this.prisma.freight.count({
+        where: { clientId, status: 'COMPLETED' },
+      }),
+    ]);
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      name: user.name,
+      averageRating: reviews._avg.rating ?? 0,
+      totalReviews: reviews._count.rating,
+      completedFreights,
+    };
   }
 }

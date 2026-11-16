@@ -9,6 +9,7 @@ import FreightInfoCards from '~/components/carrier/FreightInfoCards.vue'
 import FreightDescription from '~/components/carrier/FreightDescription.vue'
 import FreightRoute from '~/components/carrier/FreightRoute.vue'
 import ClientProfileCard from '~/components/carrier/ClientProfileCard.vue'
+import { formatCityAddress } from '~/support/address'
 import ProposalForm from '~/components/carrier/ProposalForm.vue'
 
 const route = useRoute()
@@ -192,18 +193,34 @@ await loadVehicles()
           <FreightRoute
             :origin="{
               label: 'ORIGEM',
-              address: `${freight.originDistrict}, ${freight.originNumber}, ${freight.originCity.name} - ${freight.originCity.state}`,
-              reference: `Próximo ao ${freight.originStreet}`
+              address: formatCityAddress(
+                freight.originStreet,
+                freight.originNumber,
+                freight.originDistrict,
+                freight.originCity.name,
+                freight.originCity.state
+              )
             }"
             :destination="{
               label: 'DESTINO',
-              address: `${freight.destinationDistrict}, ${freight.destinationNumber}, ${freight.destinationCity.name} - ${freight.destinationCity.state}`,
-              reference: `Próximo ao ${freight.destinationStreet}`
+              address: formatCityAddress(
+                freight.destinationStreet,
+                freight.destinationNumber,
+                freight.destinationDistrict,
+                freight.destinationCity.name,
+                freight.destinationCity.state
+              )
             }"
           />
 
           <!-- Perfil do Cliente -->
-          <ClientProfileCard name="Ana S." :rating="4.8" :completed-freights="15" />
+          <ClientProfileCard
+            v-if="freight.client"
+            :name="freight.client.name"
+            :rating="freight.client.averageRating"
+            :total-reviews="freight.client.totalReviews"
+            :completed-freights="freight.client.completedFreights"
+          />
         </div>
 
         <!-- Coluna Lateral -->
