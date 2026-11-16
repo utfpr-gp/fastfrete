@@ -26,7 +26,9 @@ async function bootstrap() {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('FastFrete API')
-    .setDescription('API de autenticação e fretes.')
+    .setDescription(
+      'API REST do FastFrete: autenticação, usuários, veículos, fretes, fotos, candidaturas, avaliações, catálogo de fretistas e administração de usuários.',
+    )
     .setVersion('1.0')
     .addBearerAuth(
       {
