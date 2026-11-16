@@ -6,6 +6,7 @@ import {
   CreateVehicleData,
   UpdateVehicleData,
   VehiclesFilters,
+  VehicleCategoryData,
 } from './vehicles.repository.interface.js';
 import { Vehicle } from '../entities/vehicle.entity.js';
 import { VehicleMapper } from '../mappers/vehicle.mapper.js';
@@ -144,5 +145,11 @@ export class VehiclesRepository implements IVehiclesRepository {
       data: VehicleMapper.toDomainList(prismaVehicles),
       total,
     };
+  }
+
+  async findAllCategories(): Promise<VehicleCategoryData[]> {
+    return this.prisma.vehicleCategory.findMany({
+      orderBy: { name: 'asc' },
+    });
   }
 }

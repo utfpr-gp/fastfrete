@@ -87,6 +87,24 @@ export class VehiclesController {
     return this.vehiclesService.findAllByUser(currentUser.id, filterDto);
   }
 
+  @Get('categories')
+  @Permissions(CARRIER_PERMISSIONS.VEHICLES_LIST)
+  @ApiAuthorization({
+    summary: 'Listar categorias de veículos',
+    description:
+      'Retorna a lista de categorias de veículos disponíveis para cadastro.',
+    roleTypes: [RoleTypeEnum.CARRIER],
+    permissions: [CARRIER_PERMISSIONS.VEHICLES_LIST],
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de categorias',
+    isArray: true,
+  })
+  async findAllCategories(): Promise<{ id: string; name: string }[]> {
+    return this.vehiclesService.findAllCategories();
+  }
+
   @Get(':id')
   @Permissions(CARRIER_PERMISSIONS.VEHICLES_READ)
   @ApiAuthorization({

@@ -3,6 +3,11 @@ import { PaginationOptions, PaginatedResult } from '../../common/pagination/inde
 
 export const VEHICLES_REPOSITORY = Symbol('VEHICLES_REPOSITORY');
 
+export interface VehicleCategoryData {
+  id: string;
+  name: string;
+}
+
 export interface CreateVehicleData {
   userId: string;
   vehicleCategoryId: string;
@@ -41,4 +46,5 @@ export interface IVehiclesRepository {
     freighterId: string,
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<Vehicle>>;
+  findAllCategories(): Promise<VehicleCategoryData[]>;
 }
