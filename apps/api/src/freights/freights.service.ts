@@ -8,6 +8,8 @@ import type { IFreightsRepository } from './repositories/freights.repository.int
 import { FREIGHTS_REPOSITORY } from './repositories/freights.repository.interface.js';
 import type { IApplicationsRepository } from '../applications/repositories/applications.repository.interface.js';
 import { APPLICATIONS_REPOSITORY } from '../applications/repositories/applications.repository.interface.js';
+import type { IReviewsRepository } from '../reviews/repositories/reviews.repository.interface.js';
+import { REVIEWS_REPOSITORY } from '../reviews/repositories/reviews.repository.interface.js';
 import { ApplicationStatus } from '../applications/entities/application.entity.js';
 import { CreateFreightDto } from './dto/create-freight.dto.js';
 import { UpdateFreightDto } from './dto/update-freight.dto.js';
@@ -34,6 +36,8 @@ export class FreightsService {
     private readonly freightsRepository: IFreightsRepository,
     @Inject(APPLICATIONS_REPOSITORY)
     private readonly applicationsRepository: IApplicationsRepository,
+    @Inject(REVIEWS_REPOSITORY)
+    private readonly reviewsRepository: IReviewsRepository,
   ) {}
 
   async create(
@@ -79,8 +83,23 @@ export class FreightsService {
       { page, limit },
     );
 
+    // Verificar avaliações para fretes concluídos
+    const responses = await Promise.all(
+      result.data.map(async (freight) => {
+        const response = FreightMapper.toResponse(freight);
+        if (freight.status === FreightStatus.COMPLETED) {
+          const review = await this.reviewsRepository.findByFreightAndReviewer(
+            freight.id,
+            clientId,
+          );
+          response.hasReviewed = !!review;
+        }
+        return response;
+      }),
+    );
+
     return PaginatedResponseDto.create({
-      data: FreightMapper.toResponseList(result.data),
+      data: responses,
       total: result.total,
       page,
       limit,
@@ -118,7 +137,18 @@ export class FreightsService {
       throw new NotFoundException(`Frete com ID ${id} não encontrado`);
     }
 
-    return FreightMapper.toResponse(freight);
+    const response = FreightMapper.toResponse(freight);
+    
+    // Verificar se o cliente já avaliou este frete
+    if (freight.status === FreightStatus.COMPLETED) {
+      const review = await this.reviewsRepository.findByFreightAndReviewer(
+        id,
+        clientId,
+      );
+      response.hasReviewed = !!review;
+    }
+
+    return response;
   }
 
   async findOneOpen(id: string): Promise<FreightResponseDto> {

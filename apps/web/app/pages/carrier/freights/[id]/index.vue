@@ -209,7 +209,10 @@ await loadVehicles()
         <!-- Coluna Lateral -->
         <div class="lg:col-span-1">
           <!-- Candidatura Aceita - Botão Concluir -->
-          <div v-if="myApplication?.status === 'ACCEPTED'" class="bg-white rounded-xl p-6 shadow-sm space-y-4">
+          <div
+            v-if="myApplication?.status === 'ACCEPTED'"
+            class="bg-white rounded-xl p-6 shadow-sm space-y-4"
+          >
             <div class="text-center">
               <div class="text-4xl mb-2">🚚</div>
               <h3 class="text-lg font-bold text-gray-900">Proposta Aceita!</h3>
@@ -232,7 +235,10 @@ await loadVehicles()
           </div>
 
           <!-- Candidatura Pendente -->
-          <div v-else-if="myApplication?.status === 'PENDING'" class="bg-white rounded-xl p-6 shadow-sm text-center">
+          <div
+            v-else-if="myApplication?.status === 'PENDING'"
+            class="bg-white rounded-xl p-6 shadow-sm text-center"
+          >
             <div class="text-4xl mb-2">⏳</div>
             <h3 class="text-lg font-bold text-gray-900">Proposta Enviada</h3>
             <p class="text-sm text-gray-600 mt-1">Aguardando resposta do cliente.</p>
@@ -242,7 +248,10 @@ await loadVehicles()
           </div>
 
           <!-- Frete não aceita mais propostas -->
-          <div v-else-if="freight.status !== 'OPEN'" class="bg-white rounded-xl p-6 shadow-sm text-center">
+          <div
+            v-else-if="freight.status !== 'OPEN'"
+            class="bg-white rounded-xl p-6 shadow-sm text-center"
+          >
             <div class="text-4xl mb-2">🔒</div>
             <h3 class="text-lg font-bold text-gray-900">Frete Indisponível</h3>
             <p class="text-sm text-gray-600 mt-1">Este frete não está mais aceitando propostas.</p>

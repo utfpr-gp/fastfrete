@@ -6,9 +6,10 @@ import { MeApplicationsController } from './controllers/me-applications.controll
 import { ApplicationsRepository } from './repositories/applications.repository.js';
 import { APPLICATIONS_REPOSITORY } from './repositories/applications.repository.interface.js';
 import { FreightsModule } from '../freights/freights.module.js';
+import { ReviewsModule } from '../reviews/reviews.module.js';
 
 @Module({
-  imports: [forwardRef(() => FreightsModule)],
+  imports: [forwardRef(() => FreightsModule), forwardRef(() => ReviewsModule)],
   controllers: [
     ApplicationsController,
     FreightApplicationsController,

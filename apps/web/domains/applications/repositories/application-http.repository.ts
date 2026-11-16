@@ -1,4 +1,8 @@
-import type { IApplicationRepository, PaginatedResponse, ApplicationsFilterDto } from './application.repository.interface'
+import type {
+  IApplicationRepository,
+  PaginatedResponse,
+  ApplicationsFilterDto
+} from './application.repository.interface'
 import type { Application } from '../entities/application.entity'
 import type { CreateApplicationDto } from '../dtos/create-application.dto'
 import type { UpdateApplicationDto } from '../dtos/update-application.dto'
@@ -19,7 +23,9 @@ export class ApplicationHttpRepository implements IApplicationRepository {
     return this.httpClient.get<Application[]>(`/api/freights/${freightId}/applications`)
   }
 
-  async findMyApplications(filter: ApplicationsFilterDto): Promise<HttpResult<PaginatedResponse<Application>>> {
+  async findMyApplications(
+    filter: ApplicationsFilterDto
+  ): Promise<HttpResult<PaginatedResponse<Application>>> {
     const params: Record<string, string | number> = {}
     if (filter.status) params.status = filter.status
     if (filter.freightId) params.freightId = filter.freightId

@@ -55,9 +55,7 @@ function formatSchedule(freight: Freight) {
 
       <!-- Badge -->
       <div class="absolute top-3 left-3">
-        <span class="badge bg-amber-500 text-white border-none text-xs">
-          DISPONÍVEL AGORA
-        </span>
+        <span class="badge bg-amber-500 text-white border-none text-xs"> DISPONÍVEL AGORA </span>
       </div>
     </div>
 
@@ -75,7 +73,9 @@ function formatSchedule(freight: Freight) {
           <span class="text-green-500 mt-0.5">📍</span>
           <div class="text-xs">
             <div class="font-medium text-gray-700">Retirada</div>
-            <div>{{ freight.originStreet }}, {{ freight.originNumber }} - {{ freight.originDistrict }}</div>
+            <div>
+              {{ freight.originStreet }}, {{ freight.originNumber }} - {{ freight.originDistrict }}
+            </div>
             <div>{{ freight.originCity.name }} - {{ freight.originCity.state }}</div>
           </div>
         </div>
@@ -85,7 +85,10 @@ function formatSchedule(freight: Freight) {
           <span class="text-red-500 mt-0.5">📍</span>
           <div class="text-xs">
             <div class="font-medium text-gray-700">Entrega</div>
-            <div>{{ freight.destinationStreet }}, {{ freight.destinationNumber }} - {{ freight.destinationDistrict }}</div>
+            <div>
+              {{ freight.destinationStreet }}, {{ freight.destinationNumber }} -
+              {{ freight.destinationDistrict }}
+            </div>
             <div>{{ freight.destinationCity.name }} - {{ freight.destinationCity.state }}</div>
           </div>
         </div>

@@ -29,21 +29,29 @@ function formatDate(date: string | null) {
     <div class="space-y-2 text-sm text-gray-600 mb-3">
       <div class="flex items-center gap-1 truncate">
         <span class="text-gray-400">📍</span>
-        <span>De: {{ freight.originStreet }}, {{ freight.originDistrict }} - {{ freight.originCity.name }}</span>
+        <span
+          >De: {{ freight.originStreet }}, {{ freight.originDistrict }} -
+          {{ freight.originCity.name }}</span
+        >
       </div>
       <div class="flex items-center gap-1 truncate">
         <span class="text-gray-400">📍</span>
-        <span>Para: {{ freight.destinationStreet }}, {{ freight.destinationDistrict }} - {{ freight.destinationCity.name }}</span>
+        <span
+          >Para: {{ freight.destinationStreet }}, {{ freight.destinationDistrict }} -
+          {{ freight.destinationCity.name }}</span
+        >
       </div>
       <div class="flex items-center gap-1 text-nowrap">
         <span class="text-gray-400">📅</span>
-        <span>{{ freight.dateMode === 'IMMEDIATE' ? 'O mais rápido possível' : formatDate(freight.exactDatetime) }}</span>
+        <span>{{
+          freight.dateMode === 'IMMEDIATE'
+            ? 'O mais rápido possível'
+            : formatDate(freight.exactDatetime)
+        }}</span>
       </div>
     </div>
 
-    <div class="text-sm text-gray-500 mb-4">
-      {{ proposalsCount ?? 0 }} Propostas Recebidas
-    </div>
+    <div class="text-sm text-gray-500 mb-4">{{ proposalsCount ?? 0 }} Propostas Recebidas</div>
 
     <a
       :href="`/client/freights/${freight.id}`"

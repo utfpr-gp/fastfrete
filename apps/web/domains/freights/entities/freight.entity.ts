@@ -27,6 +27,7 @@ export interface Freight {
   availabilityWindow: string | null
   status: FreightStatus
   selectedApplicationId: string | null
+  hasReviewed?: boolean
   createdAt: string
   updatedAt: string
   coverPhoto: string | null

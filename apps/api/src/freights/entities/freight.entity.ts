@@ -42,6 +42,7 @@ export class Freight {
   readonly originCity: FreightCity;
   readonly destinationCity: FreightCity;
   readonly coverPhoto: string | null;
+  readonly hasReviewed?: boolean;
 
   constructor(props: Freight) {
     Object.assign(this, props);

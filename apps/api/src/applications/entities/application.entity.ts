@@ -24,6 +24,7 @@ export class Application {
   readonly proposedPrice: string;
   readonly message?: string | null;
   readonly status: ApplicationStatus;
+  readonly hasReviewed?: boolean;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 

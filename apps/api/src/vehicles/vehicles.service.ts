@@ -108,6 +108,10 @@ export class VehiclesService {
     });
   }
 
+  async findAllCategories(): Promise<{ id: string; name: string }[]> {
+    return this.vehiclesRepository.findAllCategories();
+  }
+
   private async getOwnedVehicle(
     id: string,
     userId: string,

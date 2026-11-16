@@ -4,6 +4,7 @@ import { createFreightService } from '~~/domains/freights/composition'
 import type { Application } from '~~/domains/applications/entities/application.entity'
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import CarrierApplicationCard from '~/components/carrier/CarrierApplicationCard.vue'
+import ReviewModal from '~/components/reviews/ReviewModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,6 +19,8 @@ const loadingFreights = ref<Record<string, boolean>>({})
 const loading = ref(true)
 const withdrawing = ref<string | null>(null)
 const completing = ref<string | null>(null)
+const showReviewModal = ref(false)
+const reviewFreightId = ref<string | null>(null)
 
 const statusFilter = computed({
   get: () => (route.query.status as string) || null,
@@ -98,6 +101,22 @@ async function completeApplication(applicationId: string) {
   completing.value = null
 }
 
+function openReviewModal(freightId: string) {
+  reviewFreightId.value = freightId
+  showReviewModal.value = true
+}
+
+function closeReviewModal() {
+  showReviewModal.value = false
+  reviewFreightId.value = null
+}
+
+async function onReviewSubmitted() {
+  toast.success({ title: 'Avaliação enviada com sucesso!' })
+  closeReviewModal()
+  await loadApplications() // Recarrega para atualizar hasReviewed
+}
+
 const statusOptions = [
   { label: 'Todas', value: '' },
   { label: 'Pendentes', value: 'PENDING' },
@@ -171,7 +190,17 @@ await loadApplications()
         :completing="completing === application.id"
         @withdraw="withdrawApplication"
         @complete="completeApplication"
+        @review="openReviewModal"
       />
     </div>
+
+    <!-- Review Modal -->
+    <ReviewModal
+      v-if="showReviewModal && reviewFreightId"
+      :freight-id="reviewFreightId"
+      title="Avaliar Cliente"
+      @close="closeReviewModal"
+      @submitted="onReviewSubmitted"
+    />
   </div>
 </template>

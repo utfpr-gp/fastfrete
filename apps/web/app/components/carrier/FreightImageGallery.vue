@@ -31,15 +31,15 @@ function getStatusClass(status: string): string {
 
 <template>
   <div class="relative rounded-xl overflow-hidden bg-gray-100 h-80">
-    <img
-      v-if="imageUrl"
-      :src="imageUrl"
-      alt="Frete"
-      class="w-full h-full object-cover"
-    />
+    <img v-if="imageUrl" :src="imageUrl" alt="Frete" class="w-full h-full object-cover" />
     <div v-else class="w-full h-full flex items-center justify-center">
       <svg class="w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+        />
       </svg>
     </div>
 

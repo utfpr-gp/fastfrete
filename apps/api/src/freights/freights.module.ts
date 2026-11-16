@@ -5,9 +5,10 @@ import { CarrierFreightsController } from './controllers/carrier-freights.contro
 import { FreightsRepository } from './repositories/freights.repository.js';
 import { FREIGHTS_REPOSITORY } from './repositories/freights.repository.interface.js';
 import { ApplicationsModule } from '../applications/applications.module.js';
+import { ReviewsModule } from '../reviews/reviews.module.js';
 
 @Module({
-  imports: [forwardRef(() => ApplicationsModule)],
+  imports: [forwardRef(() => ApplicationsModule), forwardRef(() => ReviewsModule)],
   controllers: [FreightsController, CarrierFreightsController],
   providers: [
     FreightsService,

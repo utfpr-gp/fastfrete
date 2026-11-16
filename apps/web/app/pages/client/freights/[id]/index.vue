@@ -119,9 +119,10 @@ function closeReviewModal() {
   showReviewModal.value = false
 }
 
-function onReviewSubmitted() {
+async function onReviewSubmitted() {
   toast.success({ title: 'Avaliação enviada com sucesso!' })
   closeReviewModal()
+  await loadFreight() // Recarrega para atualizar hasReviewed
 }
 
 function viewProposalDetails(application: Application) {
@@ -293,12 +294,18 @@ onMounted(async () => {
           Concluir Frete
         </button>
         <button
-          v-if="freight.status === 'COMPLETED'"
+          v-if="freight.status === 'COMPLETED' && !freight.hasReviewed"
           class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
           @click="openReviewModal"
         >
           Avaliar Fretista
         </button>
+        <span
+          v-if="freight.status === 'COMPLETED' && freight.hasReviewed"
+          class="text-sm text-gray-500 italic flex-1 text-center"
+        >
+          ✓ Fretista Avaliado
+        </span>
       </div>
 
       <!-- Tabs -->

@@ -15,6 +15,7 @@ defineProps<Props>()
 const emit = defineEmits<{
   withdraw: [applicationId: string]
   complete: [applicationId: string]
+  review: [freightId: string]
 }>()
 
 function formatPrice(price: string | number) {
@@ -61,18 +62,25 @@ function getStatusBadge(status: string) {
     <div v-else-if="!freight" class="space-y-3">
       <div class="flex justify-between items-start">
         <h3 class="text-lg font-bold text-gray-900 truncate flex-1">Frete indisponível</h3>
-        <span class="badge text-xs flex-shrink-0 ml-2" :class="getStatusBadge(application.status).class">
+        <span
+          class="badge text-xs flex-shrink-0 ml-2"
+          :class="getStatusBadge(application.status).class"
+        >
           {{ getStatusBadge(application.status).label }}
         </span>
       </div>
       <div class="grid grid-cols-2 gap-3 text-sm">
         <div>
           <span class="text-gray-500">Valor proposto:</span>
-          <span class="ml-1 font-semibold text-gray-900">{{ formatPrice(application.proposedPrice) }}</span>
+          <span class="ml-1 font-semibold text-gray-900">{{
+            formatPrice(application.proposedPrice)
+          }}</span>
         </div>
         <div>
           <span class="text-gray-500">Veículo:</span>
-          <span class="ml-1 font-medium text-gray-900">{{ application.vehicle?.vehicleCategoryName || 'N/A' }}</span>
+          <span class="ml-1 font-medium text-gray-900">{{
+            application.vehicle?.vehicleCategoryName || 'N/A'
+          }}</span>
         </div>
         <div class="col-span-2">
           <span class="text-gray-500">Enviada em:</span>
@@ -170,6 +178,19 @@ function getStatusBadge(status: string) {
           <span v-if="completing" class="loading loading-spinner loading-xs"></span>
           <span v-else>Concluir Frete</span>
         </button>
+        <button
+          v-if="application.status === 'COMPLETED' && !application.hasReviewed"
+          class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600"
+          @click="emit('review', freight.id)"
+        >
+          Avaliar Cliente
+        </button>
+        <span
+          v-if="application.status === 'COMPLETED' && application.hasReviewed"
+          class="text-sm text-gray-500 italic"
+        >
+          ✓ Avaliado
+        </span>
       </div>
     </template>
   </div>
