@@ -42,6 +42,7 @@ export const CUSTOMER_PERMISSIONS = {
   APPLICATIONS_COMPLETE: 'applications:complete',
   REVIEWS_CREATE: 'reviews:create',
   REVIEWS_LIST: 'reviews:list',
+  CARRIERS_LIST: 'carriers:list',
 } as const;
 
 export const CARRIER_PERMISSIONS = {
