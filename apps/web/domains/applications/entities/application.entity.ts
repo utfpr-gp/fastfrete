@@ -18,6 +18,7 @@ export interface Application {
   proposedPrice: string
   message?: string | null
   status: ApplicationStatus
+  hasReviewed?: boolean
   createdAt: string
   updatedAt: string
 }

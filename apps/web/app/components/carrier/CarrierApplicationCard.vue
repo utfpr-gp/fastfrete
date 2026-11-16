@@ -15,6 +15,7 @@ defineProps<Props>()
 const emit = defineEmits<{
   withdraw: [applicationId: string]
   complete: [applicationId: string]
+  review: [freightId: string]
 }>()
 
 function formatPrice(price: string | number) {
@@ -170,6 +171,19 @@ function getStatusBadge(status: string) {
           <span v-if="completing" class="loading loading-spinner loading-xs"></span>
           <span v-else>Concluir Frete</span>
         </button>
+        <button
+          v-if="application.status === 'COMPLETED' && !application.hasReviewed"
+          class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600"
+          @click="emit('review', freight.id)"
+        >
+          Avaliar Cliente
+        </button>
+        <span
+          v-if="application.status === 'COMPLETED' && application.hasReviewed"
+          class="text-sm text-gray-500 italic"
+        >
+          ✓ Avaliado
+        </span>
       </div>
     </template>
   </div>

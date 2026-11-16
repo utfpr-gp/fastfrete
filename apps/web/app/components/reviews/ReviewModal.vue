@@ -4,9 +4,12 @@ import type { Review } from '~~/domains/reviews/entities/review.entity'
 
 interface Props {
   freightId: string
+  title?: string
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  title: 'Avaliar Fretista'
+})
 
 const emit = defineEmits<{
   close: []
@@ -36,8 +39,7 @@ function resetForm() {
 }
 
 async function submitReview() {
-  const props = getCurrentInstance()?.props as Props
-  if (!props?.freightId) return
+  if (!props.freightId) return
 
   submitting.value = true
 
@@ -53,7 +55,15 @@ async function submitReview() {
     emit('submitted', result.data)
   } else {
     const toast = useToast()
-    toast.error({ title: 'Erro ao enviar avaliação', message: result.error.message })
+    if (result.error.code === 409) {
+      toast.error({ 
+        title: 'Avaliação já enviada', 
+        message: 'Você já avaliou este frete.' 
+      })
+      emit('close')
+    } else {
+      toast.error({ title: 'Erro ao enviar avaliação', message: result.error.message })
+    }
   }
 }
 </script>
@@ -66,7 +76,7 @@ async function submitReview() {
     <div class="bg-white rounded-xl max-w-md w-full">
       <div class="p-6">
         <div class="flex justify-between items-start mb-6">
-          <h2 class="text-xl font-bold">Avaliar Fretista</h2>
+          <h2 class="text-xl font-bold">{{ props.title }}</h2>
           <button
             class="btn btn-ghost btn-sm btn-circle"
             @click="emit('close')"
