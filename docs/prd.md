@@ -52,26 +52,26 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [ ] Campos obrigatórios: nome, telefone, cidade, e-mail, senha, tipo de veículo e capacidade.
-* [ ] A cidade disponível deve ser apenas Guarapuava.
-* [ ] Possibilidade de cadastrar mais de um tipo de veículo.
+* [x] A cidade disponível deve ser apenas Guarapuava.
+* [x] Possibilidade de cadastrar mais de um tipo de veículo.
 * [ ] Permitir atualização dos dados do perfil após o cadastro.
 
 ### 🔴 US04 - Lista de Fretistas (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero visualizar fretistas filtrando por tipo de veículo, para encontrar rapidamente quem pode atender meu frete.
 
 **✅ Critérios de Aceitação:**
-* [ ] Exibir nome, veículo, capacidade e contatos.
-* [ ] Permitir filtro por categoria de veículo.
-* [ ] Abrir o WhatsApp ao clicar no botão dedicado.
+* [x] Exibir nome, veículo, capacidade e contatos.
+* [x] Permitir filtro por categoria de veículo.
+* [x] Abrir o WhatsApp ao clicar no botão dedicado.
 
 ### 🔴 US05 - Publicar Anúncio de Frete (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero criar um anúncio com descrição e fotos, para que o fretista compreenda o serviço.
 
 **✅ Critérios de Aceitação:**
-* [ ] Campos obrigatórios: título, descrição, categoria de veículo, endereço de origem e de destino.
+* [x] Campos obrigatórios: título, descrição, categoria de veículo, endereço de origem e de destino.
 * [ ] Escolha entre data/horário exato ou janela de disponibilidade (hoje, amanhã, esta semana, etc.).
-* [ ] Sistema deve permitir upload de até três fotos.
-* [ ] Após o cadastro, o frete deve aparecer em "Meus Fretes" com status (ativo, concluído ou cancelado) e contagem de candidatos.
+* [x] Sistema deve permitir upload de até três fotos.
+* [x] Após o cadastro, o frete deve aparecer em "Meus Fretes" com status (ativo, concluído ou cancelado) e contagem de candidatos.
 
 ### 🔴 US06 - Contato Direto (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero entrar em contato com o fretista por WhatsApp ou telefone, para negociar valores e detalhes.
@@ -85,21 +85,21 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [ ] Informar claramente que o pagamento ocorre fora da plataforma.
-* [ ] O valor negociado não deve ser registrado no sistema.
+* [x] O valor negociado não deve ser registrado no sistema.
 
 ### 🔴 US08 - Avaliação Simples (Must Have)
 **Ator:** Cliente ou Fretista | **História:** Como cliente ou fretista, quero avaliar a outra parte com nota e comentário, para orientar futuros usuários.
 
 **✅ Critérios de Aceitação:**
-* [ ] Solicitar avaliação após a finalização do frete.
-* [ ] Nota (1 a 5) obrigatória; comentário opcional.
+* [x] Solicitar avaliação após a finalização do frete.
+* [x] Nota (1 a 5) obrigatória; comentário opcional.
 * [ ] Exibir avaliações no perfil do usuário.
 
 ### 🔴 US09 - Dashboard do Administrador (Must Have)
 **Ator:** Administrador | **História:** Como administrador, quero gerenciar usuários, solicitações e avaliações, para manter a plataforma organizada.
 
 **✅ Critérios de Aceitação:**
-* [ ] Exibir lista de clientes e fretistas com filtros e campo de busca.
+* [x] Exibir lista de clientes e fretistas com filtros e campo de busca.
 * [ ] Exibir lista de solicitações de frete com status (ativo, concluído, cancelado).
 * [ ] Permitir visualizar as avaliações recebidas por cada usuário.
 
@@ -107,15 +107,15 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Administrador | **História:** Como administrador, quero suspender usuários que violem regras, para manter a confiabilidade da plataforma.
 
 **✅ Critérios de Aceitação:**
-* [ ] Permitir suspender e reativar contas.
+* [x] Permitir suspender e reativar contas.
 * [ ] Usuários suspensos não podem acessar o sistema.
-* [ ] Registrar o motivo da suspensão.
+* [x] Registrar o motivo da suspensão.
 
 ### 🔴 US11 - Meus Fretes (Cliente) (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero visualizar uma lista dos fretes que cadastrei, para acompanhar meus anúncios e acessar seus detalhes.
 
 **✅ Critérios de Aceitação:**
-* [ ] Listar fretes do cliente logado, organizados em "Ativos" e "Concluídos".
+* [x] Listar fretes do cliente logado, organizados em "Ativos" e "Concluídos".
 * [ ] Cada cartão deve exibir título, categoria de veículo, status e quantidade de candidatos.
 * [ ] Ao clicar, abrir detalhes com candidatos e sugestões de fretistas.
 
@@ -123,7 +123,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Fretista | **História:** Como fretista, quero visualizar fretes disponíveis cadastrados por clientes, para identificar oportunidades de serviço.
 
 **✅ Critérios de Aceitação:**
-* [ ] Exibir lista de fretes disponíveis em formato de cartões na tela inicial.
+* [x] Exibir lista de fretes disponíveis em formato de cartões na tela inicial.
 * [ ] Filtrar por cidade e categoria de veículo compatível com o fretista.
 * [ ] Exibir título, categoria de veículo e valor sugerido no cartão.
 
@@ -132,17 +132,17 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [ ] Exibir descrição completa, categoria, data, horário e fotos (se houver).
-* [ ] Endereço deve ser parcial (bairro e rua sem número) para proteção de dados.
-* [ ] Dados de contato do cliente não devem ser exibidos nesta etapa.
+* [x] Endereço deve ser parcial (bairro e rua sem número) para proteção de dados.
+* [x] Dados de contato do cliente não devem ser exibidos nesta etapa.
 
 ### 🔴 US14 - Candidatar-se a Frete (Must Have)
 **Ator:** Fretista | **História:** Como fretista, quero me candidatar a um frete informando o veículo e o valor proposto, para disputar a prestação do serviço.
 
 **✅ Critérios de Aceitação:**
-* [ ] Permitir candidatura a partir da lista ou página de detalhes.
-* [ ] Fretista deve selecionar um de seus veículos cadastrados e informar um valor proposto.
-* [ ] Candidatura deve ficar disponível para visualização do cliente na área do frete.
-* [ ] Contatos do cliente não devem ser liberados apenas pela candidatura.
+* [x] Permitir candidatura a partir da lista ou página de detalhes.
+* [x] Fretista deve selecionar um de seus veículos cadastrados e informar um valor proposto.
+* [x] Candidatura deve ficar disponível para visualização do cliente na área do frete.
+* [x] Contatos do cliente não devem ser liberados apenas pela candidatura.
 
 
 🛡️ 5. Regras de Negócio (Constraints)
