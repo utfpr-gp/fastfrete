@@ -43,7 +43,11 @@ export interface IApplicationsRepository {
     pagination: PaginationOptions,
   ): Promise<PaginatedResult<Application>>;
   update(id: string, data: UpdateApplicationData): Promise<Application>;
-  updateStatus(id: string, status: ApplicationStatus): Promise<Application>;
+  updateStatus(
+    id: string,
+    status: ApplicationStatus,
+    expectedStatus?: ApplicationStatus,
+  ): Promise<Application>;
   acceptApplication(applicationId: string): Promise<Application>;
   completeApplication(applicationId: string): Promise<Application>;
   validateVehicleOwnership(

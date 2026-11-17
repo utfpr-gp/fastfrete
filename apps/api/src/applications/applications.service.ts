@@ -248,6 +248,7 @@ export class ApplicationsService {
     const withdrawn = await this.applicationsRepository.updateStatus(
       id,
       ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.PENDING,
     );
 
     return ApplicationMapper.toResponse(withdrawn);
@@ -305,6 +306,7 @@ export class ApplicationsService {
     const rejected = await this.applicationsRepository.updateStatus(
       id,
       ApplicationStatus.REJECTED,
+      ApplicationStatus.PENDING,
     );
 
     return ApplicationMapper.toResponse(rejected);

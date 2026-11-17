@@ -13,6 +13,7 @@ import {
   FREIGHTS_REPOSITORY,
   IFreightsRepository,
 } from '../freights/repositories/freights.repository.interface';
+import { REVIEWS_REPOSITORY } from '../reviews/repositories/reviews.repository.interface';
 import { Application, ApplicationStatus } from './entities/application.entity';
 import {
   Freight,
@@ -98,6 +99,12 @@ describe('ApplicationsService', () => {
             findByIdAndClient: jest.fn(),
             update: jest.fn(),
             updateStatus: jest.fn(),
+          },
+        },
+        {
+          provide: REVIEWS_REPOSITORY,
+          useValue: {
+            findByFreightAndReviewer: jest.fn().mockResolvedValue(null),
           },
         },
       ],
@@ -270,6 +277,7 @@ describe('ApplicationsService', () => {
       expect(applicationsRepo.updateStatus).toHaveBeenCalledWith(
         'app-1',
         ApplicationStatus.WITHDRAWN,
+        ApplicationStatus.PENDING,
       );
     });
 
