@@ -54,7 +54,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 * [ ] Campos obrigatórios: nome, telefone, cidade, e-mail, senha, tipo de veículo e capacidade.
 * [x] A cidade disponível deve ser apenas Guarapuava.
 * [x] Possibilidade de cadastrar mais de um tipo de veículo.
-* [ ] Permitir atualização dos dados do perfil após o cadastro.
+* [x] Permitir atualização dos dados do perfil após o cadastro.
 
 ### 🔴 US04 - Lista de Fretistas (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero visualizar fretistas filtrando por tipo de veículo, para encontrar rapidamente quem pode atender meu frete.
@@ -77,14 +77,14 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Cliente | **História:** Como cliente, quero entrar em contato com o fretista por WhatsApp ou telefone, para negociar valores e detalhes.
 
 **✅ Critérios de Aceitação:**
-* [ ] Cada fretista deve exibir botões de "Ligar" e "WhatsApp".
-* [ ] Os aplicativos correspondentes devem abrir automaticamente ao clicar.
+* [x] Cada fretista deve exibir botões de "Ligar" e "WhatsApp".
+* [x] Os aplicativos correspondentes devem abrir automaticamente ao clicar.
 
 ### 🔴 US07 - Pagamento Direto em Mãos (Must Have)
 **Ator:** Cliente | **História:** Como cliente, quero pagar diretamente ao fretista, para evitar taxas e agilizar o processo.
 
 **✅ Critérios de Aceitação:**
-* [ ] Informar claramente que o pagamento ocorre fora da plataforma.
+* [x] Informar claramente que o pagamento ocorre fora da plataforma.
 * [x] O valor negociado não deve ser registrado no sistema.
 
 ### 🔴 US08 - Avaliação Simples (Must Have)
@@ -93,7 +93,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **✅ Critérios de Aceitação:**
 * [x] Solicitar avaliação após a finalização do frete.
 * [x] Nota (1 a 5) obrigatória; comentário opcional.
-* [ ] Exibir avaliações no perfil do usuário.
+* [x] Exibir avaliações no perfil do usuário.
 
 ### 🔴 US09 - Dashboard do Administrador (Must Have)
 **Ator:** Administrador | **História:** Como administrador, quero gerenciar usuários, solicitações e avaliações, para manter a plataforma organizada.
@@ -108,7 +108,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [x] Permitir suspender e reativar contas.
-* [ ] Usuários suspensos não podem acessar o sistema.
+* [x] Usuários suspensos não podem acessar o sistema.
 * [x] Registrar o motivo da suspensão.
 
 ### 🔴 US11 - Meus Fretes (Cliente) (Must Have)
@@ -116,7 +116,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [x] Listar fretes do cliente logado, organizados em "Ativos" e "Concluídos".
-* [ ] Cada cartão deve exibir título, categoria de veículo, status e quantidade de candidatos.
+* [x] Cada cartão deve exibir título, categoria de veículo, status e quantidade de candidatos.
 * [ ] Ao clicar, abrir detalhes com candidatos e sugestões de fretistas.
 
 ### 🔴 US12 - Lista de Fretes Disponíveis (Fretista) (Must Have)
