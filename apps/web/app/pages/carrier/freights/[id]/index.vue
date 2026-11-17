@@ -243,8 +243,26 @@ await loadVehicles()
                 R$ {{ parseFloat(myApplication.proposedPrice).toFixed(2).replace('.', ',') }}
               </div>
             </div>
+            <div v-if="freight?.client?.phoneNumber" class="space-y-2">
+              <p class="text-sm text-gray-600 text-center">
+                Combine os detalhes com <strong>{{ freight.client.name }}</strong>
+              </p>
+              <div class="grid grid-cols-2 gap-2">
+                <a
+                  :href="`tel:${freight.client.phoneNumber.replace(/\D/g, '')}`"
+                  class="btn btn-outline btn-sm"
+                  >Ligar</a
+                >
+                <a
+                  :href="`https://wa.me/${freight.client.phoneNumber.replace(/\D/g, '')}`"
+                  target="_blank"
+                  class="btn btn-sm bg-green-500 text-white border-none hover:bg-green-600"
+                  >WhatsApp</a
+                >
+              </div>
+            </div>
             <button
-              class="btn bg-amber-500 text-white border-none hover:bg-amber-600 w-full"
+              class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 w-full"
               :disabled="completing"
               @click="completeFreight"
             >

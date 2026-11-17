@@ -13,6 +13,7 @@ export interface FreightClientSummary {
   averageRating: number
   totalReviews: number
   completedFreights: number
+  phoneNumber?: string
 }
 
 export interface Freight {
