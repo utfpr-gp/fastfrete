@@ -59,6 +59,8 @@ export class FreightHttpRepository implements IFreightRepository {
     const params: Record<string, string | number> = {}
 
     if (filter.vehicleCategory) params.vehicleCategory = filter.vehicleCategory
+    if (filter.cityId) params.cityId = filter.cityId
+    if (filter.compatibleOnly) params.compatibleOnly = 'true'
     if (filter.orderBy) params.orderBy = filter.orderBy
     if (filter.page) params.page = filter.page
     if (filter.limit) params.limit = filter.limit
