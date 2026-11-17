@@ -63,6 +63,8 @@ cd ../..
 ```
 > ⚠️ Use sempre `prisma migrate dev`, nunca `prisma db push`, para manter o histórico de migrations consistente.
 
+> 🔁 O seed é idempotente. Rode `npm run prisma:seed` novamente sempre que novas permissões forem adicionadas (por exemplo, após atualizar a branch `develop`), pois elas são lidas do banco a cada requisição.
+
 O seed cria a cidade (Guarapuava), os perfis e permissões, as categorias de veículo, os veículos de demonstração e os usuários abaixo (somente para desenvolvimento):
 
 | Perfil | E-mail | Senha |
@@ -83,7 +85,15 @@ npm run dev:web
 
 A documentação interativa da API (Swagger) fica em **http://localhost:3000/api/docs**.
 
-## 🧪 5. Testes
+## 🧭 5. Áreas do Sistema
+| Perfil | Rota inicial | O que faz |
+| :--- | :--- | :--- |
+| Cliente | `/client` | Publica e gerencia fretes, recebe propostas, escolhe fretista, avalia e consulta o catálogo de fretistas (`/client/carrier-catalog`) |
+| Fretista | `/carrier` | Vê fretes abertos, candidata-se, gerencia veículos (`/carrier/vehicles`) e acompanha candidaturas |
+| Administrador | `/admin` | Painel de métricas, gestão de usuários (suspender/reativar) em `/admin/users` e listagem de fretes em `/admin/freights` |
+| Todos | `/profile` e `/users/:id` | Meu perfil (edição de dados) e perfil público com avaliações e comentários |
+
+## 🧪 6. Testes
 ```bash
 cd apps/api
 npm test
