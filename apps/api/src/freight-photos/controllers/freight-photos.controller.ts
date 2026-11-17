@@ -46,7 +46,9 @@ export class FreightPhotosController {
   @Post(':freightId/photos')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
-    FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024, files: 1 } }),
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+    }),
   )
   @RoleTypes(RoleTypeEnum.CUSTOMER)
   @Permissions(CUSTOMER_PERMISSIONS.FREIGHTS_UPDATE)

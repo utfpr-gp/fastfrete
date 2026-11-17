@@ -7,7 +7,9 @@ describe('ApplicationsRepository.acceptApplication', () => {
   function build(freightCount: number, applicationCount: number) {
     const tx = {
       application: {
-        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'app-1', freightId: 'freight-1' }),
+        findUniqueOrThrow: jest
+          .fn()
+          .mockResolvedValue({ id: 'app-1', freightId: 'freight-1' }),
         updateMany: jest.fn().mockResolvedValue({ count: applicationCount }),
       },
       freight: {
@@ -23,7 +25,9 @@ describe('ApplicationsRepository.acceptApplication', () => {
 
   it('recusa com 409 quando o frete já não está aberto', async () => {
     const { repo, tx } = build(0, 1);
-    await expect(repo.acceptApplication('app-1')).rejects.toThrow(ConflictException);
+    await expect(repo.acceptApplication('app-1')).rejects.toThrow(
+      ConflictException,
+    );
     expect(tx.freight.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({ where: { id: 'freight-1', status: 'OPEN' } }),
     );
@@ -32,7 +36,9 @@ describe('ApplicationsRepository.acceptApplication', () => {
 
   it('recusa com 409 quando a proposta já não está pendente', async () => {
     const { repo, tx } = build(1, 0);
-    await expect(repo.acceptApplication('app-1')).rejects.toThrow(ConflictException);
+    await expect(repo.acceptApplication('app-1')).rejects.toThrow(
+      ConflictException,
+    );
     expect(tx.application.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({ where: { id: 'app-1', status: 'PENDING' } }),
     );
@@ -58,13 +64,19 @@ describe('ApplicationsRepository.acceptApplication', () => {
   it('recusa com 409 a conclusão quando o frete não está em andamento', async () => {
     const tx = {
       application: {
-        findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'app-1', freightId: 'freight-1' }),
+        findUniqueOrThrow: jest
+          .fn()
+          .mockResolvedValue({ id: 'app-1', freightId: 'freight-1' }),
         updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       },
       freight: { updateMany: jest.fn().mockResolvedValue({ count: 0 }) },
     };
-    const prisma = { $transaction: jest.fn((fn: (t: typeof tx) => unknown) => fn(tx)) };
+    const prisma = {
+      $transaction: jest.fn((fn: (t: typeof tx) => unknown) => fn(tx)),
+    };
     const repo = new ApplicationsRepository(prisma as never);
-    await expect(repo.completeApplication('app-1')).rejects.toThrow(ConflictException);
+    await expect(repo.completeApplication('app-1')).rejects.toThrow(
+      ConflictException,
+    );
   });
 });

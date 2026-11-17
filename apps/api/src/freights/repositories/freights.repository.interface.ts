@@ -1,5 +1,12 @@
-import { Freight, FreightStatus, FreightDateMode } from '../entities/freight.entity.js';
-import { PaginationOptions, PaginatedResult } from '../../common/pagination/index.js';
+import {
+  Freight,
+  FreightStatus,
+  FreightDateMode,
+} from '../entities/freight.entity.js';
+import {
+  PaginationOptions,
+  PaginatedResult,
+} from '../../common/pagination/index.js';
 import { FreightOrderBy } from '../dto/freights-filter.dto.js';
 
 export const FREIGHTS_REPOSITORY = Symbol('FREIGHTS_REPOSITORY');

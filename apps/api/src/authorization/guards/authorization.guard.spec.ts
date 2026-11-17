@@ -47,7 +47,10 @@ describe('AuthorizationGuard', () => {
   it('recusa um fretista em rota exclusiva de cliente', () => {
     metadata[ROLE_TYPES_KEY] = ['CUSTOMER'];
     metadata[PERMISSIONS_KEY] = ['freights:create'];
-    const ctx = contextFor({ roleTypes: ['CARRIER'], permissions: ['freights:list'] });
+    const ctx = contextFor({
+      roleTypes: ['CARRIER'],
+      permissions: ['freights:list'],
+    });
     expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
   });
 
@@ -55,7 +58,10 @@ describe('AuthorizationGuard', () => {
     metadata[ROLE_TYPES_KEY] = ['CUSTOMER'];
     metadata[PERMISSIONS_KEY] = ['freights:list'];
     // fretista também tem freights:list, mas não é cliente
-    const ctx = contextFor({ roleTypes: ['CARRIER'], permissions: ['freights:list'] });
+    const ctx = contextFor({
+      roleTypes: ['CARRIER'],
+      permissions: ['freights:list'],
+    });
     expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
   });
 

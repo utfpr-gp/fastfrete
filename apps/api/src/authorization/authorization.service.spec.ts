@@ -25,7 +25,9 @@ describe('AuthorizationService', () => {
   }
 
   it('carrega papéis e permissões de um usuário ativo', async () => {
-    const data = await build(userWithRole('ACTIVE')).getUserAuthorizationData('user-1');
+    const data = await build(userWithRole('ACTIVE')).getUserAuthorizationData(
+      'user-1',
+    );
     expect(data?.roleTypes).toContain('CARRIER');
     expect(data?.permissions).toContain('freights:list');
   });
@@ -37,6 +39,8 @@ describe('AuthorizationService', () => {
   });
 
   it('retorna nulo quando o usuário não existe mais', async () => {
-    await expect(build(null).getUserAuthorizationData('user-1')).resolves.toBeNull();
+    await expect(
+      build(null).getUserAuthorizationData('user-1'),
+    ).resolves.toBeNull();
   });
 });

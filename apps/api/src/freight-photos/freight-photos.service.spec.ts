@@ -193,9 +193,7 @@ describe('FreightPhotosService', () => {
           id: 'client-1',
           roleTypes: ['CUSTOMER'],
         } as any),
-      ).rejects.toThrow(
-        NotFoundException,
-      );
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

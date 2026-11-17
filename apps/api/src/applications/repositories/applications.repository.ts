@@ -166,7 +166,9 @@ export class ApplicationsRepository implements IApplicationsRepository {
         data: { status },
       });
       if (updated.count !== 1) {
-        throw new ConflictException('A proposta mudou de status antes desta ação');
+        throw new ConflictException(
+          'A proposta mudou de status antes desta ação',
+        );
       }
     } else {
       await this.prisma.application.update({ where: { id }, data: { status } });
@@ -177,7 +179,6 @@ export class ApplicationsRepository implements IApplicationsRepository {
     });
     return ApplicationMapper.toDomain(prismaApplication);
   }
-
 
   async acceptApplication(applicationId: string): Promise<Application> {
     return this.prisma.$transaction(async (tx) => {
@@ -240,7 +241,9 @@ export class ApplicationsRepository implements IApplicationsRepository {
         data: { status: FreightStatus.COMPLETED },
       });
       if (applicationUpdate.count !== 1 || freightUpdate.count !== 1) {
-        throw new ConflictException('O frete ou a proposta mudaram de status antes da conclusão');
+        throw new ConflictException(
+          'O frete ou a proposta mudaram de status antes da conclusão',
+        );
       }
 
       const completed = await tx.application.findUniqueOrThrow({

@@ -61,9 +61,7 @@ export class FreightPhotosRepository implements IFreightPhotosRepository {
       });
 
       if (count >= maxPhotos) {
-        throw new Error(
-          `Limite de ${maxPhotos} fotos por frete atingido`,
-        );
+        throw new Error(`Limite de ${maxPhotos} fotos por frete atingido`);
       }
 
       const prismaPhoto = await tx.freightPhoto.create({

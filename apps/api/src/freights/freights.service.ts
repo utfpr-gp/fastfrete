@@ -129,9 +129,7 @@ export class FreightsService {
 
     if (compatibleOnly) {
       const compatible =
-        await this.freightsRepository.findActiveVehicleCategoryNames(
-          carrierId,
-        );
+        await this.freightsRepository.findActiveVehicleCategoryNames(carrierId);
       vehicleCategories = vehicleCategories
         ? vehicleCategories.filter((category) => compatible.includes(category))
         : compatible;
@@ -202,7 +200,7 @@ export class FreightsService {
     }
 
     const response = FreightMapper.toResponse(freight);
-    
+
     // Verificar se o cliente já avaliou este frete
     if (freight.status === FreightStatus.COMPLETED) {
       const review = await this.reviewsRepository.findByFreightAndReviewer(
@@ -337,7 +335,9 @@ export class FreightsService {
       await this.freightsRepository.cancelWithPendingApplications(id);
 
     if (!cancelled) {
-      throw new ConflictException('O frete mudou de status e não pode mais ser cancelado');
+      throw new ConflictException(
+        'O frete mudou de status e não pode mais ser cancelado',
+      );
     }
 
     return FreightMapper.toResponse(cancelled);

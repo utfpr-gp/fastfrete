@@ -24,7 +24,8 @@ export class FreightClientSummaryDto {
 
   @ApiPropertyOptional({
     example: '+5542999990000',
-    description: 'Telefone do cliente, enviado apenas ao fretista com proposta aceita',
+    description:
+      'Telefone do cliente, enviado apenas ao fretista com proposta aceita',
   })
   phoneNumber?: string;
 
@@ -90,12 +91,16 @@ export class FreightResponseDto {
   @ApiProperty({ nullable: true })
   selectedApplicationId!: string | null;
 
-  @ApiPropertyOptional({ description: 'Indica se o cliente já avaliou este frete', default: false })
+  @ApiPropertyOptional({
+    description: 'Indica se o cliente já avaliou este frete',
+    default: false,
+  })
   hasReviewed?: boolean;
 
   @ApiPropertyOptional({
     type: FreightClientSummaryDto,
-    description: 'Resumo público do cliente, retornado apenas na visão do fretista',
+    description:
+      'Resumo público do cliente, retornado apenas na visão do fretista',
   })
   client?: FreightClientSummaryDto;
 
@@ -105,6 +110,9 @@ export class FreightResponseDto {
   @ApiProperty()
   updatedAt!: Date;
 
-  @ApiProperty({ nullable: true, example: '/uploads/freight-photos/abc-123.jpg' })
+  @ApiProperty({
+    nullable: true,
+    example: '/uploads/freight-photos/abc-123.jpg',
+  })
   coverPhoto!: string | null;
 }

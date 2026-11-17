@@ -30,7 +30,9 @@ const includeFreightRelations = {
   },
 } as const;
 
-function getOrderBy(filters: FreightsFilters): Prisma.FreightOrderByWithRelationInput {
+function getOrderBy(
+  filters: FreightsFilters,
+): Prisma.FreightOrderByWithRelationInput {
   return {
     createdAt: filters.orderBy === FreightOrderBy.OLDEST ? 'asc' : 'desc',
   };
@@ -77,7 +79,11 @@ export class FreightsRepository implements IFreightsRepository {
       clientId,
       ...buildWhereClause([
         { field: 'status', mode: FilterMode.EQUALS, value: filters.status },
-        { field: 'vehicleCategory', mode: FilterMode.EQUALS, value: filters.vehicleCategory },
+        {
+          field: 'vehicleCategory',
+          mode: FilterMode.EQUALS,
+          value: filters.vehicleCategory,
+        },
       ]),
     };
 
@@ -155,7 +161,10 @@ export class FreightsRepository implements IFreightsRepository {
     return FreightMapper.toDomain(prismaFreight);
   }
 
-  async findByIdAndClient(id: string, clientId: string): Promise<Freight | null> {
+  async findByIdAndClient(
+    id: string,
+    clientId: string,
+  ): Promise<Freight | null> {
     const prismaFreight = await this.prisma.freight.findFirst({
       where: { id, clientId },
       include: includeFreightRelations,
