@@ -33,6 +33,8 @@ export class FileValidationPipe implements PipeTransform {
       );
     }
 
+    // Extensão definida pelo conteúdo real do arquivo, e não pelo nome enviado
+    value.detectedExtension = `.${fileType.ext === 'jpg' ? 'jpg' : fileType.ext}`;
     return value;
   }
 }
