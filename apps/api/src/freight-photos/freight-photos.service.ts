@@ -16,6 +16,7 @@ import { FreightPhotoResponseDto } from './dto/freight-photo-response.dto.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { CurrentUserData } from 'src/authorization/decorators/current-user.decorator.js';
+import { FreightStatus } from '../freights/entities/freight.entity.js';
 
 const MAX_PHOTOS_PER_FREIGHT = 3;
 const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'freight-photos');
@@ -110,9 +111,11 @@ export class FreightPhotosService {
     const isOwner = freight.clientId === currentUser.id;
     const isAdmin = currentUser.roleTypes.includes('ADMIN');
     const isCarrier = currentUser.roleTypes.includes('CARRIER');
+    const isOpenForCarriers =
+      isCarrier && freight.status === FreightStatus.OPEN;
 
     let hasApplication = false;
-    if (isCarrier) {
+    if (isCarrier && !isOpenForCarriers) {
       const applications =
         await this.applicationsRepository.findByFreight(freightId);
       hasApplication = applications.some(
@@ -120,7 +123,7 @@ export class FreightPhotosService {
       );
     }
 
-    if (!isOwner && !isAdmin && !hasApplication) {
+    if (!isOwner && !isAdmin && !isOpenForCarriers && !hasApplication) {
       throw new ForbiddenException(
         'Você não tem permissão para visualizar as fotos deste frete',
       );

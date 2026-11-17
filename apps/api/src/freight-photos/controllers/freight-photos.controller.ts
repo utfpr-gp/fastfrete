@@ -103,7 +103,7 @@ export class FreightPhotosController {
   @ApiAuthorization({
     summary: 'Listar fotos do frete',
     description:
-      'Retorna todas as fotos de um frete específico, ordenadas. Apenas o dono do frete, candidatas ao frete ou administradores podem visualizar.',
+      'Retorna todas as fotos de um frete específico, ordenadas. Podem visualizar o dono do frete, administradores, fretistas com candidatura no frete e qualquer fretista enquanto o frete está aberto.',
     roleTypes: [
       RoleTypeEnum.CUSTOMER,
       RoleTypeEnum.CARRIER,

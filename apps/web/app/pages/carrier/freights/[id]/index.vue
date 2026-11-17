@@ -12,6 +12,8 @@ import ClientProfileCard from '~/components/carrier/ClientProfileCard.vue'
 import { formatCityAddress } from '~/support/address'
 import { formatFreightSchedule } from '~/support/schedule'
 import ProposalForm from '~/components/carrier/ProposalForm.vue'
+import { createFreightPhotoService } from '~~/domains/freight-photos/composition'
+import type { FreightPhoto } from '~~/domains/freight-photos/entities/freight-photo.entity'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,12 +21,14 @@ const toast = useToast()
 
 const freightService = createFreightService()
 const applicationService = createApplicationService()
+const freightPhotoService = createFreightPhotoService()
 const vehicleService = createVehicleService()
 
 const freightId = route.params.id as string
 const freight = ref<Freight | null>(null)
 const vehicles = ref<Vehicle[]>([])
 const myApplication = ref<any>(null)
+const photos = ref<FreightPhoto[]>([])
 const loading = ref(true)
 const submitting = ref(false)
 const completing = ref(false)
@@ -36,13 +40,21 @@ async function loadFreight() {
   if (result.success) {
     freight.value = result.data
     // Carregar candidatura do fretista neste frete
-    await loadMyApplication()
+    await Promise.all([loadMyApplication(), loadPhotos()])
   } else {
     toast.error({ title: 'Erro ao carregar frete', message: result.error.message })
     router.push('/carrier')
   }
 
   loading.value = false
+}
+
+async function loadPhotos() {
+  const result = await freightPhotoService.findByFreight(freightId)
+
+  if (result.success) {
+    photos.value = result.data
+  }
 }
 
 async function loadMyApplication() {
@@ -102,10 +114,15 @@ function formatDateLabel(freight: Freight): string {
   })
 }
 
-function getPhotoUrl(): string | undefined {
-  if (!freight.value?.coverPhoto) return undefined
+function getPhotoUrls(): string[] {
   const config = useRuntimeConfig()
-  return config.public.baseURL + freight.value.coverPhoto
+  if (photos.value.length > 0) {
+    return [...photos.value]
+      .sort((a, b) => a.order - b.order)
+      .map((photo) => config.public.baseURL + photo.url)
+  }
+  if (freight.value?.coverPhoto) return [config.public.baseURL + freight.value.coverPhoto]
+  return []
 }
 
 function getVehicleOptions() {
@@ -179,7 +196,7 @@ await loadVehicles()
         <!-- Coluna Principal -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Imagem -->
-          <FreightImageGallery :image-url="getPhotoUrl()" :status="freight.status" />
+          <FreightImageGallery :images="getPhotoUrls()" :status="freight.status" />
 
           <!-- Cards de Informação -->
           <FreightInfoCards

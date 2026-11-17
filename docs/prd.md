@@ -131,7 +131,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Fretista | **História:** Como fretista, quero visualizar os detalhes de um frete, para avaliar se desejo me candidatar.
 
 **✅ Critérios de Aceitação:**
-* [ ] Exibir descrição completa, categoria, data, horário e fotos (se houver).
+* [x] Exibir descrição completa, categoria, data, horário e fotos (se houver).
 * [x] Endereço deve ser parcial (bairro e rua sem número) para proteção de dados.
 * [x] Dados de contato do cliente não devem ser exibidos nesta etapa.
 
