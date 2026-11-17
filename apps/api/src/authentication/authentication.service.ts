@@ -15,6 +15,7 @@ import { PasswordForgotDto } from './dto/password-forgot.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserMapper } from '../users/mappers/user.mapper';
+import { RoleTypeEnum } from '../authorization/definitions/role-types.definition';
 import type { JwtPayload } from './strategies/jwt.strategy';
 
 const includeUserRoles = {
@@ -45,7 +46,7 @@ export class AuthenticationService {
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
-    const { name, email, password, phoneNumber, roleType, cityId } =
+    const { name, email, password, phoneNumber, roleType, cityId, vehicle } =
       registerDto;
 
     const existingUser = await this.prisma.user.findUnique({
@@ -77,6 +78,41 @@ export class AuthenticationService {
       throw new BadRequestException(`City with id ${cityId} not found`);
     }
 
+    let vehicleData:
+      | {
+          vehicleCategoryId: string;
+          model: string;
+          capacityKg: number;
+          plate?: string;
+          color?: string;
+        }
+      | undefined;
+
+    if (roleType === RoleTypeEnum.CARRIER) {
+      if (!vehicle) {
+        throw new BadRequestException('O veículo é obrigatório para fretistas');
+      }
+
+      const category = await this.prisma.vehicleCategory.findUnique({
+        where: { name: vehicle.vehicleCategory },
+        select: { id: true },
+      });
+
+      if (!category) {
+        throw new BadRequestException(
+          `Categoria de veículo "${vehicle.vehicleCategory}" não encontrada`,
+        );
+      }
+
+      vehicleData = {
+        vehicleCategoryId: category.id,
+        model: vehicle.model,
+        capacityKg: vehicle.capacityKg,
+        plate: vehicle.plate,
+        color: vehicle.color,
+      };
+    }
+
     const hashedPassword = await this.cryptoService.hashPassword(password);
 
     const user = await this.prisma.user.create({
@@ -91,6 +127,7 @@ export class AuthenticationService {
             roleId: role.id,
           },
         },
+        ...(vehicleData ? { vehicles: { create: vehicleData } } : {}),
       },
       include: includeUserRoles,
     });
