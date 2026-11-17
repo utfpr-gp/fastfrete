@@ -13,9 +13,12 @@ export interface PublicProfileStats {
   completedFreights: number
 }
 
+export type PublicProfileStatus = 'ACTIVE' | 'SUSPENDED'
+
 export interface PublicProfile {
   id: string
   name: string
+  status: PublicProfileStatus
   roleType: PublicProfileRole
   cityName: string
   memberSince: string

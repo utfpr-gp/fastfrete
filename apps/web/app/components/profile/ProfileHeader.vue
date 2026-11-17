@@ -32,6 +32,9 @@ const memberSince = computed(() =>
         <div class="flex flex-wrap items-center gap-3 mb-1">
           <h1 class="text-2xl font-bold text-gray-900">{{ profile.name }}</h1>
           <span class="badge badge-outline">{{ roleLabel }}</span>
+          <span v-if="profile.status === 'SUSPENDED'" class="badge badge-error text-white"
+            >Suspenso</span
+          >
         </div>
         <p class="text-sm text-gray-500">{{ profile.cityName }} • Membro desde {{ memberSince }}</p>
       </div>
