@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SubmitButton from '~/components/forms/SubmitButton.vue'
+import PaymentNotice from '~/components/ui/PaymentNotice.vue'
 
 interface VehicleOption {
   id: string
@@ -75,6 +76,8 @@ function handleSubmit() {
           class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
         ></textarea>
       </div>
+
+      <PaymentNotice />
 
       <SubmitButton
         label="Enviar Proposta"

@@ -26,6 +26,10 @@ function formatDate(date: string | null) {
       <StatusBadge :status="freight.status" />
     </div>
 
+    <div class="mb-3">
+      <span class="badge badge-outline text-xs">{{ freight.vehicleCategory }}</span>
+    </div>
+
     <div class="space-y-2 text-sm text-gray-600 mb-3">
       <div class="flex items-center gap-1 truncate">
         <span class="text-gray-400">📍</span>

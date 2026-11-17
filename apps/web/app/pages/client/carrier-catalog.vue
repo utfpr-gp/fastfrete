@@ -2,6 +2,7 @@
 import { createCarrierService } from '~~/domains/carriers/composition'
 import type { Carrier } from '~~/domains/carriers/entities/carrier.entity'
 import CarrierCard from '~/components/carriers/CarrierCard.vue'
+import PaymentNotice from '~/components/ui/PaymentNotice.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -104,6 +105,8 @@ await loadCarriers()
         </select>
       </div>
     </div>
+
+    <PaymentNotice />
 
     <!-- Loading -->
     <div v-if="loading" class="bg-white rounded-xl p-12 flex justify-center">
