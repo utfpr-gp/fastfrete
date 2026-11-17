@@ -11,6 +11,7 @@ import PaymentNotice from '~/components/ui/PaymentNotice.vue'
 import ProposalModal from '~/components/applications/ProposalModal.vue'
 import ReviewModal from '~/components/reviews/ReviewModal.vue'
 import CarrierSuggestions from '~/components/carriers/CarrierSuggestions.vue'
+import { formatFreightSchedule } from '~/support/schedule'
 import { createUserService } from '~~/domains/users/composition'
 import type { PublicProfile } from '~~/domains/users/entities/public-profile.entity'
 
@@ -272,11 +273,9 @@ onMounted(async () => {
                 <span class="text-xs font-semibold text-gray-500 w-20">DATA</span>
                 <span class="text-sm text-gray-900">
                   {{
-                    freight.dateMode === 'IMMEDIATE'
-                      ? 'O mais rápido possível'
-                      : freight.exactDatetime
-                        ? formatDate(freight.exactDatetime)
-                        : 'Não informada'
+                    freight.dateMode === 'SCHEDULED' && freight.exactDatetime
+                      ? formatDate(freight.exactDatetime)
+                      : formatFreightSchedule(freight)
                   }}
                 </span>
               </div>

@@ -63,12 +63,32 @@ export class FreightsService {
       destinationStreet: dto.destinationStreet,
       destinationNumber: dto.destinationNumber,
       dateMode: FreightDateMode[dto.dateMode],
-      exactDatetime: dto.exactDatetime ? new Date(dto.exactDatetime) : null,
-      availabilityWindow: dto.availabilityWindow ?? null,
+      ...this.resolveSchedule(
+        dto.dateMode,
+        dto.exactDatetime,
+        dto.availabilityWindow,
+      ),
       suggestedPrice: dto.suggestedPrice ?? null,
     });
 
     return FreightMapper.toResponse(freight);
+  }
+
+  private resolveSchedule(
+    dateMode: FreightDateMode,
+    exactDatetime?: string,
+    availabilityWindow?: string,
+  ): { exactDatetime: Date | null; availabilityWindow: string | null } {
+    return {
+      exactDatetime:
+        dateMode === FreightDateMode.SCHEDULED && exactDatetime
+          ? new Date(exactDatetime)
+          : null,
+      availabilityWindow:
+        dateMode === FreightDateMode.FLEXIBLE
+          ? (availabilityWindow ?? null)
+          : null,
+    };
   }
 
   async findAllByClient(
@@ -312,10 +332,18 @@ export class FreightsService {
       destinationStreet: dto.destinationStreet,
       destinationNumber: dto.destinationNumber,
       dateMode: dto.dateMode ? FreightDateMode[dto.dateMode] : undefined,
-      exactDatetime: dto.exactDatetime
-        ? new Date(dto.exactDatetime)
-        : undefined,
-      availabilityWindow: dto.availabilityWindow,
+      ...(dto.dateMode
+        ? this.resolveSchedule(
+            dto.dateMode,
+            dto.exactDatetime,
+            dto.availabilityWindow,
+          )
+        : {
+            exactDatetime: dto.exactDatetime
+              ? new Date(dto.exactDatetime)
+              : undefined,
+            availabilityWindow: dto.availabilityWindow,
+          }),
       suggestedPrice: dto.suggestedPrice,
     });
 

@@ -10,6 +10,8 @@ import FormData from '~/components/forms/FormData.vue'
 import ImageCatcher from '~/components/freights/ImageCatcher.vue'
 import { vMaska } from 'maska/vue'
 import { formatCurrency, toSuggestedPrice } from '~/support/price'
+import { formatFreightSchedule, toIsoDatetime, validateSchedule } from '~/support/schedule'
+import ScheduleFields from '~/components/freights/ScheduleFields.vue'
 
 const toast = useToast()
 const router = useRouter()
@@ -26,6 +28,14 @@ async function nextStep() {
   const { valid, errors } = await formComponent.value.validate()
   const values = formComponent.value?.values
   const hasSomeErrorInTheCurrentStep = fieldsToValidate.some((val) => val in errors)
+
+  if (currentStep.value === 2) {
+    const scheduleError = validateSchedule(values ?? {})
+    if (scheduleError) {
+      toast.error({ title: scheduleError })
+      return
+    }
+  }
 
   if (!hasSomeErrorInTheCurrentStep) {
     if (currentStep.value < totalSteps) {
@@ -69,6 +79,8 @@ async function submitFreight(form) {
   try {
     const result = await freightService.create({
       ...form,
+      exactDatetime: toIsoDatetime(form.exactDatetime),
+      availabilityWindow: form.availabilityWindow || undefined,
       suggestedPrice: toSuggestedPrice(form.suggestedPrice)
     })
 
@@ -276,52 +288,16 @@ function cancel() {
           <div>
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Data e Hora do Frete</h3>
 
-            <div class="space-y-3">
-              <label
-                class="relative flex items-center p-4 border-2 rounded-xl cursor-pointer hover:border-amber-300 transition-all"
-                :class="{
-                  'border-amber-500 bg-amber-50': formComponent?.values?.dateMode === 'IMMEDIATE',
-                  ' border-gray-200': formComponent?.values?.dateMode === 'SCHEDULED'
-                }"
-              >
-                <input
-                  type="radio"
-                  name="timeMode"
-                  value="IMMEDIATE"
-                  class="mr-3"
-                  @input="formComponent.setFieldValue('dateMode', 'IMMEDIATE')"
-                />
-                <span class="text-sm font-medium">O mais rápido possível</span>
-              </label>
-
-              <label
-                class="relative flex items-center p-4 border-2 rounded-xl cursor-pointer hover:border-amber-300 transition-all"
-                :class="{
-                  'border-amber-500 bg-amber-50': formComponent?.values?.dateMode === 'SCHEDULED',
-                  ' border-gray-200': formComponent?.values?.dateMode === 'IMMEDIATE'
-                }"
-              >
-                <input
-                  type="radio"
-                  name="timeMode"
-                  value="SCHEDULED"
-                  class="mr-3 peer"
-                  @input="formComponent.setFieldValue('dateMode', 'SCHEDULED')"
-                />
-                <span class="text-sm font-medium">Agendar uma data</span>
-              </label>
-
-              <div v-if="formComponent?.values.dateMode === 'SCHEDULED'" class="mt-4 space-y-4">
-                <div class="flex flex-col space-y-1.5">
-                  <label class="text-sm font-medium text-gray-700">Data</label>
-                  <input
-                    type="datetime-local"
-                    class="input input-lg bg-white w-full rounded-xl text-sm focus:outline-0"
-                    @input="formComponent.setFieldValue('exactDatetime', $event.target?.value)"
-                  />
-                </div>
-              </div>
-            </div>
+            <ScheduleFields
+              :date-mode="formComponent?.values?.dateMode"
+              :exact-datetime="formComponent?.values?.exactDatetime"
+              :availability-window="formComponent?.values?.availabilityWindow"
+              @update:date-mode="formComponent.setFieldValue('dateMode', $event)"
+              @update:exact-datetime="formComponent.setFieldValue('exactDatetime', $event)"
+              @update:availability-window="
+                formComponent.setFieldValue('availabilityWindow', $event)
+              "
+            />
           </div>
         </div>
       </div>
@@ -387,23 +363,8 @@ function cancel() {
               </div>
               <div>
                 <span class="text-sm font-medium text-gray-600">Prazo de entrega:</span>
-                <span class="text-sm text-gray-900 ml-2">
-                  {{
-                    formComponent?.values.dateMode === 'IMMEDIATE'
-                      ? 'O mais rápido possível'
-                      : 'Agendado'
-                  }}
-                </span>
-              </div>
-              <div
-                v-if="
-                  formComponent?.values.dateMode === 'SCHEDULED' &&
-                  formComponent?.values.exactDatetime
-                "
-              >
-                <span class="text-sm font-medium text-gray-600">Data:</span>
                 <span class="text-sm text-gray-900 ml-2">{{
-                  new Date(formComponent?.values.exactDatetime).toLocaleDateString('pt-BR')
+                  formatFreightSchedule(formComponent?.values ?? {})
                 }}</span>
               </div>
             </div>

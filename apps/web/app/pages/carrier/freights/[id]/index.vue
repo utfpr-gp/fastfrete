@@ -10,6 +10,7 @@ import FreightDescription from '~/components/carrier/FreightDescription.vue'
 import FreightRoute from '~/components/carrier/FreightRoute.vue'
 import ClientProfileCard from '~/components/carrier/ClientProfileCard.vue'
 import { formatCityAddress } from '~/support/address'
+import { formatFreightSchedule } from '~/support/schedule'
 import ProposalForm from '~/components/carrier/ProposalForm.vue'
 
 const route = useRoute()
@@ -78,7 +79,7 @@ async function loadVehicles() {
 
 function formatDateLabel(freight: Freight): string {
   if (freight.dateMode === 'IMMEDIATE') return 'O mais rápido possível'
-  if (freight.dateMode === 'FLEXIBLE') return freight.availabilityWindow || 'Janela flexível'
+  if (freight.dateMode === 'FLEXIBLE') return formatFreightSchedule(freight)
   if (!freight.exactDatetime) return 'Não informada'
 
   const date = new Date(freight.exactDatetime)
