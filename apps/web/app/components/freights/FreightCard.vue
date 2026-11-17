@@ -2,6 +2,7 @@
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import StatusBadge from '~/components/ui/StatusBadge.vue'
 import { formatCurrency } from '~/support/price'
+import { formatFreightSchedule } from '~/support/schedule'
 
 interface Props {
   freight: Freight
@@ -9,15 +10,6 @@ interface Props {
 }
 
 defineProps<Props>()
-
-function formatDate(date: string | null) {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('pt-BR', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  })
-}
 </script>
 
 <template>
@@ -52,15 +44,14 @@ function formatDate(date: string | null) {
       </div>
       <div class="flex items-center gap-1 text-nowrap">
         <span class="text-gray-500">📅</span>
-        <span>{{
-          freight.dateMode === 'IMMEDIATE'
-            ? 'O mais rápido possível'
-            : formatDate(freight.exactDatetime)
-        }}</span>
+        <span>{{ formatFreightSchedule(freight) }}</span>
       </div>
     </div>
 
-    <div class="text-sm text-gray-500 mb-4">{{ proposalsCount ?? 0 }} {{ (proposalsCount ?? 0) === 1 ? 'proposta recebida' : 'propostas recebidas' }}</div>
+    <div class="text-sm text-gray-500 mb-4">
+      {{ proposalsCount ?? 0 }}
+      {{ (proposalsCount ?? 0) === 1 ? 'proposta recebida' : 'propostas recebidas' }}
+    </div>
 
     <a
       :href="`/client/freights/${freight.id}`"

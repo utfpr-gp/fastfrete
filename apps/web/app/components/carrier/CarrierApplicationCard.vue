@@ -2,6 +2,7 @@
 import type { Application } from '~~/domains/applications/entities/application.entity'
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import { formatStreetAddress } from '~/support/address'
+import { formatFreightSchedule } from '~/support/schedule'
 
 interface Props {
   application: Application
@@ -27,15 +28,6 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString('pt-BR', {
     day: 'numeric',
     month: 'short',
-    year: 'numeric'
-  })
-}
-
-function formatDateTime(date: string | null) {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('pt-BR', {
-    day: 'numeric',
-    month: 'long',
     year: 'numeric'
   })
 }
@@ -135,13 +127,7 @@ function getStatusBadge(status: string) {
         <div class="flex items-start gap-2">
           <span class="text-xs font-semibold text-gray-500 w-16 shrink-0">DATA</span>
           <span class="text-sm text-gray-900">
-            {{
-              freight.dateMode === 'IMMEDIATE'
-                ? 'O mais rápido possível'
-                : freight.dateMode === 'FLEXIBLE'
-                  ? freight.availabilityWindow || 'Janela flexível'
-                  : formatDateTime(freight.exactDatetime)
-            }}
+            {{ formatFreightSchedule(freight) }}
           </span>
         </div>
       </div>

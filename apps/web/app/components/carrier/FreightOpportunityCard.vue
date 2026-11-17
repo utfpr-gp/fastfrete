@@ -2,6 +2,7 @@
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import { formatStreetAddress } from '~/support/address'
 import { formatCurrency } from '~/support/price'
+import { formatFreightSchedule } from '~/support/schedule'
 
 interface Props {
   freight: Freight
@@ -11,16 +12,6 @@ defineProps<Props>()
 
 const config = useRuntimeConfig()
 
-function formatDate(date: string | null) {
-  if (!date) return 'Data não informada'
-  return new Date(date).toLocaleDateString('pt-BR', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
 function formatCreatedAt(date: string) {
   return new Date(date).toLocaleDateString('pt-BR', {
     day: 'numeric',
@@ -28,16 +19,6 @@ function formatCreatedAt(date: string) {
     hour: '2-digit',
     minute: '2-digit'
   })
-}
-
-function formatSchedule(freight: Freight) {
-  if (freight.dateMode === 'IMMEDIATE') {
-    return 'O mais rápido possível'
-  }
-  if (freight.dateMode === 'FLEXIBLE') {
-    return freight.availabilityWindow || 'Janela flexível'
-  }
-  return formatDate(freight.exactDatetime)
 }
 </script>
 
@@ -109,7 +90,7 @@ function formatSchedule(freight: Freight) {
         <!-- Agendamento -->
         <div class="flex items-center gap-2">
           <span>📅</span>
-          <span>{{ formatSchedule(freight) }}</span>
+          <span>{{ formatFreightSchedule(freight) }}</span>
         </div>
 
         <!-- Veículo -->
