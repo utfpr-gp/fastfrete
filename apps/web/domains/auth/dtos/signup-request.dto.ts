@@ -1,3 +1,9 @@
+export interface SignupVehicleDTO {
+  vehicleCategory: string
+  model: string
+  capacityKg: number
+}
+
 export interface SignupRequestDTO {
   name: string
   email: string
@@ -5,4 +11,5 @@ export interface SignupRequestDTO {
   phoneNumber: string
   roleType: 'CUSTOMER' | 'CARRIER'
   cityId: string
+  vehicle?: SignupVehicleDTO
 }

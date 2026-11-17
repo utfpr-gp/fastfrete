@@ -7,6 +7,7 @@ import { createAuthService } from '~~/domains/auth/composition'
 import { vMaska } from 'maska/vue'
 import CustomSelect from '~/components/forms/CustomSelect.vue'
 import type { SignupRequestDTO } from '~~/domains/auth/dtos/signup-request.dto'
+import { VEHICLE_CATEGORIES } from '~/support/vehicle-categories'
 
 definePageMeta({
   layout: 'auth'
@@ -22,6 +23,14 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const submitDisabled = ref(false)
 const requestIsPending = ref(false)
+const formComponent = useTemplateRef('form')
+
+const isCarrier = computed(() => formComponent.value?.values?.roleType === 'CARRIER')
+
+const vehicleCategoryOptions = VEHICLE_CATEGORIES.map((category) => ({
+  label: category,
+  value: category
+}))
 
 function updateIsValid(isValid: boolean) {
   submitDisabled.value = !isValid
@@ -32,15 +41,25 @@ function formatPhoneNumber(phoneNumber: string) {
 }
 
 async function handleFormSubmit(form: formType) {
-  const { confirmPassword, ...userForm } = form
+  const { confirmPassword, vehicle, ...userForm } = form
   userForm.phoneNumber = formatPhoneNumber(userForm.phoneNumber)
+  const payload: SignupRequestDTO = { ...userForm }
+
+  if (userForm.roleType === 'CARRIER' && vehicle) {
+    payload.vehicle = {
+      vehicleCategory: vehicle.vehicleCategory,
+      model: vehicle.model,
+      capacityKg: Number(vehicle.capacityKg)
+    }
+  }
+
   requestIsPending.value = true
-  const result = await authService.signup(userForm)
+  const result = await authService.signup(payload)
 
   if (result.success) {
     toast.success({ title: 'Conta criada com sucesso!' })
   } else {
-    toast.error({ title: 'Erro ao criar conta!' })
+    toast.error({ title: 'Erro ao criar conta!', message: result.error.message })
   }
   requestIsPending.value = false
 }
@@ -55,6 +74,7 @@ async function handleFormSubmit(form: formType) {
     </p>
 
     <FormData
+      ref="form"
       class="flex flex-col gap-2"
       @submit="handleFormSubmit($event.controlledValues)"
       @is-valid="updateIsValid"
@@ -180,6 +200,43 @@ async function handleFormSubmit(form: formType) {
           { label: 'Fretista', value: 'CARRIER' }
         ]"
       ></InputRadio>
+
+      <div v-if="isCarrier" class="flex flex-col gap-2 border-t border-gray-200 pt-4 mt-2">
+        <h2 class="text-sm font-semibold text-gray-700">Seu veículo</h2>
+
+        <CustomSelect
+          id="vehicleCategory"
+          label="Tipo de veículo"
+          name="vehicle.vehicleCategory"
+          required
+          rules="required"
+          placeholder="Selecione o tipo de veículo"
+          :options="vehicleCategoryOptions"
+        ></CustomSelect>
+
+        <CustomInput
+          id="vehicleModel"
+          label="Modelo do veículo"
+          type="text"
+          name="vehicle.model"
+          required
+          rules="required|max:100"
+          placeholder="Ex: Fiat Fiorino 2020"
+          class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
+        />
+
+        <CustomInput
+          id="capacityKg"
+          label="Capacidade de carga (kg)"
+          type="number"
+          min="1"
+          name="vehicle.capacityKg"
+          required
+          rules="required|min_value:1"
+          placeholder="Ex: 500"
+          class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
+        />
+      </div>
 
       <SubmitButton label="Criar" :loading="requestIsPending" :disabled="submitDisabled" />
 
