@@ -7,8 +7,11 @@ import type { Application } from '~~/domains/applications/entities/application.e
 import type { FreightPhoto } from '~~/domains/freight-photos/entities/freight-photo.entity'
 import StatusBadge from '~/components/ui/StatusBadge.vue'
 import ApplicationCard from '~/components/applications/ApplicationCard.vue'
+import PaymentNotice from '~/components/ui/PaymentNotice.vue'
 import ProposalModal from '~/components/applications/ProposalModal.vue'
 import ReviewModal from '~/components/reviews/ReviewModal.vue'
+import { createUserService } from '~~/domains/users/composition'
+import type { PublicProfile } from '~~/domains/users/entities/public-profile.entity'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,6 +19,7 @@ const toast = useToast()
 
 const freightService = createFreightService()
 const applicationService = createApplicationService()
+const userService = createUserService()
 const freightPhotoService = createFreightPhotoService()
 
 const config = useRuntimeConfig()
@@ -25,6 +29,7 @@ const photos = ref<FreightPhoto[]>([])
 const loading = ref(true)
 const activeTab = ref<'proposals' | 'find'>('proposals')
 const selectedApplication = ref<Application | null>(null)
+const freighters = ref<Record<string, PublicProfile>>({})
 const showProposalModal = ref(false)
 const showReviewModal = ref(false)
 
@@ -48,9 +53,25 @@ async function loadApplications() {
 
   if (result.success) {
     applications.value = result.data
+    await loadFreighters(result.data)
   } else {
     toast.error({ title: 'Erro ao carregar propostas', message: result.error.message })
   }
+}
+
+async function loadFreighters(list: Application[]) {
+  const missingIds = [...new Set(list.map((a) => a.freighterId))].filter(
+    (id) => !freighters.value[id]
+  )
+
+  const results = await Promise.all(missingIds.map((id) => userService.getPublicProfile(id)))
+
+  results.forEach((result, index) => {
+    const id = missingIds[index]
+    if (id && result.success) {
+      freighters.value[id] = result.data
+    }
+  })
 }
 
 async function loadPhotos() {
@@ -338,11 +359,13 @@ onMounted(async () => {
 
       <!-- Lista de Propostas -->
       <div v-if="activeTab === 'proposals'" class="space-y-4">
+        <PaymentNotice />
         <ApplicationCard
           v-for="application in applications"
           :key="application.id"
           :application="application"
           :freight-status="freight.status"
+          :freighter="freighters[application.freighterId]"
           @view-details="viewProposalDetails"
           @accept="acceptApplication"
           @reject="rejectApplication"
@@ -364,6 +387,7 @@ onMounted(async () => {
       v-if="showProposalModal && selectedApplication && freight"
       :application="selectedApplication"
       :freight-status="freight.status"
+      :freighter="freighters[selectedApplication.freighterId]"
       @close="closeProposalModal"
       @accept="
         (id) => {

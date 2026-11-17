@@ -216,6 +216,7 @@ await loadVehicles()
           <!-- Perfil do Cliente -->
           <ClientProfileCard
             v-if="freight.client"
+            :user-id="freight.clientId"
             :name="freight.client.name"
             :rating="freight.client.averageRating"
             :total-reviews="freight.client.totalReviews"

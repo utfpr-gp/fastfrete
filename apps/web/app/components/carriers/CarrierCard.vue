@@ -12,6 +12,11 @@ function whatsappUrl(phone: string) {
   return `https://wa.me/${cleaned}`
 }
 
+function phoneUrl(phone: string) {
+  const cleaned = phone.replace(/[^\d+]/g, '')
+  return `tel:${cleaned}`
+}
+
 function formatRating(rating: number): string {
   return rating.toFixed(1)
 }
@@ -22,7 +27,9 @@ function formatRating(rating: number): string {
     <!-- Header -->
     <div class="flex items-start justify-between mb-3">
       <div>
-        <h3 class="text-lg font-bold text-gray-900">{{ carrier.name }}</h3>
+        <a :href="`/users/${carrier.id}`" class="hover:text-amber-600">
+          <h3 class="text-lg font-bold text-gray-900">{{ carrier.name }}</h3>
+        </a>
         <p class="text-sm text-gray-500">{{ carrier.cityName }}</p>
       </div>
       <div v-if="carrier.reviewStats.totalReviews > 0" class="flex items-center gap-1">
@@ -48,14 +55,17 @@ function formatRating(rating: number): string {
       </div>
     </div>
 
-    <!-- Contact Button -->
-    <a
-      :href="whatsappUrl(carrier.phoneNumber)"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="btn btn-sm bg-green-500 text-white border-none hover:bg-green-600 w-full"
-    >
-      WhatsApp
-    </a>
+    <!-- Contact Buttons -->
+    <div class="grid grid-cols-2 gap-2">
+      <a :href="phoneUrl(carrier.phoneNumber)" class="btn btn-sm btn-outline w-full"> Ligar </a>
+      <a
+        :href="whatsappUrl(carrier.phoneNumber)"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-sm bg-green-500 text-white border-none hover:bg-green-600 w-full"
+      >
+        WhatsApp
+      </a>
+    </div>
   </div>
 </template>

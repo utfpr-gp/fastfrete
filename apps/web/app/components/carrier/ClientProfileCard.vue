@@ -1,5 +1,6 @@
 <script setup lang="ts">
 interface Props {
+  userId: string
   name: string
   rating: number
   totalReviews: number
@@ -36,5 +37,9 @@ defineProps<Props>()
         </div>
       </div>
     </div>
+
+    <a :href="`/users/${userId}`" class="text-amber-600 hover:text-amber-700 text-sm font-medium">
+      Ver Perfil
+    </a>
   </div>
 </template>
