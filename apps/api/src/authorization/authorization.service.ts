@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CurrentUserData } from './decorators/current-user.decorator';
 
@@ -31,6 +31,12 @@ export class AuthorizationService {
 
     if (!user) {
       return null;
+    }
+
+    if (user.status === 'SUSPENDED') {
+      throw new UnauthorizedException(
+        'Conta suspensa. Entre em contato com o suporte.',
+      );
     }
 
     const roleTypes = [
