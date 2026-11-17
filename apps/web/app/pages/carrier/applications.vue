@@ -145,7 +145,7 @@ await loadApplications()
         class="btn btn-sm"
         :class="
           statusFilter === option.value || (!statusFilter && !option.value)
-            ? 'bg-amber-500 text-white border-none'
+            ? 'bg-amber-500 text-gray-900 border-none'
             : 'btn-outline'
         "
         @click="statusFilter = option.value || null"
@@ -173,7 +173,7 @@ await loadApplications()
             : 'Você ainda não se candidatou a nenhum frete.'
         }}
       </div>
-      <a href="/carrier" class="btn bg-amber-500 text-white border-none hover:bg-amber-600 mt-2">
+      <a href="/carrier" class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 mt-2">
         Explorar Fretes
       </a>
     </div>

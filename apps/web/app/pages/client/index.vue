@@ -53,7 +53,7 @@ await loadFreights()
       <h1 class="text-2xl font-bold">Meus Fretes</h1>
       <div class="flex gap-2">
         <a href="/client/carrier-catalog" class="btn btn-outline btn-sm"> Buscar Fretistas </a>
-        <a href="/client/freights/create" class="btn bg-amber-500 text-white rounded-2xl btn-sm">
+        <a href="/client/freights/create" class="btn bg-amber-500 text-gray-900 rounded-2xl btn-sm">
           Publicar Anúncio
         </a>
       </div>
@@ -66,7 +66,7 @@ await loadFreights()
           class="pb-3 text-sm font-medium border-b-2 transition-colors"
           :class="
             activeTab === 'active'
-              ? 'border-amber-500 text-amber-600'
+              ? 'border-amber-500 text-amber-700'
               : 'border-transparent text-gray-500 hover:text-gray-700'
           "
           @click="activeTab = 'active'"
@@ -77,7 +77,7 @@ await loadFreights()
           class="pb-3 text-sm font-medium border-b-2 transition-colors"
           :class="
             activeTab === 'history'
-              ? 'border-amber-500 text-amber-600'
+              ? 'border-amber-500 text-amber-700'
               : 'border-transparent text-gray-500 hover:text-gray-700'
           "
           @click="activeTab = 'history'"
@@ -101,7 +101,7 @@ await loadFreights()
         <img src="~/assets/images/no-freights.png" alt="sem fretes" class="w-96 clip" />
         <div class="font-bold text-2xl">Nenhum frete ativo</div>
         <div>Você não tem fretes ativos no momento. Comece criando sua primeira solicitação.</div>
-        <a href="/client/freights/create" class="btn bg-amber-500 text-white rounded-2xl">
+        <a href="/client/freights/create" class="btn bg-amber-500 text-gray-900 rounded-2xl">
           Publicar Anúncio
         </a>
       </div>

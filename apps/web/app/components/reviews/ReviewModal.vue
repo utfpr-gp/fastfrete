@@ -119,7 +119,7 @@ async function submitReview() {
           <!-- Comment -->
           <div>
             <label class="text-sm font-medium text-gray-700 mb-2 block">
-              Comentário <span class="text-gray-400">(opcional)</span>
+              Comentário <span class="text-gray-500">(opcional)</span>
             </label>
             <textarea
               v-model="comment"
@@ -136,7 +136,7 @@ async function submitReview() {
             Cancelar
           </button>
           <button
-            class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
+            class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 flex-1"
             :disabled="submitting"
             @click="submitReview"
           >

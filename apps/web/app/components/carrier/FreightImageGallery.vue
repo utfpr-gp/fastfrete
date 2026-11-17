@@ -33,7 +33,7 @@ function getStatusClass(status: string): string {
   <div class="relative rounded-xl overflow-hidden bg-gray-100 h-80">
     <img v-if="imageUrl" :src="imageUrl" alt="Frete" class="w-full h-full object-cover" />
     <div v-else class="w-full h-full flex items-center justify-center">
-      <svg class="w-24 h-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-24 h-24 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"

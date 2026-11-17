@@ -88,7 +88,7 @@ function getStatusBadge(status: string) {
           <span class="ml-1 text-gray-900">{{ formatDate(application.createdAt) }}</span>
         </div>
       </div>
-      <p class="text-xs text-gray-400 text-center">Detalhes do frete não estão mais disponíveis.</p>
+      <p class="text-xs text-gray-500 text-center">Detalhes do frete não estão mais disponíveis.</p>
     </div>
 
     <template v-else>
@@ -183,7 +183,7 @@ function getStatusBadge(status: string) {
         </button>
         <button
           v-if="application.status === 'ACCEPTED'"
-          class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600"
+          class="btn btn-sm bg-amber-500 text-gray-900 border-none hover:bg-amber-400"
           :disabled="completing"
           @click="emit('complete', application.id)"
         >
@@ -192,7 +192,7 @@ function getStatusBadge(status: string) {
         </button>
         <button
           v-if="application.status === 'COMPLETED' && !application.hasReviewed"
-          class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600"
+          class="btn btn-sm bg-amber-500 text-gray-900 border-none hover:bg-amber-400"
           @click="emit('review', freight.id)"
         >
           Avaliar Cliente

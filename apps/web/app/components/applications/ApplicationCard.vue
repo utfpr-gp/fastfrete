@@ -38,7 +38,7 @@ function formatPrice(price: string | number) {
             >
               <StarRating :rating="freighter.stats.averageRating" size="sm" />
               <span>{{ freighter.stats.averageRating.toFixed(1) }}</span>
-              <span class="text-gray-400">•</span>
+              <span class="text-gray-500">•</span>
               <span>{{ freighter.stats.totalReviews }} avaliações</span>
             </div>
             <div v-else class="text-sm text-gray-500">Sem avaliações</div>
@@ -85,7 +85,7 @@ function formatPrice(price: string | number) {
               Rejeitar
             </button>
             <button
-              class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600"
+              class="btn btn-sm bg-amber-500 text-gray-900 border-none hover:bg-amber-400"
               @click="emit('accept', application.id)"
             >
               Escolher Fretista

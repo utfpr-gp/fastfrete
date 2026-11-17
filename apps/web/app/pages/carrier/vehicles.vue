@@ -147,7 +147,7 @@ await loadVehicles()
     <div class="flex items-center gap-4 mb-6">
       <h1 class="text-2xl font-bold flex-1">Meus Veículos</h1>
       <button
-        class="btn bg-amber-500 text-white border-none hover:bg-amber-600"
+        class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400"
         @click="openCreateModal"
       >
         Cadastrar Veículo
@@ -170,7 +170,7 @@ await loadVehicles()
         Cadastre seu primeiro veículo para começar a se candidatar a fretes.
       </div>
       <button
-        class="btn bg-amber-500 text-white border-none hover:bg-amber-600 mt-2"
+        class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 mt-2"
         @click="openCreateModal"
       >
         Cadastrar Veículo
@@ -331,7 +331,7 @@ await loadVehicles()
               Cancelar
             </button>
             <button
-              class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
+              class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 flex-1"
               :disabled="submitting"
               @click="submitForm"
             >

@@ -38,7 +38,7 @@ onMounted(() => {
         v-model="value"
         v-bind="$attrs"
         class="select select-lg bg-white w-full rounded-xl text-sm focus:outline-0"
-        :class="{ 'text-gray-400': !value }"
+        :class="{ 'text-gray-500': !value }"
       >
         <option
           v-for="option in options"

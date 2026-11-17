@@ -35,7 +35,7 @@ async function handleFormSubmit(form: { email: string; password: string }) {
 
 <template>
   <div>
-    <h1 class="text-3xl text-center font-bold mb-2">Bem vindo de volta!</h1>
+    <h1 class="text-3xl text-center font-bold mb-2">Bem-vindo de volta!</h1>
 
     <p class="text-center text-gray-500 mb-8">
       Acesse para publicar, avaliar e gerenciar seus anúncios.

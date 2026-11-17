@@ -51,13 +51,13 @@ function formatSchedule(freight: Freight) {
         :alt="freight.title"
         class="w-full h-full object-cover"
       />
-      <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+      <div v-else class="w-full h-full flex items-center justify-center text-gray-500">
         <span class="text-6xl">📦</span>
       </div>
 
       <!-- Badge -->
       <div class="absolute top-3 left-3">
-        <span class="badge bg-amber-500 text-white border-none text-xs"> DISPONÍVEL AGORA </span>
+        <span class="badge bg-amber-500 text-gray-900 border-none text-xs"> DISPONÍVEL AGORA </span>
       </div>
     </div>
 
@@ -129,7 +129,7 @@ function formatSchedule(freight: Freight) {
         </div>
 
         <!-- Data de criação -->
-        <div class="flex items-center gap-2 text-xs text-gray-400 pt-2 border-t">
+        <div class="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t">
           <span>🕐</span>
           <span>Criado em {{ formatCreatedAt(freight.createdAt) }}</span>
         </div>
@@ -137,7 +137,7 @@ function formatSchedule(freight: Freight) {
 
       <a
         :href="`/carrier/freights/${freight.id}`"
-        class="btn bg-amber-500 text-white border-none hover:bg-amber-600 w-full"
+        class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 w-full"
       >
         Ver Detalhes e Propor
       </a>
