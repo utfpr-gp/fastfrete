@@ -124,8 +124,8 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [x] Exibir lista de fretes disponíveis em formato de cartões na tela inicial.
-* [ ] Filtrar por cidade e categoria de veículo compatível com o fretista.
-* [ ] Exibir título, categoria de veículo e valor sugerido no cartão.
+* [x] Filtrar por cidade e categoria de veículo compatível com o fretista.
+* [x] Exibir título, categoria de veículo e valor sugerido no cartão.
 
 ### 🔴 US13 - Detalhes do Frete (Fretista) (Must Have)
 **Ator:** Fretista | **História:** Como fretista, quero visualizar os detalhes de um frete, para avaliar se desejo me candidatar.
