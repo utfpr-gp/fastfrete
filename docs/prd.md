@@ -69,7 +69,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [x] Campos obrigatórios: título, descrição, categoria de veículo, endereço de origem e de destino.
-* [ ] Escolha entre data/horário exato ou janela de disponibilidade (hoje, amanhã, esta semana, etc.).
+* [x] Escolha entre data/horário exato ou janela de disponibilidade (hoje, amanhã, esta semana, etc.).
 * [x] Sistema deve permitir upload de até três fotos.
 * [x] Após o cadastro, o frete deve aparecer em "Meus Fretes" com status (ativo, concluído ou cancelado) e contagem de candidatos.
 
