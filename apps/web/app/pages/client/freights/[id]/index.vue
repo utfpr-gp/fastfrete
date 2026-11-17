@@ -10,6 +10,7 @@ import ApplicationCard from '~/components/applications/ApplicationCard.vue'
 import PaymentNotice from '~/components/ui/PaymentNotice.vue'
 import ProposalModal from '~/components/applications/ProposalModal.vue'
 import ReviewModal from '~/components/reviews/ReviewModal.vue'
+import CarrierSuggestions from '~/components/carriers/CarrierSuggestions.vue'
 import { createUserService } from '~~/domains/users/composition'
 import type { PublicProfile } from '~~/domains/users/entities/public-profile.entity'
 
@@ -377,8 +378,15 @@ onMounted(async () => {
       </div>
 
       <!-- Encontrar Fretistas -->
-      <div v-if="activeTab === 'find'" class="text-center py-12 text-gray-500">
-        Funcionalidade em desenvolvimento.
+      <div v-if="activeTab === 'find'">
+        <CarrierSuggestions
+          v-if="freight.status === 'OPEN' || freight.status === 'NEGOTIATING'"
+          :vehicle-category="freight.vehicleCategory"
+          :exclude-ids="applications.map((application) => application.freighterId)"
+        />
+        <div v-else class="text-center py-12 text-gray-500">
+          As sugestões de fretistas só estão disponíveis para fretes em aberto.
+        </div>
       </div>
     </div>
 
