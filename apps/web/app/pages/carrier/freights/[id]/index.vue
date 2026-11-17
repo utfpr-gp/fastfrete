@@ -182,6 +182,7 @@ await loadVehicles()
 
           <!-- Cards de Informação -->
           <FreightInfoCards
+            :suggested-price="freight.suggestedPrice ?? undefined"
             :vehicle-category="freight.vehicleCategory"
             :date-label="formatDateLabel(freight)"
           />
@@ -281,6 +282,7 @@ await loadVehicles()
           <!-- Sem Candidatura e Frete OPEN - Formulário -->
           <ProposalForm
             v-else
+            :suggested-price="freight.suggestedPrice ?? undefined"
             :vehicles="getVehicleOptions()"
             :loading="submitting"
             @submit="handleSubmitProposal"

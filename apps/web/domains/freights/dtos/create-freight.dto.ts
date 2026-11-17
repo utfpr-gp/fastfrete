@@ -15,4 +15,5 @@ export interface CreateFreightDto {
   dateMode: FreightDateMode
   exactDatetime?: string
   availabilityWindow?: string
+  suggestedPrice?: number | null
 }

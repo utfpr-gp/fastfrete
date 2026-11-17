@@ -32,6 +32,7 @@ export interface Freight {
   dateMode: FreightDateMode
   exactDatetime: string | null
   availabilityWindow: string | null
+  suggestedPrice: number | null
   status: FreightStatus
   selectedApplicationId: string | null
   hasReviewed?: boolean

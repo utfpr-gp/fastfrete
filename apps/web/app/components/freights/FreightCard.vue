@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import StatusBadge from '~/components/ui/StatusBadge.vue'
+import { formatCurrency } from '~/support/price'
 
 interface Props {
   freight: Freight
@@ -44,6 +45,10 @@ function formatDate(date: string | null) {
           >Para: {{ freight.destinationStreet }}, {{ freight.destinationDistrict }} -
           {{ freight.destinationCity.name }}</span
         >
+      </div>
+      <div v-if="freight.suggestedPrice" class="flex items-center gap-1 text-nowrap">
+        <span class="text-gray-400">💰</span>
+        <span>Valor sugerido: {{ formatCurrency(freight.suggestedPrice) }}</span>
       </div>
       <div class="flex items-center gap-1 text-nowrap">
         <span class="text-gray-400">📅</span>
