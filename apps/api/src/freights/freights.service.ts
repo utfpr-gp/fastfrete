@@ -14,6 +14,8 @@ import { ApplicationStatus } from '../applications/entities/application.entity.j
 import { CreateFreightDto } from './dto/create-freight.dto.js';
 import { UpdateFreightDto } from './dto/update-freight.dto.js';
 import { FreightsFilterDto } from './dto/freights-filter.dto.js';
+import { AdminFreightsFilterDto } from './dto/admin-freights-filter.dto.js';
+import { AdminFreightResponseDto } from './dto/admin-freight-response.dto.js';
 import {
   Freight,
   FreightStatus,
@@ -119,6 +121,35 @@ export class FreightsService {
 
     return PaginatedResponseDto.create({
       data: FreightMapper.toCarrierResponseList(result.data),
+      total: result.total,
+      page,
+      limit,
+    });
+  }
+
+  async findAllForAdmin(
+    filterDto: AdminFreightsFilterDto,
+  ): Promise<PaginatedResponseDto<AdminFreightResponseDto>> {
+    const {
+      page = 1,
+      limit = 10,
+      status,
+      vehicleCategory,
+      orderBy,
+      search,
+    } = filterDto;
+
+    const result = await this.freightsRepository.findAllForAdmin(
+      { status, vehicleCategory, orderBy, search },
+      { page, limit },
+    );
+
+    return PaginatedResponseDto.create({
+      data: result.data.map((row) => ({
+        ...FreightMapper.toResponse(row.freight),
+        clientName: row.clientName,
+        applicationsCount: row.applicationsCount,
+      })),
       total: result.total,
       page,
       limit,

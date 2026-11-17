@@ -21,6 +21,8 @@ export const ADMIN_PERMISSIONS = {
   SYSTEM_LOGS: 'system:logs',
   REVIEWS_READ: 'reviews:read',
   REVIEWS_LIST: 'reviews:list',
+  FREIGHTS_ADMIN_LIST: 'freights:admin-list',
+  DASHBOARD_READ: 'dashboard:read',
 } as const;
 
 export const CUSTOMER_PERMISSIONS = {
