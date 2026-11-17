@@ -45,7 +45,7 @@ async function loadCarriers() {
 
   if (result.success) {
     carriers.value = result.data.data
-    total.value = result.data.total
+    total.value = result.data.meta.total
   } else {
     toast.error({ title: 'Erro ao carregar fretistas', message: result.error.message })
   }

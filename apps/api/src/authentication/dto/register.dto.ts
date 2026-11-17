@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsIn,
@@ -8,8 +9,11 @@ import {
   Matches,
   MaxLength,
   MinLength,
+  ValidateIf,
+  ValidateNested,
 } from 'class-validator';
 import { RoleTypeEnum } from '../../authorization/definitions/role-types.definition';
+import { RegisterVehicleDto } from './register-vehicle.dto';
 
 export class RegisterDto {
   @ApiProperty({ example: 'João Silva' })
@@ -60,4 +64,14 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'A cidade é obrigatória' })
   @IsUUID('4', { message: 'A cidade deve ser um UUID válido' })
   cityId: string;
+
+  @ApiPropertyOptional({
+    type: RegisterVehicleDto,
+    description: 'Veículo inicial. Obrigatório quando roleType é CARRIER',
+  })
+  @ValidateIf((dto: RegisterDto) => dto.roleType === RoleTypeEnum.CARRIER)
+  @IsNotEmpty({ message: 'O veículo é obrigatório para fretistas' })
+  @ValidateNested()
+  @Type(() => RegisterVehicleDto)
+  vehicle?: RegisterVehicleDto;
 }
