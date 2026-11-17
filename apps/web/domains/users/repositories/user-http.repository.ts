@@ -2,6 +2,8 @@ import type { IUserRepository, PaginatedResponse } from './user.repository.inter
 import type { User } from '~~/domains/auth/entities/user.entity'
 import type { IHttpClient, HttpResult } from '~~/infra/http/http-client.interface'
 import type { AdminUsersFilterDto } from '../dtos/admin-users-filter.dto'
+import type { UpdateProfileDto } from '../dtos/update-profile.dto'
+import type { PublicProfile } from '../entities/public-profile.entity'
 
 export class UserHttpRepository implements IUserRepository {
   private httpClient: IHttpClient
@@ -12,6 +14,14 @@ export class UserHttpRepository implements IUserRepository {
 
   async getProfile(): Promise<HttpResult<User>> {
     return this.httpClient.get<User>('/api/users/profile')
+  }
+
+  async updateProfile(data: UpdateProfileDto): Promise<HttpResult<User>> {
+    return this.httpClient.patch<User>('/api/users/profile', data)
+  }
+
+  async getPublicProfile(id: string): Promise<HttpResult<PublicProfile>> {
+    return this.httpClient.get<PublicProfile>(`/api/users/${id}/public-profile`)
   }
 
   async findAllAdmin(filter: AdminUsersFilterDto): Promise<HttpResult<PaginatedResponse<User>>> {
