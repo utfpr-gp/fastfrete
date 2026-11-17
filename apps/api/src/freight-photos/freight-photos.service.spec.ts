@@ -185,6 +185,49 @@ describe('FreightPhotosService', () => {
       expect(result).toHaveLength(1);
     });
 
+    it('deve permitir que qualquer fretista veja as fotos de um frete aberto', async () => {
+      freightsRepo.findById.mockResolvedValue(
+        mockFreight({ status: FreightStatus.OPEN }),
+      );
+      photosRepo.findByFreight.mockResolvedValue([
+        mockPhoto(),
+        mockPhoto({ id: 'photo-2', order: 2 }),
+      ]);
+
+      const result = await service.findByFreight('freight-1', {
+        id: 'carrier-1',
+        roleTypes: ['CARRIER'],
+      } as any);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it('deve bloquear fretista sem candidatura em frete que não está aberto', async () => {
+      freightsRepo.findById.mockResolvedValue(
+        mockFreight({ status: FreightStatus.IN_PROGRESS }),
+      );
+
+      await expect(
+        service.findByFreight('freight-1', {
+          id: 'carrier-1',
+          roleTypes: ['CARRIER'],
+        } as any),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('deve bloquear cliente que não é dono do frete', async () => {
+      freightsRepo.findById.mockResolvedValue(
+        mockFreight({ status: FreightStatus.OPEN }),
+      );
+
+      await expect(
+        service.findByFreight('freight-1', {
+          id: 'client-2',
+          roleTypes: ['CUSTOMER'],
+        } as any),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
     it('deve lançar NotFoundException quando frete não existe', async () => {
       freightsRepo.findById.mockResolvedValue(null);
 
