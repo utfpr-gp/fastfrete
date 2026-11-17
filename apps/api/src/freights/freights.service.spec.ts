@@ -74,7 +74,9 @@ describe('FreightsService', () => {
     it('does not restrict categories when compatibleOnly is not set', async () => {
       await service.findAllOpen({}, 'carrier-1');
 
-      expect(freightsRepo.findActiveVehicleCategoryNames).not.toHaveBeenCalled();
+      expect(
+        freightsRepo.findActiveVehicleCategoryNames,
+      ).not.toHaveBeenCalled();
       expect(freightsRepo.findAllOpen).toHaveBeenCalledWith(
         { vehicleCategories: undefined, cityId: undefined, orderBy: undefined },
         { page: 1, limit: 10 },
@@ -205,6 +207,122 @@ describe('FreightsService', () => {
 
       expect(freightsRepo.create).toHaveBeenCalledWith(
         expect.objectContaining({ suggestedPrice: null }),
+      );
+    });
+  });
+
+  describe('schedule normalization', () => {
+    const base = {
+      title: 'Mudança',
+      description: 'Descrição do frete',
+      vehicleCategory: 'Van',
+      originCityId: 'city-1',
+      originDistrict: 'Centro',
+      originStreet: 'Rua A',
+      originNumber: '1',
+      destinationCityId: 'city-1',
+      destinationDistrict: 'Batel',
+      destinationStreet: 'Rua B',
+      destinationNumber: '2',
+    };
+
+    beforeEach(() => {
+      freightsRepo.create.mockResolvedValue(mockFreight());
+    });
+
+    it('keeps the exact date only for scheduled freights', async () => {
+      await service.create(
+        {
+          ...base,
+          dateMode: FreightDateMode.SCHEDULED,
+          exactDatetime: '2026-06-01T10:00:00Z',
+          availabilityWindow: 'TODAY',
+        } as CreateFreightDto,
+        'c1',
+      );
+
+      expect(freightsRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dateMode: FreightDateMode.SCHEDULED,
+          exactDatetime: new Date('2026-06-01T10:00:00Z'),
+          availabilityWindow: null,
+        }),
+      );
+    });
+
+    it('keeps the window only for flexible freights', async () => {
+      await service.create(
+        {
+          ...base,
+          dateMode: FreightDateMode.FLEXIBLE,
+          exactDatetime: '2026-06-01T10:00:00Z',
+          availabilityWindow: 'THIS_WEEK',
+        } as CreateFreightDto,
+        'c1',
+      );
+
+      expect(freightsRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dateMode: FreightDateMode.FLEXIBLE,
+          exactDatetime: null,
+          availabilityWindow: 'THIS_WEEK',
+        }),
+      );
+    });
+
+    it('clears both fields for immediate freights', async () => {
+      await service.create(
+        {
+          ...base,
+          dateMode: FreightDateMode.IMMEDIATE,
+          exactDatetime: '2026-06-01T10:00:00Z',
+          availabilityWindow: 'TODAY',
+        } as CreateFreightDto,
+        'c1',
+      );
+
+      expect(freightsRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          exactDatetime: null,
+          availabilityWindow: null,
+        }),
+      );
+    });
+
+    it('clears the old date when an update switches to a window', async () => {
+      freightsRepo.findByIdAndClient.mockResolvedValue(
+        mockFreight({ dateMode: FreightDateMode.SCHEDULED }),
+      );
+      freightsRepo.update.mockResolvedValue(mockFreight());
+
+      await service.update('freight-1', 'client-1', {
+        dateMode: FreightDateMode.FLEXIBLE,
+        availabilityWindow: 'WEEKEND',
+      });
+
+      expect(freightsRepo.update).toHaveBeenCalledWith(
+        'freight-1',
+        expect.objectContaining({
+          dateMode: FreightDateMode.FLEXIBLE,
+          exactDatetime: null,
+          availabilityWindow: 'WEEKEND',
+        }),
+      );
+    });
+
+    it('leaves the schedule untouched when an update does not send the mode', async () => {
+      freightsRepo.findByIdAndClient.mockResolvedValue(mockFreight());
+      freightsRepo.update.mockResolvedValue(mockFreight());
+
+      await service.update('freight-1', 'client-1', { title: 'Novo título' });
+
+      expect(freightsRepo.update).toHaveBeenCalledWith(
+        'freight-1',
+        expect.objectContaining({
+          dateMode: undefined,
+          exactDatetime: undefined,
+          availabilityWindow: undefined,
+        }),
       );
     });
   });
