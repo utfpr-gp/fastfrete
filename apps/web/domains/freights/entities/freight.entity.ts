@@ -40,3 +40,8 @@ export interface Freight {
   updatedAt: string
   coverPhoto: string | null
 }
+
+export interface AdminFreight extends Freight {
+  clientName: string
+  applicationsCount: number
+}

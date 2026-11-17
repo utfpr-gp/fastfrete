@@ -107,7 +107,7 @@ export class UsersController {
   @ApiAuthorization({
     summary: 'Obter perfil público de um usuário',
     description:
-      'Retorna dados públicos de um cliente ou fretista ativo: nome (abreviado para clientes), cidade, estatísticas de avaliação e, para fretistas, veículos ativos. Não expõe e-mail nem telefone.',
+      'Retorna dados públicos de um cliente ou fretista ativo: nome (abreviado para clientes), cidade, estatísticas de avaliação e, para fretistas, veículos ativos. Não expõe e-mail nem telefone. Administradores também podem consultar usuários suspensos.',
     roleTypes: [
       RoleTypeEnum.CUSTOMER,
       RoleTypeEnum.CARRIER,
@@ -126,7 +126,9 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Perfil não encontrado' })
   async getPublicProfile(
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: CurrentUserData,
   ): Promise<PublicProfileResponseDto> {
-    return this.usersService.getPublicProfile(id);
+    const isAdmin = currentUser.roleTypes.includes(RoleTypeEnum.ADMIN);
+    return this.usersService.getPublicProfile(id, isAdmin);
   }
 }

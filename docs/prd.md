@@ -100,8 +100,8 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 
 **✅ Critérios de Aceitação:**
 * [x] Exibir lista de clientes e fretistas com filtros e campo de busca.
-* [ ] Exibir lista de solicitações de frete com status (ativo, concluído, cancelado).
-* [ ] Permitir visualizar as avaliações recebidas por cada usuário.
+* [x] Exibir lista de solicitações de frete com status (ativo, concluído, cancelado).
+* [x] Permitir visualizar as avaliações recebidas por cada usuário.
 
 ### 🔴 US10 - Suspender Usuários Problemáticos (Must Have)
 **Ator:** Administrador | **História:** Como administrador, quero suspender usuários que violem regras, para manter a confiabilidade da plataforma.

@@ -6,6 +6,8 @@ import {
   UpdateFreightData,
   FreightsFilters,
   ClientSummary,
+  AdminFreightsFilters,
+  AdminFreightRow,
 } from './freights.repository.interface.js';
 import { Freight, FreightStatus } from '../entities/freight.entity.js';
 import { FreightMapper } from '../mappers/freight.mapper.js';
@@ -200,6 +202,51 @@ export class FreightsRepository implements IFreightsRepository {
       averageRating: reviews._avg.rating ?? 0,
       totalReviews: reviews._count.rating,
       completedFreights,
+    };
+  }
+
+  async findAllForAdmin(
+    filters: AdminFreightsFilters,
+    pagination: PaginationOptions,
+  ): Promise<PaginatedResult<AdminFreightRow>> {
+    const { skip, take } = buildPrismaPagination(pagination);
+
+    const where = {
+      ...buildWhereClause([
+        { field: 'status', mode: FilterMode.EQUALS, value: filters.status },
+        {
+          field: 'vehicleCategory',
+          mode: FilterMode.EQUALS,
+          value: filters.vehicleCategory,
+        },
+      ]),
+      ...(filters.search
+        ? { title: { contains: filters.search, mode: 'insensitive' as const } }
+        : {}),
+    };
+
+    const [total, prismaFreights] = await Promise.all([
+      this.prisma.freight.count({ where }),
+      this.prisma.freight.findMany({
+        where,
+        skip,
+        take,
+        include: {
+          ...includeFreightRelations,
+          client: { select: { name: true } },
+          _count: { select: { applications: true } },
+        },
+        orderBy: getOrderBy(filters),
+      }),
+    ]);
+
+    return {
+      data: prismaFreights.map((prismaFreight) => ({
+        freight: FreightMapper.toDomain(prismaFreight),
+        clientName: prismaFreight.client.name,
+        applicationsCount: prismaFreight._count.applications,
+      })),
+      total,
     };
   }
 }

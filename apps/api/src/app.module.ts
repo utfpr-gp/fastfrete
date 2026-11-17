@@ -12,6 +12,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
 import { ReviewsModule } from './reviews/reviews.module.js';
 import { FreightPhotosModule } from './freight-photos/freight-photos.module.js';
 import { CarriersModule } from './carriers/carriers.module.js';
+import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module.js';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CarriersModule } from './carriers/carriers.module.js';
     ReviewsModule,
     FreightPhotosModule,
     CarriersModule,
+    AdminDashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

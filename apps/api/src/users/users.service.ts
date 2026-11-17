@@ -87,8 +87,14 @@ export class UsersService {
     return user;
   }
 
-  async getPublicProfile(id: string): Promise<PublicProfileResponseDto> {
-    const profile = await this.usersRepository.getPublicProfile(id);
+  async getPublicProfile(
+    id: string,
+    includeSuspended = false,
+  ): Promise<PublicProfileResponseDto> {
+    const profile = await this.usersRepository.getPublicProfile(
+      id,
+      includeSuspended,
+    );
 
     if (!profile) {
       throw new NotFoundException(`Perfil com ID ${id} não encontrado`);
@@ -96,6 +102,7 @@ export class UsersService {
 
     return {
       id: profile.id,
+      status: profile.status,
       name:
         profile.roleType === RoleTypeEnum.CUSTOMER
           ? abbreviateName(profile.name)

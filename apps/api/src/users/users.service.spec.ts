@@ -8,12 +8,14 @@ import {
 } from './repositories/users.repository.interface';
 import { CryptoService } from '../common/crypto/crypto.service';
 import { RoleTypeEnum } from '../authorization/definitions/role-types.definition';
+import { UserStatus } from './entities/user.entity';
 
 const profileData = (
   overrides: Partial<PublicProfileData> = {},
 ): PublicProfileData => ({
   id: 'user-1',
   name: 'Ana Souza',
+  status: UserStatus.ACTIVE,
   roleType: RoleTypeEnum.CUSTOMER,
   cityName: 'Guarapuava',
   memberSince: new Date('2026-01-01'),
@@ -86,6 +88,26 @@ describe('UsersService.getPublicProfile', () => {
       totalReviews: 3,
       completedFreights: 2,
     });
+  });
+
+  it('forwards the includeSuspended flag to the repository', async () => {
+    repository.getPublicProfile.mockResolvedValue(
+      profileData({ status: UserStatus.SUSPENDED }),
+    );
+
+    const result = await service.getPublicProfile('user-1', true);
+
+    expect(repository.getPublicProfile).toHaveBeenCalledWith('user-1', true);
+    expect(result.status).toBe(UserStatus.SUSPENDED);
+  });
+
+  it('hides suspended users by default', async () => {
+    repository.getPublicProfile.mockResolvedValue(null);
+
+    await expect(service.getPublicProfile('user-1')).rejects.toThrow(
+      NotFoundException,
+    );
+    expect(repository.getPublicProfile).toHaveBeenCalledWith('user-1', false);
   });
 
   it('throws NotFoundException when the profile does not exist', async () => {

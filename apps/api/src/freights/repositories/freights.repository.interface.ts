@@ -45,6 +45,16 @@ export interface FreightsFilters {
   orderBy?: FreightOrderBy;
 }
 
+export interface AdminFreightsFilters extends FreightsFilters {
+  search?: string;
+}
+
+export interface AdminFreightRow {
+  freight: Freight;
+  clientName: string;
+  applicationsCount: number;
+}
+
 export interface ClientSummary {
   name: string;
   averageRating: number;
@@ -69,4 +79,8 @@ export interface IFreightsRepository {
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;
   getClientSummary(clientId: string): Promise<ClientSummary | null>;
+  findAllForAdmin(
+    filters: AdminFreightsFilters,
+    pagination: PaginationOptions,
+  ): Promise<PaginatedResult<AdminFreightRow>>;
 }
