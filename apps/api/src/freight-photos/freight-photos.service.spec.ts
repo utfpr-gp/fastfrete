@@ -48,6 +48,7 @@ const mockFreight = (overrides: Partial<Freight> = {}): Freight =>
     dateMode: FreightDateMode.IMMEDIATE,
     exactDatetime: null,
     availabilityWindow: null,
+    suggestedPrice: null,
     status: FreightStatus.OPEN,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),

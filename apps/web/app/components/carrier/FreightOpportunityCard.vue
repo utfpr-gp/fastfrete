@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 import { formatStreetAddress } from '~/support/address'
+import { formatCurrency } from '~/support/price'
 
 interface Props {
   freight: Freight
@@ -115,6 +116,16 @@ function formatSchedule(freight: Freight) {
         <div class="flex items-center gap-2">
           <span>🚗</span>
           <span>{{ freight.vehicleCategory }}</span>
+        </div>
+
+        <!-- Valor sugerido -->
+        <div class="flex items-center gap-2">
+          <span>💰</span>
+          <span v-if="freight.suggestedPrice" class="font-semibold text-gray-900">
+            {{ formatCurrency(freight.suggestedPrice) }}
+            <span class="font-normal text-gray-500">sugerido</span>
+          </span>
+          <span v-else class="text-gray-500">Valor a combinar</span>
         </div>
 
         <!-- Data de criação -->

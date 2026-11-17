@@ -6,6 +6,7 @@ export default {
   title: 'título',
   description: 'descrição',
   vehicleCategory: 'tipo do veículo',
+  suggestedPrice: 'valor sugerido',
   originStreet: 'rua de retirada',
   originDistrict: 'bairo de retirada',
   originNumber: 'número de retirada',

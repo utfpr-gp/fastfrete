@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import { createFreightService } from '~~/domains/freights/composition'
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
-import type { FreightOrderBy } from '~~/domains/freights/dtos/freights-filter.dto'
+import { createCityService } from '~~/domains/cities/composition'
+import type { City } from '~~/domains/cities/entities/city.entity'
+import type {
+  FreightOrderBy,
+  FreightsFilterDto
+} from '~~/domains/freights/dtos/freights-filter.dto'
 import { useAuthStore } from '~~/stores/auth'
 import { VEHICLE_CATEGORIES } from '~/support/vehicle-categories'
 import MetricCard from '~/components/carrier/MetricCard.vue'
 import CategoryFilter from '~/components/carrier/CategoryFilter.vue'
+import CityFilter from '~/components/carrier/CityFilter.vue'
 import FreightOpportunityCard from '~/components/carrier/FreightOpportunityCard.vue'
 
 const route = useRoute()
 const router = useRouter()
 const { user } = useAuthStore()
 const freightService = createFreightService()
+const cityService = createCityService()
 
 const freights = ref<Freight[]>([])
+const cities = ref<City[]>([])
 const loading = ref(true)
 
 const selectedCategory = computed({
@@ -24,6 +32,32 @@ const selectedCategory = computed({
       query.category = value
     } else {
       delete query.category
+    }
+    router.push({ query })
+  }
+})
+
+const selectedCity = computed({
+  get: () => (route.query.city as string) || null,
+  set: (value) => {
+    const query = { ...route.query }
+    if (value) {
+      query.city = value
+    } else {
+      delete query.city
+    }
+    router.push({ query })
+  }
+})
+
+const compatibleOnly = computed({
+  get: () => route.query.compatible !== '0',
+  set: (value) => {
+    const query = { ...route.query }
+    if (value) {
+      delete query.compatible
+    } else {
+      query.compatible = '0'
     }
     router.push({ query })
   }
@@ -51,11 +85,15 @@ function getGreeting() {
 
 async function loadFreights() {
   loading.value = true
-  const filter: { limit: number; vehicleCategory?: string; orderBy?: FreightOrderBy } = {
-    limit: 50
+  const filter: FreightsFilterDto = {
+    limit: 50,
+    compatibleOnly: compatibleOnly.value
   }
   if (selectedCategory.value) {
     filter.vehicleCategory = selectedCategory.value
+  }
+  if (selectedCity.value) {
+    filter.cityId = selectedCity.value
   }
   if (sortBy.value) {
     filter.orderBy = sortBy.value
@@ -69,14 +107,22 @@ async function loadFreights() {
   loading.value = false
 }
 
+async function loadCities() {
+  const result = await cityService.findAll()
+
+  if (result.success) {
+    cities.value = result.data
+  }
+}
+
 watch(
-  () => [route.query.category, route.query.orderBy],
+  () => [route.query.category, route.query.orderBy, route.query.city, route.query.compatible],
   () => {
     loadFreights()
   }
 )
 
-await loadFreights()
+await Promise.all([loadCities(), loadFreights()])
 </script>
 
 <template>
@@ -112,7 +158,18 @@ await loadFreights()
 
       <!-- Filtros e Ordenação -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <CategoryFilter v-model="selectedCategory" :categories="[...VEHICLE_CATEGORIES]" />
+        <div class="flex flex-wrap items-center gap-4">
+          <CategoryFilter v-model="selectedCategory" :categories="[...VEHICLE_CATEGORIES]" />
+          <CityFilter v-model="selectedCity" :cities="cities" />
+          <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input
+              v-model="compatibleOnly"
+              type="checkbox"
+              class="checkbox checkbox-sm checkbox-warning"
+            />
+            Somente compatíveis com meus veículos
+          </label>
+        </div>
 
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-600">Ordenar por:</span>
@@ -132,7 +189,13 @@ await loadFreights()
         <div class="text-6xl mb-4">📦</div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">Nenhum frete disponível</h3>
         <p class="text-gray-600">
-          Não há fretes disponíveis para a categoria selecionada no momento.
+          Não há fretes disponíveis para os filtros selecionados no momento.
+        </p>
+        <p v-if="compatibleOnly" class="text-sm text-gray-500 mt-2">
+          Só aparecem fretes compatíveis com seus veículos ativos.
+          <a href="/carrier/vehicles" class="text-amber-600 hover:text-amber-700 font-medium"
+            >Gerenciar veículos</a
+          >
         </p>
       </div>
 

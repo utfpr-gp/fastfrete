@@ -13,6 +13,7 @@ import { ReviewsModule } from './reviews/reviews.module.js';
 import { FreightPhotosModule } from './freight-photos/freight-photos.module.js';
 import { CarriersModule } from './carriers/carriers.module.js';
 import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module.js';
+import { CitiesModule } from './cities/cities.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module.j
     FreightPhotosModule,
     CarriersModule,
     AdminDashboardModule,
+    CitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

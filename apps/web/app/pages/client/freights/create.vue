@@ -9,6 +9,7 @@ import CustomSelect from '~/components/forms/CustomSelect.vue'
 import FormData from '~/components/forms/FormData.vue'
 import ImageCatcher from '~/components/freights/ImageCatcher.vue'
 import { vMaska } from 'maska/vue'
+import { formatCurrency, toSuggestedPrice } from '~/support/price'
 
 const toast = useToast()
 const router = useRouter()
@@ -45,7 +46,7 @@ function previousStep() {
 function getFieldsForStep(step: number): string[] {
   switch (step) {
     case 1:
-      return ['title', 'description', 'vehicleCategory']
+      return ['title', 'description', 'vehicleCategory', 'suggestedPrice']
     case 2:
       return [
         'originDistrict',
@@ -66,7 +67,10 @@ async function submitFreight(form) {
   submitting.value = true
 
   try {
-    const result = await freightService.create(form)
+    const result = await freightService.create({
+      ...form,
+      suggestedPrice: toSuggestedPrice(form.suggestedPrice)
+    })
 
     if (result.success) {
       const freightId = result.data.id
@@ -143,6 +147,18 @@ function cancel() {
             rules="required"
           >
           </VehicleCategorySelector>
+
+          <CustomInput
+            id="suggestedPrice"
+            name="suggestedPrice"
+            type="number"
+            step="0.01"
+            min="0"
+            label="Valor sugerido em R$ (opcional)"
+            placeholder="Ex: 350,00"
+            rules="min_value:0.01"
+            class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
+          />
 
           <ImageCatcher @update-uploaded-photos="uploadedPhotos = $event"></ImageCatcher>
         </div>
@@ -333,6 +349,12 @@ function cancel() {
                 <span class="text-sm font-medium text-gray-600">Tipo de Veículo:</span>
                 <span class="text-sm text-gray-900 ml-2">{{
                   formComponent?.values.vehicleCategory
+                }}</span>
+              </div>
+              <div v-if="toSuggestedPrice(formComponent?.values.suggestedPrice)">
+                <span class="text-sm font-medium text-gray-600">Valor sugerido:</span>
+                <span class="text-sm text-gray-900 ml-2">{{
+                  formatCurrency(toSuggestedPrice(formComponent?.values.suggestedPrice) as number)
                 }}</span>
               </div>
               <div v-if="uploadedPhotos.length > 0">

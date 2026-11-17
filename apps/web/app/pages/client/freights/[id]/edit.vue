@@ -7,6 +7,7 @@ import VehicleCategorySelector from '~/components/freights/VehicleCategorySelect
 import CustomSelect from '~/components/forms/CustomSelect.vue'
 import FormData from '~/components/forms/FormData.vue'
 import { vMaska } from 'maska/vue'
+import { formatCurrency, toSuggestedPrice } from '~/support/price'
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
 
 const route = useRoute()
@@ -50,6 +51,7 @@ function getInitialValues() {
     title: freight.value.title,
     description: freight.value.description,
     vehicleCategory: freight.value.vehicleCategory,
+    suggestedPrice: freight.value.suggestedPrice ?? '',
     originCityId: freight.value.originCity.id,
     originStreet: freight.value.originStreet,
     originDistrict: freight.value.originDistrict,
@@ -99,7 +101,7 @@ function previousStep() {
 function getFieldsForStep(step: number): string[] {
   switch (step) {
     case 1:
-      return ['title', 'description', 'vehicleCategory']
+      return ['title', 'description', 'vehicleCategory', 'suggestedPrice']
     case 2:
       return [
         'originDistrict',
@@ -120,7 +122,11 @@ async function submitFreight(form) {
   submitting.value = true
 
   try {
-    const result = await freightService.update(freightId, form)
+    const result = await freightService.update(freightId, {
+      ...form,
+      exactDatetime: form.exactDatetime || undefined,
+      suggestedPrice: toSuggestedPrice(form.suggestedPrice)
+    })
 
     if (result.success) {
       toast.success({ title: 'Frete atualizado com sucesso!' })
@@ -195,6 +201,18 @@ await loadFreight()
               required
               label="Tipo do veículo"
               rules="required"
+            />
+
+            <CustomInput
+              id="suggestedPrice"
+              name="suggestedPrice"
+              type="number"
+              step="0.01"
+              min="0"
+              label="Valor sugerido em R$ (opcional)"
+              placeholder="Ex: 350,00"
+              rules="min_value:0.01"
+              class="input input-lg bg-white w-full rounded-xl placeholder:text-sm text-sm focus:outline-0"
             />
           </div>
         </div>
@@ -387,6 +405,12 @@ await loadFreight()
                   <span class="text-sm font-medium text-gray-600">Tipo de Veículo:</span>
                   <span class="text-sm text-gray-900 ml-2">{{
                     formComponent?.values.vehicleCategory
+                  }}</span>
+                </div>
+                <div v-if="toSuggestedPrice(formComponent?.values.suggestedPrice)">
+                  <span class="text-sm font-medium text-gray-600">Valor sugerido:</span>
+                  <span class="text-sm text-gray-900 ml-2">{{
+                    formatCurrency(toSuggestedPrice(formComponent?.values.suggestedPrice) as number)
                   }}</span>
                 </div>
               </div>

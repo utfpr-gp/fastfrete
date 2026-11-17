@@ -35,6 +35,7 @@ export class Freight {
   readonly dateMode: FreightDateMode;
   readonly exactDatetime: Date | null;
   readonly availabilityWindow: string | null;
+  readonly suggestedPrice: number | null;
   readonly status: FreightStatus;
   readonly createdAt: Date;
   readonly updatedAt: Date;
