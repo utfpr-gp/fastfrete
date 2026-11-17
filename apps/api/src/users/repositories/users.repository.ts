@@ -5,6 +5,7 @@ import {
   CreateUserData,
   UpdateUserData,
   UsersFilters,
+  PublicProfileData,
 } from './users.repository.interface.js';
 import { User } from '../entities/user.entity.js';
 import { UserMapper } from '../mappers/user.mapper.js';
@@ -165,5 +166,70 @@ export class UsersRepository implements IUsersRepository {
     });
 
     return UserMapper.toDomain(prismaUser);
+  }
+
+  async getPublicProfile(id: string): Promise<PublicProfileData | null> {
+    const user = await this.prisma.user.findFirst({
+      where: { id, status: 'ACTIVE' },
+      include: {
+        city: { select: { name: true } },
+        userRoles: { include: { role: { include: { roleType: true } } } },
+        vehicles: {
+          where: { active: true },
+          include: { vehicleCategory: { select: { name: true } } },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const roleTypes = user.userRoles.map((ur) => ur.role.roleType.name);
+    const roleType = roleTypes.includes(RoleTypeEnum.CARRIER)
+      ? RoleTypeEnum.CARRIER
+      : roleTypes.includes(RoleTypeEnum.CUSTOMER)
+        ? RoleTypeEnum.CUSTOMER
+        : null;
+
+    if (!roleType) {
+      return null;
+    }
+
+    const [reviews, completedFreights] = await Promise.all([
+      this.prisma.review.aggregate({
+        where: { reviewedId: id },
+        _avg: { rating: true },
+        _count: { rating: true },
+      }),
+      roleType === RoleTypeEnum.CARRIER
+        ? this.prisma.application.count({
+            where: { freighterId: id, status: 'COMPLETED' },
+          })
+        : this.prisma.freight.count({
+            where: { clientId: id, status: 'COMPLETED' },
+          }),
+    ]);
+
+    return {
+      id: user.id,
+      name: user.name,
+      roleType,
+      cityName: user.city.name,
+      memberSince: user.createdAt,
+      averageRating: reviews._avg.rating ?? 0,
+      totalReviews: reviews._count.rating,
+      completedFreights,
+      vehicles:
+        roleType === RoleTypeEnum.CARRIER
+          ? user.vehicles.map((v) => ({
+              id: v.id,
+              vehicleCategoryName: v.vehicleCategory.name,
+              model: v.model,
+              capacityKg: Number(v.capacityKg),
+            }))
+          : [],
+    };
   }
 }

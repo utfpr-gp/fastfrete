@@ -1,3 +1,9 @@
+export interface ReviewReviewer {
+  id: string;
+  name: string;
+  roleType: string | null;
+}
+
 export class Review {
   readonly id: string;
   readonly freightId: string;
@@ -6,6 +12,8 @@ export class Review {
   readonly rating: number;
   readonly comment: string | null;
   readonly createdAt: Date;
+  readonly reviewer?: ReviewReviewer;
+  readonly freightTitle?: string;
 
   constructor(props: Review) {
     Object.assign(this, props);

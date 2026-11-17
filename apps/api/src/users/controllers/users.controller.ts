@@ -1,4 +1,12 @@
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Body,
+  Param,
+  ParseUUIDPipe,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiResponse,
@@ -8,9 +16,11 @@ import {
 import { UsersService } from '../users.service.js';
 import { UpdateUserDto } from '../dto/update-user.dto.js';
 import { UserResponseDto } from '../dto/user-response.dto.js';
+import { PublicProfileResponseDto } from '../dto/public-profile-response.dto.js';
 import { UserMapper } from '../mappers/user.mapper.js';
 import { AuthorizationGuard } from '../../authorization/guards/authorization.guard.js';
 import { Permissions } from '../../authorization/decorators/permissions.decorator.js';
+import { RoleTypes } from '../../authorization/decorators/role-types.decorator.js';
 import { CurrentUser } from '../../authorization/decorators/current-user.decorator.js';
 import type { CurrentUserData } from '../../authorization/decorators/current-user.decorator.js';
 import { CUSTOMER_PERMISSIONS } from '../../authorization/definitions/permissions.definition.js';
@@ -86,5 +96,37 @@ export class UsersController {
   ): Promise<UserResponseDto> {
     const user = await this.usersService.update(currentUser.id, updateUserDto);
     return UserMapper.toResponse(user);
+  }
+
+  @Get(':id/public-profile')
+  @RoleTypes(RoleTypeEnum.CUSTOMER, RoleTypeEnum.CARRIER, RoleTypeEnum.ADMIN)
+  @Permissions(
+    CUSTOMER_PERMISSIONS.PROFILE_READ,
+    CARRIER_PERMISSIONS.PROFILE_READ,
+  )
+  @ApiAuthorization({
+    summary: 'Obter perfil público de um usuário',
+    description:
+      'Retorna dados públicos de um cliente ou fretista ativo: nome (abreviado para clientes), cidade, estatísticas de avaliação e, para fretistas, veículos ativos. Não expõe e-mail nem telefone.',
+    roleTypes: [
+      RoleTypeEnum.CUSTOMER,
+      RoleTypeEnum.CARRIER,
+      RoleTypeEnum.ADMIN,
+    ],
+    permissions: [
+      CUSTOMER_PERMISSIONS.PROFILE_READ,
+      CARRIER_PERMISSIONS.PROFILE_READ,
+    ],
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Perfil público retornado com sucesso',
+    type: PublicProfileResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Perfil não encontrado' })
+  async getPublicProfile(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<PublicProfileResponseDto> {
+    return this.usersService.getPublicProfile(id);
   }
 }
