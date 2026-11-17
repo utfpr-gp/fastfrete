@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { Application } from '~~/domains/applications/entities/application.entity'
+import type { PublicProfile } from '~~/domains/users/entities/public-profile.entity'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
+import StarRating from '~/components/ui/StarRating.vue'
 
 interface Props {
   application: Application
   freightStatus: string
+  freighter?: PublicProfile | null
 }
 
 defineProps<Props>()
@@ -61,19 +64,32 @@ function formatDate(date: string) {
             <UserAvatar size="lg" />
 
             <div class="flex-1">
-              <h3 class="text-lg font-semibold text-gray-900 mb-1">Fretista</h3>
-              <div class="flex items-center gap-2 mb-2">
-                <div class="flex items-center gap-1">
-                  <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
-                  <span class="text-sm font-medium">4.8</span>
-                </div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-1">
+                {{ freighter?.name ?? 'Fretista' }}
+              </h3>
+              <div
+                v-if="freighter && freighter.stats.totalReviews > 0"
+                class="flex items-center gap-2 mb-2"
+              >
+                <StarRating :rating="freighter.stats.averageRating" />
+                <span class="text-sm font-medium">{{
+                  freighter.stats.averageRating.toFixed(1)
+                }}</span>
                 <span class="text-gray-400">•</span>
-                <span class="text-sm text-gray-600">12 avaliações</span>
+                <span class="text-sm text-gray-600"
+                  >{{ freighter.stats.totalReviews }} avaliações</span
+                >
               </div>
-              <p class="text-sm text-gray-600">
-                Fretista experiente com avaliações positivas. Disponível para fretes na região de
-                Guarapuava.
+              <div v-else class="text-sm text-gray-500 mb-2">Sem avaliações</div>
+              <p v-if="freighter" class="text-sm text-gray-600 mb-2">
+                {{ freighter.cityName }} • {{ freighter.stats.completedFreights }} fretes realizados
               </p>
+              <a
+                :href="`/users/${application.freighterId}`"
+                class="text-sm text-amber-600 hover:text-amber-700 font-medium"
+              >
+                Ver perfil completo
+              </a>
             </div>
           </div>
 

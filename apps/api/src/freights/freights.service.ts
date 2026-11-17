@@ -20,6 +20,7 @@ import {
   FreightDateMode,
 } from './entities/freight.entity.js';
 import { FreightMapper } from './mappers/freight.mapper.js';
+import { abbreviateName } from '../common/utils/name.util.js';
 import { FreightResponseDto } from './dto/freight-response.dto.js';
 import { PaginatedResponseDto } from '../common/pagination/index.js';
 
@@ -212,19 +213,11 @@ export class FreightsService {
     if (summary) {
       response.client = {
         ...summary,
-        name: this.abbreviateName(summary.name),
+        name: abbreviateName(summary.name),
         averageRating: Math.round(summary.averageRating * 10) / 10,
       };
     }
     return response;
-  }
-
-  private abbreviateName(fullName: string): string {
-    const parts = fullName.trim().split(/\s+/);
-    if (parts.length < 2) {
-      return parts[0];
-    }
-    return `${parts[0]} ${parts[parts.length - 1][0].toUpperCase()}.`;
   }
 
   async update(

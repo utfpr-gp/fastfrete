@@ -15,6 +15,9 @@ import { CryptoService } from '../common/crypto/crypto.service.js';
 import { PaginatedResponseDto } from '../common/pagination/index.js';
 import { UserMapper } from './mappers/user.mapper.js';
 import { UserResponseDto } from './dto/user-response.dto.js';
+import { PublicProfileResponseDto } from './dto/public-profile-response.dto.js';
+import { RoleTypeEnum } from '../authorization/definitions/role-types.definition.js';
+import { abbreviateName } from '../common/utils/name.util.js';
 
 @Injectable()
 export class UsersService {
@@ -82,6 +85,31 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async getPublicProfile(id: string): Promise<PublicProfileResponseDto> {
+    const profile = await this.usersRepository.getPublicProfile(id);
+
+    if (!profile) {
+      throw new NotFoundException(`Perfil com ID ${id} não encontrado`);
+    }
+
+    return {
+      id: profile.id,
+      name:
+        profile.roleType === RoleTypeEnum.CUSTOMER
+          ? abbreviateName(profile.name)
+          : profile.name,
+      roleType: profile.roleType,
+      cityName: profile.cityName,
+      memberSince: profile.memberSince,
+      stats: {
+        averageRating: Math.round(profile.averageRating * 10) / 10,
+        totalReviews: profile.totalReviews,
+        completedFreights: profile.completedFreights,
+      },
+      vehicles: profile.vehicles,
+    };
   }
 
   async findByEmail(email: string): Promise<User | null> {

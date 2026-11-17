@@ -18,7 +18,6 @@ export class ReviewHttpRepository implements IReviewRepository {
   async findAll(filter: ReviewsFilterDto): Promise<HttpResult<PaginatedResponse<Review>>> {
     const params: Record<string, string | number> = {}
 
-    if (filter.reviewedId) params.reviewedId = filter.reviewedId
     if (filter.page) params.page = filter.page
     if (filter.limit) params.limit = filter.limit
 

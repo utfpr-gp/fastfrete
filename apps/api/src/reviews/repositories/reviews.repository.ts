@@ -71,6 +71,18 @@ export class ReviewsRepository implements IReviewsRepository {
         skip,
         take,
         orderBy: { createdAt: 'desc' },
+        include: {
+          reviewer: {
+            select: {
+              id: true,
+              name: true,
+              userRoles: {
+                select: { role: { select: { roleType: true } } },
+              },
+            },
+          },
+          freight: { select: { title: true } },
+        },
       }),
     ]);
 

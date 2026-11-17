@@ -46,7 +46,7 @@ function logout() {
               tabindex="-1"
               class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
             >
-              <li><a>Perfil</a></li>
+              <li v-if="!isAdmin"><a href="/profile">Perfil</a></li>
               <li><a @click="logout">Logout</a></li>
             </ul>
           </div>

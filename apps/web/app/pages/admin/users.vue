@@ -248,9 +248,7 @@ await loadUsers()
           >
             «
           </button>
-          <button class="join-item btn btn-sm">
-            Página {{ currentPage }} de {{ totalPages }}
-          </button>
+          <button class="join-item btn btn-sm">Página {{ currentPage }} de {{ totalPages }}</button>
           <button
             class="join-item btn btn-sm"
             :disabled="currentPage >= totalPages"
@@ -270,7 +268,8 @@ await loadUsers()
       <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
         <h3 class="text-lg font-bold mb-1">Suspender Usuário</h3>
         <p class="text-sm text-gray-500 mb-4">
-          Suspender <strong>{{ userToSuspend?.name }}</strong>. O usuário não poderá mais acessar o sistema.
+          Suspender <strong>{{ userToSuspend?.name }}</strong
+          >. O usuário não poderá mais acessar o sistema.
         </p>
 
         <div class="form-control">

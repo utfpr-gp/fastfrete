@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { Application } from '~~/domains/applications/entities/application.entity'
+import type { PublicProfile } from '~~/domains/users/entities/public-profile.entity'
 import UserAvatar from '~/components/ui/UserAvatar.vue'
+import StarRating from '~/components/ui/StarRating.vue'
 
 interface Props {
   application: Application
   freightStatus: string
+  freighter?: PublicProfile | null
 }
 
 defineProps<Props>()
@@ -28,12 +31,17 @@ function formatPrice(price: string | number) {
       <div class="flex-1">
         <div class="flex justify-between items-start mb-2">
           <div>
-            <h3 class="font-semibold text-gray-900">Fretista</h3>
-            <div class="flex items-center gap-1 text-sm text-gray-600">
-              <span>⭐ 4.8</span>
+            <h3 class="font-semibold text-gray-900">{{ freighter?.name ?? 'Fretista' }}</h3>
+            <div
+              v-if="freighter && freighter.stats.totalReviews > 0"
+              class="flex items-center gap-1 text-sm text-gray-600"
+            >
+              <StarRating :rating="freighter.stats.averageRating" size="sm" />
+              <span>{{ freighter.stats.averageRating.toFixed(1) }}</span>
               <span class="text-gray-400">•</span>
-              <span>12 avaliações</span>
+              <span>{{ freighter.stats.totalReviews }} avaliações</span>
             </div>
+            <div v-else class="text-sm text-gray-500">Sem avaliações</div>
           </div>
 
           <div class="text-right">
@@ -49,17 +57,25 @@ function formatPrice(price: string | number) {
             VEÍCULO: {{ application.vehicle?.vehicleCategoryName || 'Não informado' }}
           </div>
           <p class="text-sm text-gray-600 line-clamp-2">
-            Fretista disponível para realizar o serviço.
+            {{ application.message || 'Sem mensagem do fretista.' }}
           </p>
         </div>
 
         <div class="flex justify-between items-center gap-2">
-          <button
-            class="text-sm text-amber-600 hover:text-amber-700 font-medium"
-            @click="emit('viewDetails', application)"
-          >
-            Ver Perfil Completo
-          </button>
+          <div class="flex gap-4">
+            <button
+              class="text-sm text-amber-600 hover:text-amber-700 font-medium"
+              @click="emit('viewDetails', application)"
+            >
+              Ver Proposta
+            </button>
+            <a
+              :href="`/users/${application.freighterId}`"
+              class="text-sm text-amber-600 hover:text-amber-700 font-medium"
+            >
+              Ver Perfil
+            </a>
+          </div>
 
           <div v-if="freightStatus === 'OPEN'" class="flex gap-2">
             <button

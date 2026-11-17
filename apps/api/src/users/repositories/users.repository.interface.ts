@@ -39,6 +39,25 @@ export interface UsersFilters {
   status?: UserStatus;
 }
 
+export interface PublicProfileVehicle {
+  id: string;
+  vehicleCategoryName: string;
+  model: string;
+  capacityKg: number;
+}
+
+export interface PublicProfileData {
+  id: string;
+  name: string;
+  roleType: RoleTypeEnum.CUSTOMER | RoleTypeEnum.CARRIER;
+  cityName: string;
+  memberSince: Date;
+  averageRating: number;
+  totalReviews: number;
+  completedFreights: number;
+  vehicles: PublicProfileVehicle[];
+}
+
 export interface IUsersRepository {
   /**
    * Create a user with an assigned role
@@ -62,4 +81,5 @@ export interface IUsersRepository {
   findByEmail(email: string): Promise<User | null>;
   update(id: string, data: UpdateUserData): Promise<User>;
   delete(id: string): Promise<User>;
+  getPublicProfile(id: string): Promise<PublicProfileData | null>;
 }
