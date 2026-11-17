@@ -7,7 +7,7 @@ import {
   UsersFilters,
   PublicProfileData,
 } from './users.repository.interface.js';
-import { User } from '../entities/user.entity.js';
+import { User, UserStatus } from '../entities/user.entity.js';
 import { UserMapper } from '../mappers/user.mapper.js';
 import { RoleTypeEnum } from '../../authorization/definitions/role-types.definition.js';
 import {
@@ -168,9 +168,12 @@ export class UsersRepository implements IUsersRepository {
     return UserMapper.toDomain(prismaUser);
   }
 
-  async getPublicProfile(id: string): Promise<PublicProfileData | null> {
+  async getPublicProfile(
+    id: string,
+    includeSuspended = false,
+  ): Promise<PublicProfileData | null> {
     const user = await this.prisma.user.findFirst({
-      where: { id, status: 'ACTIVE' },
+      where: includeSuspended ? { id } : { id, status: 'ACTIVE' },
       include: {
         city: { select: { name: true } },
         userRoles: { include: { role: { include: { roleType: true } } } },
@@ -215,6 +218,7 @@ export class UsersRepository implements IUsersRepository {
     return {
       id: user.id,
       name: user.name,
+      status: UserStatus[user.status],
       roleType,
       cityName: user.city.name,
       memberSince: user.createdAt,

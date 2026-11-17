@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleTypeEnum } from '../../authorization/definitions/role-types.definition.js';
+import { UserStatus } from '../entities/user.entity.js';
 
 export class PublicProfileStatsDto {
   @ApiProperty({ example: 4.8 })
@@ -32,6 +33,12 @@ export class PublicProfileResponseDto {
 
   @ApiProperty({ example: 'Ana S.' })
   name!: string;
+
+  @ApiProperty({
+    enum: UserStatus,
+    description: 'Usuários suspensos só são visíveis para administradores',
+  })
+  status!: UserStatus;
 
   @ApiProperty({ enum: [RoleTypeEnum.CUSTOMER, RoleTypeEnum.CARRIER] })
   roleType!: RoleTypeEnum.CUSTOMER | RoleTypeEnum.CARRIER;

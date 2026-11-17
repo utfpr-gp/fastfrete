@@ -49,6 +49,7 @@ export interface PublicProfileVehicle {
 export interface PublicProfileData {
   id: string;
   name: string;
+  status: UserStatus;
   roleType: RoleTypeEnum.CUSTOMER | RoleTypeEnum.CARRIER;
   cityName: string;
   memberSince: Date;
@@ -81,5 +82,8 @@ export interface IUsersRepository {
   findByEmail(email: string): Promise<User | null>;
   update(id: string, data: UpdateUserData): Promise<User>;
   delete(id: string): Promise<User>;
-  getPublicProfile(id: string): Promise<PublicProfileData | null>;
+  getPublicProfile(
+    id: string,
+    includeSuspended?: boolean,
+  ): Promise<PublicProfileData | null>;
 }
