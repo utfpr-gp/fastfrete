@@ -51,7 +51,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **Ator:** Fretista | **História:** Como fretista, quero criar uma conta com meus dados pessoais, tipo de veículo e capacidade de carga, para receber solicitações de clientes.
 
 **✅ Critérios de Aceitação:**
-* [ ] Campos obrigatórios: nome, telefone, cidade, e-mail, senha, tipo de veículo e capacidade.
+* [x] Campos obrigatórios: nome, telefone, cidade, e-mail, senha, tipo de veículo e capacidade.
 * [x] A cidade disponível deve ser apenas Guarapuava.
 * [x] Possibilidade de cadastrar mais de um tipo de veículo.
 * [x] Permitir atualização dos dados do perfil após o cadastro.
@@ -117,7 +117,7 @@ Instrução para a IA/Desenvolvedor: Cada bloco abaixo representa uma necessidad
 **✅ Critérios de Aceitação:**
 * [x] Listar fretes do cliente logado, organizados em "Ativos" e "Concluídos".
 * [x] Cada cartão deve exibir título, categoria de veículo, status e quantidade de candidatos.
-* [ ] Ao clicar, abrir detalhes com candidatos e sugestões de fretistas.
+* [x] Ao clicar, abrir detalhes com candidatos e sugestões de fretistas.
 
 ### 🔴 US12 - Lista de Fretes Disponíveis (Fretista) (Must Have)
 **Ator:** Fretista | **História:** Como fretista, quero visualizar fretes disponíveis cadastrados por clientes, para identificar oportunidades de serviço.
