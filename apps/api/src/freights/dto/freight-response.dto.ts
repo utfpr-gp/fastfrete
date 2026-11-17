@@ -22,6 +22,12 @@ export class FreightClientSummaryDto {
   @ApiProperty({ example: 12 })
   totalReviews!: number;
 
+  @ApiPropertyOptional({
+    example: '+5542999990000',
+    description: 'Telefone do cliente, enviado apenas ao fretista com proposta aceita',
+  })
+  phoneNumber?: string;
+
   @ApiProperty({ example: 15 })
   completedFreights!: number;
 }

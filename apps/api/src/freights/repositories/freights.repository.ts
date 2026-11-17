@@ -185,11 +185,34 @@ export class FreightsRepository implements IFreightsRepository {
     return FreightMapper.toDomain(prismaFreight);
   }
 
+  async cancelWithPendingApplications(id: string): Promise<Freight | null> {
+    return this.prisma.$transaction(async (tx) => {
+      // Atualização condicional: só cancela se o frete ainda puder ser cancelado
+      const updated = await tx.freight.updateMany({
+        where: { id, status: { in: ['OPEN', 'NEGOTIATING'] } },
+        data: { status: 'CANCELLED' },
+      });
+      if (updated.count !== 1) {
+        return null;
+      }
+      // Propostas ainda pendentes deixam de valer quando o frete é cancelado
+      await tx.application.updateMany({
+        where: { freightId: id, status: 'PENDING' },
+        data: { status: 'REJECTED' },
+      });
+      const prismaFreight = await tx.freight.findUniqueOrThrow({
+        where: { id },
+        include: includeFreightRelations,
+      });
+      return FreightMapper.toDomain(prismaFreight);
+    });
+  }
+
   async getClientSummary(clientId: string): Promise<ClientSummary | null> {
     const [user, reviews, completedFreights] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: clientId },
-        select: { name: true },
+        select: { name: true, phoneNumber: true },
       }),
       this.prisma.review.aggregate({
         where: { reviewedId: clientId },
@@ -210,6 +233,7 @@ export class FreightsRepository implements IFreightsRepository {
       averageRating: reviews._avg.rating ?? 0,
       totalReviews: reviews._count.rating,
       completedFreights,
+      phoneNumber: user.phoneNumber,
     };
   }
 

@@ -64,6 +64,7 @@ export interface ClientSummary {
   averageRating: number;
   totalReviews: number;
   completedFreights: number;
+  phoneNumber: string;
 }
 
 export interface IFreightsRepository {
@@ -83,6 +84,7 @@ export interface IFreightsRepository {
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;
   getClientSummary(clientId: string): Promise<ClientSummary | null>;
+  cancelWithPendingApplications(id: string): Promise<Freight | null>;
   findActiveVehicleCategoryNames(userId: string): Promise<string[]>;
   findAllForAdmin(
     filters: AdminFreightsFilters,
