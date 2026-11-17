@@ -13,7 +13,7 @@ import {
   ApiExtraModels,
 } from '@nestjs/swagger';
 import { FreightsService } from '../freights.service.js';
-import { FreightsFilterDto } from '../dto/freights-filter.dto.js';
+import { CarrierFreightsFilterDto } from '../dto/carrier-freights-filter.dto.js';
 import { FreightResponseDto } from '../dto/freight-response.dto.js';
 import { AuthorizationGuard } from '../../authorization/guards/authorization.guard.js';
 import { Permissions } from '../../authorization/decorators/permissions.decorator.js';
@@ -42,15 +42,16 @@ export class CarrierFreightsController {
   @ApiAuthorization({
     summary: 'Listar fretes disponíveis',
     description:
-      'Retorna a lista paginada de fretes abertos para fretistas se candidatarem.',
+      'Retorna a lista paginada de fretes abertos para fretistas se candidatarem. Suporta filtro por categoria, cidade de origem e compatibilidade com os veículos ativos do fretista (compatibleOnly).',
     roleTypes: [RoleTypeEnum.CARRIER],
     permissions: [CARRIER_PERMISSIONS.FREIGHTS_LIST],
   })
   @ApiPaginatedResponse(FreightResponseDto)
   async findAllOpen(
-    @Query() filterDto: FreightsFilterDto,
+    @Query() filterDto: CarrierFreightsFilterDto,
+    @CurrentUser() currentUser: CurrentUserData,
   ): Promise<PaginatedResponseDto<FreightResponseDto>> {
-    return this.freightsService.findAllOpen(filterDto);
+    return this.freightsService.findAllOpen(filterDto, currentUser.id);
   }
 
   @Get(':id')

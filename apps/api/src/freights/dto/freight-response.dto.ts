@@ -75,6 +75,9 @@ export class FreightResponseDto {
   @ApiProperty({ example: '08:00-12:00', nullable: true })
   availabilityWindow!: string | null;
 
+  @ApiProperty({ example: 350, nullable: true })
+  suggestedPrice!: number | null;
+
   @ApiProperty({ enum: FreightStatus })
   status!: FreightStatus;
 

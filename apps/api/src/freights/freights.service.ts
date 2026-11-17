@@ -14,6 +14,7 @@ import { ApplicationStatus } from '../applications/entities/application.entity.j
 import { CreateFreightDto } from './dto/create-freight.dto.js';
 import { UpdateFreightDto } from './dto/update-freight.dto.js';
 import { FreightsFilterDto } from './dto/freights-filter.dto.js';
+import { CarrierFreightsFilterDto } from './dto/carrier-freights-filter.dto.js';
 import { AdminFreightsFilterDto } from './dto/admin-freights-filter.dto.js';
 import { AdminFreightResponseDto } from './dto/admin-freight-response.dto.js';
 import {
@@ -63,6 +64,7 @@ export class FreightsService {
       dateMode: FreightDateMode[dto.dateMode],
       exactDatetime: dto.exactDatetime ? new Date(dto.exactDatetime) : null,
       availabilityWindow: dto.availabilityWindow ?? null,
+      suggestedPrice: dto.suggestedPrice ?? null,
     });
 
     return FreightMapper.toResponse(freight);
@@ -110,12 +112,41 @@ export class FreightsService {
   }
 
   async findAllOpen(
-    filterDto: FreightsFilterDto,
+    filterDto: CarrierFreightsFilterDto,
+    carrierId: string,
   ): Promise<PaginatedResponseDto<FreightResponseDto>> {
-    const { page = 1, limit = 10, vehicleCategory, orderBy } = filterDto;
+    const {
+      page = 1,
+      limit = 10,
+      vehicleCategory,
+      orderBy,
+      cityId,
+      compatibleOnly,
+    } = filterDto;
+
+    let vehicleCategories = vehicleCategory ? [vehicleCategory] : undefined;
+
+    if (compatibleOnly) {
+      const compatible =
+        await this.freightsRepository.findActiveVehicleCategoryNames(
+          carrierId,
+        );
+      vehicleCategories = vehicleCategories
+        ? vehicleCategories.filter((category) => compatible.includes(category))
+        : compatible;
+    }
+
+    if (vehicleCategories && vehicleCategories.length === 0) {
+      return PaginatedResponseDto.create({
+        data: [],
+        total: 0,
+        page,
+        limit,
+      });
+    }
 
     const result = await this.freightsRepository.findAllOpen(
-      { vehicleCategory, orderBy },
+      { vehicleCategories, cityId, orderBy },
       { page, limit },
     );
 
@@ -281,6 +312,7 @@ export class FreightsService {
         ? new Date(dto.exactDatetime)
         : undefined,
       availabilityWindow: dto.availabilityWindow,
+      suggestedPrice: dto.suggestedPrice,
     });
 
     return FreightMapper.toResponse(updated);

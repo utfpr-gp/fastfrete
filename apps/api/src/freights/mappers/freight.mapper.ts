@@ -47,6 +47,10 @@ export class FreightMapper {
       dateMode: this.mapDateMode(prismaFreight.dateMode),
       exactDatetime: prismaFreight.exactDatetime,
       availabilityWindow: prismaFreight.availabilityWindow,
+      suggestedPrice:
+        prismaFreight.suggestedPrice === null
+          ? null
+          : Number(prismaFreight.suggestedPrice),
       status: this.mapStatus(prismaFreight.status),
       createdAt: prismaFreight.createdAt,
       updatedAt: prismaFreight.updatedAt,
@@ -87,6 +91,7 @@ export class FreightMapper {
       dateMode: freight.dateMode,
       exactDatetime: freight.exactDatetime,
       availabilityWindow: freight.availabilityWindow,
+      suggestedPrice: freight.suggestedPrice,
       status: freight.status,
       createdAt: freight.createdAt,
       updatedAt: freight.updatedAt,

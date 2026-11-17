@@ -2,7 +2,10 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  Max,
+  Min,
   IsString,
   IsUUID,
   IsDateString,
@@ -91,4 +94,17 @@ export class CreateFreightDto {
   @IsString()
   @MaxLength(30, { message: 'A janela de disponibilidade deve ter no máximo 30 caracteres' })
   availabilityWindow?: string;
+
+  @ApiPropertyOptional({
+    example: 350,
+    description: 'Valor sugerido pelo cliente, em reais (opcional)',
+  })
+  @IsOptional()
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'O valor sugerido deve ser um número com até 2 casas decimais' },
+  )
+  @Min(0.01, { message: 'O valor sugerido deve ser maior que zero' })
+  @Max(1000000, { message: 'O valor sugerido deve ser no máximo R$ 1.000.000' })
+  suggestedPrice?: number | null;
 }

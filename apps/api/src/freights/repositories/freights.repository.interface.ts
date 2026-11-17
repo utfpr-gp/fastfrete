@@ -20,6 +20,7 @@ export interface CreateFreightData {
   dateMode: FreightDateMode;
   exactDatetime?: Date | null;
   availabilityWindow?: string | null;
+  suggestedPrice?: number | null;
 }
 
 export interface UpdateFreightData {
@@ -37,11 +38,14 @@ export interface UpdateFreightData {
   dateMode?: FreightDateMode;
   exactDatetime?: Date | null;
   availabilityWindow?: string | null;
+  suggestedPrice?: number | null;
 }
 
 export interface FreightsFilters {
   status?: FreightStatus;
   vehicleCategory?: string;
+  vehicleCategories?: string[];
+  cityId?: string;
   orderBy?: FreightOrderBy;
 }
 
@@ -79,6 +83,7 @@ export interface IFreightsRepository {
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;
   getClientSummary(clientId: string): Promise<ClientSummary | null>;
+  findActiveVehicleCategoryNames(userId: string): Promise<string[]>;
   findAllForAdmin(
     filters: AdminFreightsFilters,
     pagination: PaginationOptions,

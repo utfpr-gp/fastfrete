@@ -58,6 +58,7 @@ export class FreightsRepository implements IFreightsRepository {
         dateMode: data.dateMode,
         exactDatetime: data.exactDatetime ?? null,
         availabilityWindow: data.availabilityWindow ?? null,
+        suggestedPrice: data.suggestedPrice ?? null,
       },
       include: includeFreightRelations,
     });
@@ -105,9 +106,16 @@ export class FreightsRepository implements IFreightsRepository {
 
     const where = {
       status: FreightStatus.OPEN,
-      ...buildWhereClause([
-        { field: 'vehicleCategory', mode: FilterMode.EQUALS, value: filters.vehicleCategory },
-      ]),
+      ...(filters.vehicleCategories
+        ? { vehicleCategory: { in: filters.vehicleCategories } }
+        : buildWhereClause([
+            {
+              field: 'vehicleCategory',
+              mode: FilterMode.EQUALS,
+              value: filters.vehicleCategory,
+            },
+          ])),
+      ...(filters.cityId ? { originCityId: filters.cityId } : {}),
     };
 
     const [total, prismaFreights] = await Promise.all([
@@ -248,5 +256,14 @@ export class FreightsRepository implements IFreightsRepository {
       })),
       total,
     };
+  }
+
+  async findActiveVehicleCategoryNames(userId: string): Promise<string[]> {
+    const vehicles = await this.prisma.vehicle.findMany({
+      where: { userId, active: true },
+      select: { vehicleCategory: { select: { name: true } } },
+    });
+
+    return [...new Set(vehicles.map((v) => v.vehicleCategory.name))];
   }
 }
