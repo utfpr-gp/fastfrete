@@ -8,6 +8,7 @@ import { seedRoles } from './seeds/role.seed';
 import { seedRolePermissions } from './seeds/role-permission.seed';
 import { seedUserRoles } from './seeds/user-role.seed';
 import { seedVehicleCategories } from './seeds/vehicle-category.seed';
+import { seedVehicles } from './seeds/vehicle.seed';
 import { seedCities, getDefaultCity } from './seeds/city.seed';
 
 // load .env from project root (cwd is apps/api when running the script)
@@ -46,6 +47,12 @@ async function main(): Promise<void> {
     await seedRolePermissions(prisma, roles, permissions, roleTypes);
     await seedUserRoles(prisma, usersResult.items, roles);
 
+    const vehicles = await seedVehicles(
+      prisma,
+      usersResult.items,
+      vehicleCategories,
+    );
+
     console.log('\n✨ Database seeding completed successfully!');
     console.log('\n📊 Summary:');
     console.log(`   - Cities: ${citiesResult.created} created, ${citiesResult.skipped} skipped`);
@@ -56,6 +63,7 @@ async function main(): Promise<void> {
     console.log(`   - Permissions: ${permissions.length}`);
     console.log(`   - Roles: ${roles.length}`);
     console.log(`   - Vehicle categories: ${vehicleCategories.length}`);
+    console.log(`   - Vehicles: ${vehicles.length}`);
   } catch (error) {
     console.error('\n❌ Error during seeding:', error);
     throw error;

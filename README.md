@@ -11,39 +11,81 @@ Aplicação web voltada para a solicitação e oferta de fretes urbanos de peque
 Toda a especificação e planejamento do sistema estão versionados na pasta `/docs`:
 * 📄 **[PRD (Product Requirements Document)](./docs/prd.md):** Visão do produto, Atores, Histórias de Usuário priorizadas (MoSCoW) para o MVP e Regras de Negócio.
 * 📐 **[SDD (Software Design Document)](./docs/sdd.md):** Arquitetura Monorepo, Diagrama Entidade-Relacionamento (Mermaid) do banco de dados, DTOs e Stack definida.
+* 🗂️ **[Backlog e Sprints](./docs/backlog-sprints.md):** Status atual do desenvolvimento, backlog priorizado e sprints.
 
 ## 🛠 3. Stack Tecnológica
-* **Arquitetura:** Monorepo (Backend e Frontend no mesmo repositório compartilhando código via Workspaces).
-* **Backend (API):** NestJS, TypeScript, JWT (Autenticação e Autorização).
-* **Banco de Dados:** PostgreSQL (nuvem via Neon) gerenciado pelo Prisma ORM.
-* **Frontend (Web App):** Vue.js (Composition API), Pinia (Gerenciamento de Estado) e Tailwind CSS/Flowbite (Estilização responsiva).
+* **Arquitetura:** Monorepo com npm Workspaces (`apps/api` e `apps/web`).
+* **Backend (API):** NestJS 11, TypeScript, JWT + Passport (autenticação) e RBAC (autorização por perfil e permissão).
+* **Banco de Dados:** PostgreSQL 16 rodando localmente via Docker, gerenciado pelo Prisma ORM com migrations versionadas.
+* **Frontend (Web App):** Nuxt (Vue 3, Composition API), Pinia (estado) e Tailwind CSS (estilização responsiva, mobile-first).
+* **Documentação da API:** Swagger (OpenAPI) em `/api/docs`.
+* **Testes:** Jest.
 
 ## 🚀 4. Quick Start (Como Executar)
 
-**1. Clone o repositório:**
+### Pré-requisitos
+* Node.js 20 ou superior
+* Docker e Docker Compose
+
+### 1. Clone o repositório
 ```bash
-git clone [https://github.com/seu-usuario/fastfrete.git](https://github.com/seu-usuario/fastfrete.git)
+git clone https://github.com/utfpr-gp/fastfrete.git
 cd fastfrete
+```
 
-**2. Instalação Unificada:**
-Instale as dependências de todos os pacotes do monorepo de uma só vez a partir da raiz:
-
+### 2. Instale as dependências
+Instale os pacotes de todo o monorepo de uma só vez, a partir da raiz:
+```bash
 npm install
+```
 
-**3. Configuração do Banco de Dados:**
-Certifique-se de que configurou a sua ligação à Neon no ficheiro de ambiente da API:
+### 3. Suba o banco de dados
+```bash
+npm run docker:up
+```
+O PostgreSQL fica disponível em `localhost:5432` (usuário, senha e banco: `fastfrete`).
 
-# Copie o exemplo para o arquivo definitivo
+### 4. Configure as variáveis de ambiente
+```bash
 cp apps/api/.env-example apps/api/.env
+cp apps/web/.env-example apps/web/.env
+```
+Ajuste o `DATABASE_URL` em `apps/api/.env` para o banco local, por exemplo:
+`postgresql://fastfrete:fastfrete@localhost:5432/fastfrete`. O `API_URL` do frontend aponta para `http://localhost:3000`.
 
-# Sincronize o esquema do Prisma com o banco de dados na nuvem
-npx prisma db push --schema=apps/api/prisma/schema.prisma
+### 5. Aplique as migrations e popule o banco
+Execute a partir de `apps/api`:
+```bash
+cd apps/api
+npx prisma migrate dev
+npm run prisma:seed
+cd ../..
+```
+> ⚠️ Use sempre `prisma migrate dev`, nunca `prisma db push`, para manter o histórico de migrations consistente.
 
-**4. Execução em Desenvolvimento:**
-Utilize a flag -w (workspace) para iniciar os servidores diretamente da raiz:
+O seed cria a cidade (Guarapuava), os perfis e permissões, as categorias de veículo, os veículos de demonstração e os usuários abaixo (somente para desenvolvimento):
 
-Iniciar o Backend (NestJS):
-npm run start:dev -w api
+| Perfil | E-mail | Senha |
+| :--- | :--- | :--- |
+| Administrador | `admin@fastfrete.com` | `admin123456` |
+| Cliente | `john.doe@example.com` | `password123` |
+| Fretista | `jane.smith@example.com` | `password123` |
 
-Iniciar o Frontend (Vue.js):
-npm run dev -w web
+### 6. Execute em desenvolvimento
+Em dois terminais, a partir da raiz:
+```bash
+# Backend (NestJS) em http://localhost:3000
+npm run dev:api
+
+# Frontend (Nuxt) em http://localhost:3001
+npm run dev:web
+```
+
+A documentação interativa da API (Swagger) fica em **http://localhost:3000/api/docs**.
+
+## 🧪 5. Testes
+```bash
+cd apps/api
+npm test
+```
+Os testes de integração em `apps/api/test/integration` exigem o banco de dados ativo.

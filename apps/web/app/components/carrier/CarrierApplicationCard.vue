@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Application } from '~~/domains/applications/entities/application.entity'
 import type { Freight } from '~~/domains/freights/entities/freight.entity'
+import { formatStreetAddress } from '~/support/address'
 
 interface Props {
   application: Application
@@ -105,7 +106,13 @@ function getStatusBadge(status: string) {
         <div class="flex items-start gap-2">
           <span class="text-xs font-semibold text-gray-500 w-16 shrink-0">ORIGEM</span>
           <span class="text-sm text-gray-900">
-            {{ freight.originStreet }}, {{ freight.originNumber }} - {{ freight.originDistrict }},
+            {{
+              formatStreetAddress(
+                freight.originStreet,
+                freight.originNumber,
+                freight.originDistrict
+              )
+            }},
             {{ freight.originCity.name }}
           </span>
         </div>
@@ -114,8 +121,13 @@ function getStatusBadge(status: string) {
         <div class="flex items-start gap-2">
           <span class="text-xs font-semibold text-gray-500 w-16 shrink-0">DESTINO</span>
           <span class="text-sm text-gray-900">
-            {{ freight.destinationStreet }}, {{ freight.destinationNumber }} -
-            {{ freight.destinationDistrict }}, {{ freight.destinationCity.name }}
+            {{
+              formatStreetAddress(
+                freight.destinationStreet,
+                freight.destinationNumber,
+                freight.destinationDistrict
+              )
+            }}, {{ freight.destinationCity.name }}
           </span>
         </div>
 

@@ -4,6 +4,7 @@ export interface User {
   email: string
   phoneNumber: string
   status: UserStatus
+  suspensionReason: string | null
   createdAt: Date
   updatedAt: Date
   roles: UserRoleResponseDto[]

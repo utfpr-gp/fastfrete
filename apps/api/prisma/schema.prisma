@@ -43,6 +43,7 @@ model User {
   password            String
   phoneNumber         String               @map("phone_number")
   status              UserStatus           @default(ACTIVE)
+  suspensionReason    String?              @map("suspension_reason") @db.VarChar(500)
   createdAt           DateTime             @default(now()) @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
   userRoles           UserRole[]

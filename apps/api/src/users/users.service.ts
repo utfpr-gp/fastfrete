@@ -3,13 +3,14 @@ import {
   Inject,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import type { IUsersRepository } from './repositories/users.repository.interface.js';
 import { USERS_REPOSITORY } from './repositories/users.repository.interface.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UsersFilterDto } from './dto/users-filter.dto.js';
-import { User } from './entities/user.entity.js';
+import { User, UserStatus } from './entities/user.entity.js';
 import { CryptoService } from '../common/crypto/crypto.service.js';
 import { PaginatedResponseDto } from '../common/pagination/index.js';
 import { UserMapper } from './mappers/user.mapper.js';
@@ -115,5 +116,35 @@ export class UsersService {
     await this.findOne(id);
 
     return this.usersRepository.delete(id);
+  }
+
+  async suspend(id: string, reason: string, adminId: string): Promise<User> {
+    if (id === adminId) {
+      throw new BadRequestException('Admin cannot suspend themselves');
+    }
+
+    const user = await this.findOne(id);
+
+    if (user.status === UserStatus.SUSPENDED) {
+      throw new ConflictException('User is already suspended');
+    }
+
+    return this.usersRepository.update(id, {
+      status: UserStatus.SUSPENDED,
+      suspensionReason: reason,
+    });
+  }
+
+  async reactivate(id: string): Promise<User> {
+    const user = await this.findOne(id);
+
+    if (user.status === UserStatus.ACTIVE) {
+      throw new ConflictException('User is already active');
+    }
+
+    return this.usersRepository.update(id, {
+      status: UserStatus.ACTIVE,
+      suspensionReason: null,
+    });
   }
 }

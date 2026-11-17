@@ -21,12 +21,15 @@ import {
 import { UsersService } from '../users.service.js';
 import { CreateUserDto } from '../dto/create-user.dto.js';
 import { UpdateUserDto } from '../dto/update-user.dto.js';
+import { SuspendUserDto } from '../dto/suspend-user.dto.js';
 import { UsersFilterDto } from '../dto/users-filter.dto.js';
 import { UserResponseDto } from '../dto/user-response.dto.js';
 import { UserMapper } from '../mappers/user.mapper.js';
 import { AuthorizationGuard } from '../../authorization/guards/authorization.guard.js';
 import { RoleTypes } from '../../authorization/decorators/role-types.decorator.js';
 import { Permissions } from '../../authorization/decorators/permissions.decorator.js';
+import { CurrentUser } from '../../authorization/decorators/current-user.decorator.js';
+import type { CurrentUserData } from '../../authorization/decorators/current-user.decorator.js';
 import { RoleTypeEnum } from '../../authorization/definitions/role-types.definition.js';
 import { ADMIN_PERMISSIONS } from '../../authorization/definitions/permissions.definition.js';
 import { ApiAuthorization } from '../../common/swagger/api-authorization.decorator.js';
@@ -149,6 +152,86 @@ export class AdminUsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     const user = await this.usersService.update(id, updateUserDto);
+    return UserMapper.toResponse(user);
+  }
+
+  @Patch(':id/suspend')
+  @Permissions(ADMIN_PERMISSIONS.USERS_UPDATE)
+  @ApiAuthorization({
+    summary: 'Suspender usuário',
+    description:
+      'Suspende um usuário do sistema, impedindo seu acesso. Requer um motivo para a suspensão. Admin não pode suspender a si mesmo.',
+    roleTypes: [RoleTypeEnum.ADMIN],
+    permissions: [ADMIN_PERMISSIONS.USERS_UPDATE],
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'UUID do usuário a ser suspenso',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuário suspenso com sucesso',
+    type: UserResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Admin tentando suspender a si mesmo',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuário não encontrado',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Usuário já está suspenso',
+  })
+  @ApiValidationError()
+  async suspend(
+    @Param('id') id: string,
+    @Body() suspendUserDto: SuspendUserDto,
+    @CurrentUser() currentUser: CurrentUserData,
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.suspend(
+      id,
+      suspendUserDto.reason,
+      currentUser.id,
+    );
+    return UserMapper.toResponse(user);
+  }
+
+  @Patch(':id/reactivate')
+  @HttpCode(HttpStatus.OK)
+  @Permissions(ADMIN_PERMISSIONS.USERS_UPDATE)
+  @ApiAuthorization({
+    summary: 'Reativar usuário',
+    description:
+      'Reativa um usuário suspenso, restaurando seu acesso ao sistema. Remove o motivo de suspensão.',
+    roleTypes: [RoleTypeEnum.ADMIN],
+    permissions: [ADMIN_PERMISSIONS.USERS_UPDATE],
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'UUID do usuário a ser reativado',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuário reativado com sucesso',
+    type: UserResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuário não encontrado',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Usuário já está ativo',
+  })
+  async reactivate(
+    @Param('id') id: string,
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.reactivate(id);
     return UserMapper.toResponse(user);
   }
 

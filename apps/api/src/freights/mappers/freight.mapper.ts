@@ -96,6 +96,22 @@ export class FreightMapper {
     };
   }
 
+  static toCarrierResponse(
+    freight: Freight,
+    revealFullAddress = false,
+  ): FreightResponseDto {
+    const response = this.toResponse(freight);
+    if (!revealFullAddress) {
+      response.originNumber = '';
+      response.destinationNumber = '';
+    }
+    return response;
+  }
+
+  static toCarrierResponseList(freights: Freight[]): FreightResponseDto[] {
+    return freights.map((f) => this.toCarrierResponse(f));
+  }
+
   static toResponseList(freights: Freight[]): FreightResponseDto[] {
     return freights.map((f) => this.toResponse(f));
   }

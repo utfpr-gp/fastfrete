@@ -2,6 +2,7 @@
 interface Props {
   name: string
   rating: number
+  totalReviews: number
   completedFreights: number
 }
 
@@ -25,13 +26,15 @@ defineProps<Props>()
       <div>
         <div class="font-semibold text-gray-900">{{ name }}</div>
         <div class="flex items-center gap-2 text-sm text-gray-600">
-          <span class="text-amber-500">★ {{ rating.toFixed(1) }}</span>
+          <template v-if="totalReviews > 0">
+            <span class="text-amber-500">★ {{ rating.toFixed(1) }}</span>
+            <span class="text-gray-400">({{ totalReviews }})</span>
+          </template>
+          <span v-else>Sem avaliações</span>
           <span>•</span>
           <span>{{ completedFreights }} fretes concluídos</span>
         </div>
       </div>
     </div>
-
-    <a href="#" class="text-amber-600 hover:text-amber-700 text-sm font-medium"> Ver Perfil </a>
   </div>
 </template>

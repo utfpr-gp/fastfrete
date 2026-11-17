@@ -45,6 +45,13 @@ export interface FreightsFilters {
   orderBy?: FreightOrderBy;
 }
 
+export interface ClientSummary {
+  name: string;
+  averageRating: number;
+  totalReviews: number;
+  completedFreights: number;
+}
+
 export interface IFreightsRepository {
   create(data: CreateFreightData): Promise<Freight>;
   findAllByClient(
@@ -61,4 +68,5 @@ export interface IFreightsRepository {
   findByIdAndClient(id: string, clientId: string): Promise<Freight | null>;
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;
+  getClientSummary(clientId: string): Promise<ClientSummary | null>;
 }
