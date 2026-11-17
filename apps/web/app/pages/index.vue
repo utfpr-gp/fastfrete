@@ -9,7 +9,7 @@ if (isAuthenticated) {
   } else if (isClient) {
     navigateTo('/client')
   } else if (isAdmin) {
-    navigateTo('/admin/users')
+    navigateTo('/admin')
   }
 }
 </script>

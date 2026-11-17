@@ -29,9 +29,7 @@ function logout() {
             >Publicar Anúncio</a
           >
           <a v-if="isCarrier" class="btn btn-outline btn-primary rounded-2xl">Meus fretes</a>
-          <a v-if="isAdmin" href="/admin/users" class="btn btn-outline btn-error rounded-2xl"
-            >Admin</a
-          >
+          <a v-if="isAdmin" href="/admin" class="btn btn-outline btn-error rounded-2xl">Admin</a>
           <!-- <div class="flex justify-center items-center w-10 h-10 bg-gray-200 rounded-full">
             <Icon name="uil:bell" class="text-gray-500" />
           </div> -->
