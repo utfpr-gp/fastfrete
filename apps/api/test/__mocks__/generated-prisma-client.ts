@@ -6,4 +6,8 @@ export class PrismaClient {
   constructor(options?: unknown) {
     void options;
   }
+
+  async $connect(): Promise<void> {}
+
+  async $disconnect(): Promise<void> {}
 }
