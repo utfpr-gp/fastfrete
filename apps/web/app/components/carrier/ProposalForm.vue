@@ -82,7 +82,7 @@ function handleSubmit() {
       <SubmitButton
         label="Enviar Proposta"
         :loading="props.loading"
-        class="w-full bg-amber-500 hover:bg-amber-600 text-white border-none"
+        class="w-full bg-amber-500 hover:bg-amber-400 text-gray-900 border-none"
         @click="handleSubmit"
       />
     </div>

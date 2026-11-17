@@ -1,12 +1,21 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { fileTypeFromBuffer } from 'file-type';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB em bytes
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+];
+
+export type ValidatedFile = Express.Multer.File & {
+  detectedExtension?: string;
+};
 
 @Injectable()
 export class FileValidationPipe implements PipeTransform {
-  async transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: ValidatedFile | undefined): Promise<ValidatedFile> {
     if (!value) {
       throw new BadRequestException('Arquivo é obrigatório');
     }
@@ -22,9 +31,11 @@ export class FileValidationPipe implements PipeTransform {
     }
 
     const fileType = await fileTypeFromBuffer(value.buffer);
-    
+
     if (!fileType) {
-      throw new BadRequestException('Não foi possível determinar o tipo do arquivo');
+      throw new BadRequestException(
+        'Não foi possível determinar o tipo do arquivo',
+      );
     }
 
     if (!ALLOWED_MIME_TYPES.includes(fileType.mime)) {
@@ -33,6 +44,8 @@ export class FileValidationPipe implements PipeTransform {
       );
     }
 
+    // Extensão definida pelo conteúdo real do arquivo, e não pelo nome enviado
+    value.detectedExtension = `.${fileType.ext === 'jpg' ? 'jpg' : fileType.ext}`;
     return value;
   }
 }

@@ -170,6 +170,11 @@ describe('AuthenticationController (Integration)', () => {
         phoneNumber: '+5511888888888',
         roleType: RoleTypeEnum.CARRIER,
         cityId: '11111111-1111-4111-8111-111111111111',
+        vehicle: {
+          vehicleCategory: 'Van',
+          model: 'Renault Master 2019',
+          capacityKg: 1200,
+        },
       };
 
       const mockRole = {
@@ -221,6 +226,10 @@ describe('AuthenticationController (Integration)', () => {
       prisma.user.findUnique.mockResolvedValue(null);
       prisma.role.findFirst.mockResolvedValue(mockRole);
       prisma.city.findUnique.mockResolvedValue(mockCity);
+      prisma.vehicleCategory.findUnique.mockResolvedValue({
+        id: 'category-id',
+        name: 'Van',
+      });
       prisma.user.create.mockResolvedValue(mockUserWithRoles);
 
       const response = await request(app.getHttpServer())

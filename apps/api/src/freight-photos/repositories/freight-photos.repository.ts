@@ -53,14 +53,15 @@ export class FreightPhotosRepository implements IFreightPhotosRepository {
     maxPhotos: number,
   ): Promise<FreightPhoto> {
     return this.prisma.$transaction(async (tx) => {
+      // Bloqueia a linha do frete: envios simultâneos esperam a vez e
+      // contam as fotos já gravadas, sem ultrapassar o limite.
+      await tx.$queryRaw`SELECT id FROM freights WHERE id = ${freightId} FOR UPDATE`;
       const count = await tx.freightPhoto.count({
         where: { freightId },
       });
 
       if (count >= maxPhotos) {
-        throw new Error(
-          `Limite de ${maxPhotos} fotos por frete atingido`,
-        );
+        throw new Error(`Limite de ${maxPhotos} fotos por frete atingido`);
       }
 
       const prismaPhoto = await tx.freightPhoto.create({

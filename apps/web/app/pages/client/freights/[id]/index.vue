@@ -222,7 +222,7 @@ onMounted(async () => {
             <svg
               v-else
               xmlns="http://www.w3.org/2000/svg"
-              class="h-24 w-24 text-gray-400"
+              class="h-24 w-24 text-gray-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -310,14 +310,14 @@ onMounted(async () => {
         </button>
         <button
           v-if="freight.status === 'NEGOTIATING' && freight.selectedApplicationId"
-          class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
+          class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 flex-1"
           @click="completeFreight"
         >
           Concluir Frete
         </button>
         <button
           v-if="freight.status === 'COMPLETED' && !freight.hasReviewed"
-          class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
+          class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 flex-1"
           @click="openReviewModal"
         >
           Avaliar Fretista
@@ -337,7 +337,7 @@ onMounted(async () => {
             class="pb-3 text-sm font-medium border-b-2 transition-colors"
             :class="
               activeTab === 'proposals'
-                ? 'border-amber-500 text-amber-600'
+                ? 'border-amber-500 text-amber-700'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             "
             @click="activeTab = 'proposals'"
@@ -348,7 +348,7 @@ onMounted(async () => {
             class="pb-3 text-sm font-medium border-b-2 transition-colors"
             :class="
               activeTab === 'find'
-                ? 'border-amber-500 text-amber-600'
+                ? 'border-amber-500 text-amber-700'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             "
             @click="activeTab = 'find'"

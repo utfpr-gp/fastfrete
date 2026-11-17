@@ -3,6 +3,7 @@ import {
   Inject,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import type { IFreightsRepository } from './repositories/freights.repository.interface.js';
 import { FREIGHTS_REPOSITORY } from './repositories/freights.repository.interface.js';
@@ -128,9 +129,7 @@ export class FreightsService {
 
     if (compatibleOnly) {
       const compatible =
-        await this.freightsRepository.findActiveVehicleCategoryNames(
-          carrierId,
-        );
+        await this.freightsRepository.findActiveVehicleCategoryNames(carrierId);
       vehicleCategories = vehicleCategories
         ? vehicleCategories.filter((category) => compatible.includes(category))
         : compatible;
@@ -201,7 +200,7 @@ export class FreightsService {
     }
 
     const response = FreightMapper.toResponse(freight);
-    
+
     // Verificar se o cliente já avaliou este frete
     if (freight.status === FreightStatus.COMPLETED) {
       const review = await this.reviewsRepository.findByFreightAndReviewer(
@@ -264,19 +263,24 @@ export class FreightsService {
     return this.withClientSummary(
       FreightMapper.toCarrierResponse(freight, revealFullAddress),
       freight.clientId,
+      revealFullAddress,
     );
   }
 
   private async withClientSummary(
     response: FreightResponseDto,
     clientId: string,
+    revealContact = false,
   ): Promise<FreightResponseDto> {
     const summary = await this.freightsRepository.getClientSummary(clientId);
     if (summary) {
+      // Nome completo e telefone só depois que a proposta do fretista é aceita (RN03)
       response.client = {
-        ...summary,
-        name: abbreviateName(summary.name),
+        name: revealContact ? summary.name : abbreviateName(summary.name),
         averageRating: Math.round(summary.averageRating * 10) / 10,
+        totalReviews: summary.totalReviews,
+        completedFreights: summary.completedFreights,
+        ...(revealContact ? { phoneNumber: summary.phoneNumber } : {}),
       };
     }
     return response;
@@ -327,10 +331,14 @@ export class FreightsService {
       );
     }
 
-    const cancelled = await this.freightsRepository.updateStatus(
-      id,
-      FreightStatus.CANCELLED,
-    );
+    const cancelled =
+      await this.freightsRepository.cancelWithPendingApplications(id);
+
+    if (!cancelled) {
+      throw new ConflictException(
+        'O frete mudou de status e não pode mais ser cancelado',
+      );
+    }
 
     return FreightMapper.toResponse(cancelled);
   }

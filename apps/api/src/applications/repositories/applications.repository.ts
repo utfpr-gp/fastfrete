@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
   IApplicationsRepository,
@@ -157,68 +157,57 @@ export class ApplicationsRepository implements IApplicationsRepository {
   async updateStatus(
     id: string,
     status: ApplicationStatus,
+    expectedStatus?: ApplicationStatus,
   ): Promise<Application> {
-    const prismaApplication = await this.prisma.application.update({
+    if (expectedStatus) {
+      // Transição condicional: só muda se a proposta ainda estiver no status esperado
+      const updated = await this.prisma.application.updateMany({
+        where: { id, status: expectedStatus },
+        data: { status },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException(
+          'A proposta mudou de status antes desta ação',
+        );
+      }
+    } else {
+      await this.prisma.application.update({ where: { id }, data: { status } });
+    }
+    const prismaApplication = await this.prisma.application.findUniqueOrThrow({
       where: { id },
-      data: { status },
-      include: {
-        vehicle: {
-          include: {
-            vehicleCategory: true,
-          },
-        },
-      },
+      include: { vehicle: { include: { vehicleCategory: true } } },
     });
-
     return ApplicationMapper.toDomain(prismaApplication);
   }
 
   async acceptApplication(applicationId: string): Promise<Application> {
     return this.prisma.$transaction(async (tx) => {
-      // Lock the application row to prevent concurrent accepts
       const application = await tx.application.findUniqueOrThrow({
         where: { id: applicationId },
-        include: {
-          vehicle: {
-            include: {
-              vehicleCategory: true,
-            },
-          },
+      });
+
+      // Atualizações condicionais: o PostgreSQL bloqueia a linha e reavalia o
+      // WHERE, então só uma de duas requisições concorrentes consegue passar.
+      const freightUpdate = await tx.freight.updateMany({
+        where: { id: application.freightId, status: FreightStatus.OPEN },
+        data: {
+          status: FreightStatus.IN_PROGRESS,
+          selectedApplicationId: applicationId,
         },
       });
-
-      // Validate application is still PENDING (inside transaction)
-      if (application.status !== ApplicationStatus.PENDING) {
-        throw new Error(
-          `Application is not PENDING (current status: ${application.status})`,
-        );
+      if (freightUpdate.count !== 1) {
+        throw new ConflictException('O frete não está mais aberto a propostas');
       }
 
-      // Lock and validate freight status (prevent accepting from cancelled freight)
-      const freight = await tx.freight.findUniqueOrThrow({
-        where: { id: application.freightId },
-      });
-
-      if (freight.status !== FreightStatus.OPEN) {
-        throw new Error(
-          `Freight is not OPEN (current status: ${freight.status})`,
-        );
-      }
-
-      // Accept the application
-      const accepted = await tx.application.update({
-        where: { id: applicationId },
+      const applicationUpdate = await tx.application.updateMany({
+        where: { id: applicationId, status: ApplicationStatus.PENDING },
         data: { status: ApplicationStatus.ACCEPTED },
-        include: {
-          vehicle: {
-            include: {
-              vehicleCategory: true,
-            },
-          },
-        },
       });
+      if (applicationUpdate.count !== 1) {
+        throw new ConflictException('A proposta não está mais pendente');
+      }
 
-      // Bulk reject only PENDING applications (not WITHDRAWN/REJECTED/COMPLETED)
+      // Recusa as demais propostas ainda pendentes do mesmo frete
       await tx.application.updateMany({
         where: {
           freightId: application.freightId,
@@ -228,15 +217,10 @@ export class ApplicationsRepository implements IApplicationsRepository {
         data: { status: ApplicationStatus.REJECTED },
       });
 
-      // Update freight status and selected application
-      await tx.freight.update({
-        where: { id: application.freightId },
-        data: {
-          status: FreightStatus.IN_PROGRESS,
-          selectedApplicationId: applicationId,
-        },
+      const accepted = await tx.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: { vehicle: { include: { vehicleCategory: true } } },
       });
-
       return ApplicationMapper.toDomain(accepted);
     });
   }
@@ -245,32 +229,27 @@ export class ApplicationsRepository implements IApplicationsRepository {
     return this.prisma.$transaction(async (tx) => {
       const application = await tx.application.findUniqueOrThrow({
         where: { id: applicationId },
-        include: {
-          vehicle: {
-            include: {
-              vehicleCategory: true,
-            },
-          },
-        },
       });
 
-      const completed = await tx.application.update({
-        where: { id: applicationId },
+      // Mesma estratégia do aceite: cada linha só muda se ainda estiver no estado esperado
+      const applicationUpdate = await tx.application.updateMany({
+        where: { id: applicationId, status: ApplicationStatus.ACCEPTED },
         data: { status: ApplicationStatus.COMPLETED },
-        include: {
-          vehicle: {
-            include: {
-              vehicleCategory: true,
-            },
-          },
-        },
       });
-
-      await tx.freight.update({
-        where: { id: application.freightId },
+      const freightUpdate = await tx.freight.updateMany({
+        where: { id: application.freightId, status: FreightStatus.IN_PROGRESS },
         data: { status: FreightStatus.COMPLETED },
       });
+      if (applicationUpdate.count !== 1 || freightUpdate.count !== 1) {
+        throw new ConflictException(
+          'O frete ou a proposta mudaram de status antes da conclusão',
+        );
+      }
 
+      const completed = await tx.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: { vehicle: { include: { vehicleCategory: true } } },
+      });
       return ApplicationMapper.toDomain(completed);
     });
   }

@@ -30,7 +30,7 @@
           </button>
 
           <div class="avatar placeholder">
-            <div class="bg-amber-500 text-white rounded-full w-8">
+            <div class="bg-amber-500 text-gray-900 rounded-full w-8">
               <span class="text-xs">F</span>
             </div>
           </div>

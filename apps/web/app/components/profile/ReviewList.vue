@@ -46,14 +46,14 @@ function formatDate(date: string) {
               {{ review.reviewer.name }}
             </a>
           </div>
-          <span class="text-xs text-gray-400 shrink-0">{{ formatDate(review.createdAt) }}</span>
+          <span class="text-xs text-gray-500 shrink-0">{{ formatDate(review.createdAt) }}</span>
         </div>
 
         <p v-if="review.freightTitle" class="text-xs text-gray-500 mb-1">
           Frete: {{ review.freightTitle }}
         </p>
         <p v-if="review.comment" class="text-sm text-gray-700">{{ review.comment }}</p>
-        <p v-else class="text-sm text-gray-400 italic">Sem comentário.</p>
+        <p v-else class="text-sm text-gray-500 italic">Sem comentário.</p>
       </li>
     </ul>
 

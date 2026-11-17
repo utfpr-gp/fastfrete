@@ -33,25 +33,25 @@ function formatDate(date: string | null) {
 
     <div class="space-y-2 text-sm text-gray-600 mb-3">
       <div class="flex items-center gap-1 truncate">
-        <span class="text-gray-400">📍</span>
+        <span class="text-gray-500">📍</span>
         <span
           >De: {{ freight.originStreet }}, {{ freight.originDistrict }} -
           {{ freight.originCity.name }}</span
         >
       </div>
       <div class="flex items-center gap-1 truncate">
-        <span class="text-gray-400">📍</span>
+        <span class="text-gray-500">📍</span>
         <span
           >Para: {{ freight.destinationStreet }}, {{ freight.destinationDistrict }} -
           {{ freight.destinationCity.name }}</span
         >
       </div>
       <div v-if="freight.suggestedPrice" class="flex items-center gap-1 text-nowrap">
-        <span class="text-gray-400">💰</span>
+        <span class="text-gray-500">💰</span>
         <span>Valor sugerido: {{ formatCurrency(freight.suggestedPrice) }}</span>
       </div>
       <div class="flex items-center gap-1 text-nowrap">
-        <span class="text-gray-400">📅</span>
+        <span class="text-gray-500">📅</span>
         <span>{{
           freight.dateMode === 'IMMEDIATE'
             ? 'O mais rápido possível'
@@ -60,11 +60,11 @@ function formatDate(date: string | null) {
       </div>
     </div>
 
-    <div class="text-sm text-gray-500 mb-4">{{ proposalsCount ?? 0 }} Propostas Recebidas</div>
+    <div class="text-sm text-gray-500 mb-4">{{ proposalsCount ?? 0 }} {{ (proposalsCount ?? 0) === 1 ? 'proposta recebida' : 'propostas recebidas' }}</div>
 
     <a
       :href="`/client/freights/${freight.id}`"
-      class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600 w-full"
+      class="btn btn-sm bg-amber-500 text-gray-900 border-none hover:bg-amber-400 w-full"
     >
       Ver Detalhes
     </a>

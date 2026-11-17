@@ -47,24 +47,19 @@ export class AuthorizationGuard implements CanActivate {
       throw new ForbiddenException('User not authenticated');
     }
 
-    if (requiredRoleTypes?.length) {
-      const hasRoleType = requiredRoleTypes.some((roleType) =>
-        user.roleTypes.includes(roleType),
-      );
-
-      if (hasRoleType) {
-        return true;
-      }
-    }
-
-    if (requiredPermissions?.length) {
-      const hasPermission = requiredPermissions.some((permission) =>
+    // Quando a rota declara as duas exigências, o usuário precisa atender a ambas:
+    // ter um dos tipos de papel e uma das permissões.
+    const hasRoleType =
+      !requiredRoleTypes?.length ||
+      requiredRoleTypes.some((roleType) => user.roleTypes.includes(roleType));
+    const hasPermission =
+      !requiredPermissions?.length ||
+      requiredPermissions.some((permission) =>
         user.permissions.includes(permission),
       );
 
-      if (hasPermission) {
-        return true;
-      }
+    if (hasRoleType && hasPermission) {
+      return true;
     }
 
     throw new ForbiddenException('Insufficient permissions');

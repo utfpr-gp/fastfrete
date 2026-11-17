@@ -56,12 +56,23 @@ export class FreightPhotosService {
       throw new BadRequestException('Arquivo é obrigatório');
     }
 
-    const extension = path.extname(file.originalname).toLowerCase();
+    const extension = (
+      (file as Express.Multer.File & { detectedExtension?: string })
+        .detectedExtension ?? path.extname(file.originalname)
+    ).toLowerCase();
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
     if (!allowedExtensions.includes(extension)) {
       throw new BadRequestException(
         'Formato de arquivo não permitido. Use JPG, PNG, GIF ou WEBP',
+      );
+    }
+
+    // Confere o limite antes de gravar qualquer arquivo em disco
+    const currentPhotos = await this.photosRepository.countByFreight(freightId);
+    if (currentPhotos >= MAX_PHOTOS_PER_FREIGHT) {
+      throw new BadRequestException(
+        `Limite de ${MAX_PHOTOS_PER_FREIGHT} fotos por frete atingido`,
       );
     }
 

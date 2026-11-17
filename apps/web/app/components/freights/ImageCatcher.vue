@@ -39,7 +39,7 @@ watch(uploadedPhotos.value, (newPhoto) => {
 <template>
   <div class="flex flex-col space-y-1.5">
     <label class="text-sm font-medium text-gray-700">
-      Fotos do Item <span class="text-gray-400">(Opcional)</span>
+      Fotos do Item <span class="text-gray-500">(Opcional)</span>
     </label>
     <div
       class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center"
@@ -49,7 +49,7 @@ watch(uploadedPhotos.value, (newPhoto) => {
         <div class="text-4xl mb-2">📷</div>
         <p class="text-sm text-gray-600 mb-3">Você pode adicionar até 3 fotos.</p>
         <label
-          class="btn btn-sm bg-amber-500 text-white border-none hover:bg-amber-600 cursor-pointer"
+          class="btn btn-sm bg-amber-500 text-gray-900 border-none hover:bg-amber-400 cursor-pointer"
         >
           Adicionar Fotos
           <input type="file" accept="image/*" multiple class="hidden" @change="handlePhotoUpload" />
@@ -71,7 +71,7 @@ watch(uploadedPhotos.value, (newPhoto) => {
           class="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-amber-500"
         >
           <input type="file" accept="image/*" multiple class="hidden" @change="handlePhotoUpload" />
-          <span class="text-2xl text-gray-400">+</span>
+          <span class="text-2xl text-gray-500">+</span>
         </label>
       </div>
     </div>

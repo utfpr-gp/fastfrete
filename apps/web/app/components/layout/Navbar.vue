@@ -25,7 +25,7 @@ function logout() {
           <a
             v-if="isClient"
             href="/client/freights/create"
-            class="btn bg-amber-500 text-white rounded-2xl"
+            class="btn bg-amber-500 text-gray-900 rounded-2xl"
             >Publicar Anúncio</a
           >
           <a v-if="isCarrier" class="btn btn-outline btn-primary rounded-2xl">Meus fretes</a>

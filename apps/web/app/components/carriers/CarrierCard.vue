@@ -37,7 +37,7 @@ function formatRating(rating: number): string {
         <span class="text-sm font-medium">{{
           formatRating(carrier.reviewStats.averageRating)
         }}</span>
-        <span class="text-xs text-gray-400">({{ carrier.reviewStats.totalReviews }})</span>
+        <span class="text-xs text-gray-500">({{ carrier.reviewStats.totalReviews }})</span>
       </div>
     </div>
 

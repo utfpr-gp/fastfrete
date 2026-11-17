@@ -13,6 +13,7 @@ import {
   FREIGHTS_REPOSITORY,
   IFreightsRepository,
 } from '../freights/repositories/freights.repository.interface';
+import { APPLICATIONS_REPOSITORY } from '../applications/repositories/applications.repository.interface';
 import { FreightPhoto } from './entities/freight-photo.entity';
 import {
   Freight,
@@ -78,6 +79,7 @@ describe('FreightPhotosService', () => {
           provide: FREIGHT_PHOTOS_REPOSITORY,
           useValue: {
             create: jest.fn(),
+            createWithLimitCheck: jest.fn(),
             findById: jest.fn(),
             findByFreight: jest.fn(),
             countByFreight: jest.fn(),
@@ -88,6 +90,12 @@ describe('FreightPhotosService', () => {
           provide: FREIGHTS_REPOSITORY,
           useValue: {
             findById: jest.fn(),
+          },
+        },
+        {
+          provide: APPLICATIONS_REPOSITORY,
+          useValue: {
+            findByFreight: jest.fn().mockResolvedValue([]),
           },
         },
       ],
@@ -105,13 +113,17 @@ describe('FreightPhotosService', () => {
 
       freightsRepo.findById.mockResolvedValue(freight);
       photosRepo.countByFreight.mockResolvedValue(0);
-      photosRepo.create.mockResolvedValue(photo);
+      photosRepo.createWithLimitCheck.mockResolvedValue(photo);
 
       const result = await service.upload('freight-1', 'client-1', mockFile());
 
       expect(result).toBeDefined();
       expect(result.url).toContain('/uploads/freight-photos/');
-      expect(photosRepo.create).toHaveBeenCalled();
+      expect(photosRepo.createWithLimitCheck).toHaveBeenCalledWith(
+        'freight-1',
+        expect.stringContaining('/uploads/freight-photos/'),
+        3,
+      );
     });
 
     it('deve lançar NotFoundException quando frete não existe', async () => {
@@ -165,7 +177,10 @@ describe('FreightPhotosService', () => {
       freightsRepo.findById.mockResolvedValue(freight);
       photosRepo.findByFreight.mockResolvedValue(photos);
 
-      const result = await service.findByFreight('freight-1');
+      const result = await service.findByFreight('freight-1', {
+        id: 'client-1',
+        roleTypes: ['CUSTOMER'],
+      } as any);
 
       expect(result).toHaveLength(1);
     });
@@ -173,9 +188,12 @@ describe('FreightPhotosService', () => {
     it('deve lançar NotFoundException quando frete não existe', async () => {
       freightsRepo.findById.mockResolvedValue(null);
 
-      await expect(service.findByFreight('freight-1')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.findByFreight('freight-1', {
+          id: 'client-1',
+          roleTypes: ['CUSTOMER'],
+        } as any),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

@@ -1,5 +1,12 @@
-import { Freight, FreightStatus, FreightDateMode } from '../entities/freight.entity.js';
-import { PaginationOptions, PaginatedResult } from '../../common/pagination/index.js';
+import {
+  Freight,
+  FreightStatus,
+  FreightDateMode,
+} from '../entities/freight.entity.js';
+import {
+  PaginationOptions,
+  PaginatedResult,
+} from '../../common/pagination/index.js';
 import { FreightOrderBy } from '../dto/freights-filter.dto.js';
 
 export const FREIGHTS_REPOSITORY = Symbol('FREIGHTS_REPOSITORY');
@@ -64,6 +71,7 @@ export interface ClientSummary {
   averageRating: number;
   totalReviews: number;
   completedFreights: number;
+  phoneNumber: string;
 }
 
 export interface IFreightsRepository {
@@ -83,6 +91,7 @@ export interface IFreightsRepository {
   update(id: string, data: UpdateFreightData): Promise<Freight>;
   updateStatus(id: string, status: FreightStatus): Promise<Freight>;
   getClientSummary(clientId: string): Promise<ClientSummary | null>;
+  cancelWithPendingApplications(id: string): Promise<Freight | null>;
   findActiveVehicleCategoryNames(userId: string): Promise<string[]>;
   findAllForAdmin(
     filters: AdminFreightsFilters,

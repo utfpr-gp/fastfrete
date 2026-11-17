@@ -38,7 +38,7 @@ const iconSizeClasses = computed(() => {
     <svg
       v-else
       xmlns="http://www.w3.org/2000/svg"
-      class="text-gray-400"
+      class="text-gray-500"
       :class="iconSizeClasses"
       fill="none"
       viewBox="0 0 24 24"

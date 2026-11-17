@@ -75,7 +75,7 @@ function formatDate(date: string) {
                 <span class="text-sm font-medium">{{
                   freighter.stats.averageRating.toFixed(1)
                 }}</span>
-                <span class="text-gray-400">•</span>
+                <span class="text-gray-500">•</span>
                 <span class="text-sm text-gray-600"
                   >{{ freighter.stats.totalReviews }} avaliações</span
                 >
@@ -147,7 +147,7 @@ function formatDate(date: string) {
             Rejeitar Proposta
           </button>
           <button
-            class="btn bg-amber-500 text-white border-none hover:bg-amber-600 flex-1"
+            class="btn bg-amber-500 text-gray-900 border-none hover:bg-amber-400 flex-1"
             @click="emit('accept', application.id)"
           >
             Escolher Fretista

@@ -99,11 +99,8 @@ export class UsersController {
   }
 
   @Get(':id/public-profile')
+  // Perfil público: liberado pelos três tipos de papel, sem permissão específica
   @RoleTypes(RoleTypeEnum.CUSTOMER, RoleTypeEnum.CARRIER, RoleTypeEnum.ADMIN)
-  @Permissions(
-    CUSTOMER_PERMISSIONS.PROFILE_READ,
-    CARRIER_PERMISSIONS.PROFILE_READ,
-  )
   @ApiAuthorization({
     summary: 'Obter perfil público de um usuário',
     description:
