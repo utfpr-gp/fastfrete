@@ -9,9 +9,10 @@
     "scripts": {
         "dev:api": "npm run start:dev -w apps/api",
         "dev:web": "npm run dev -w apps/web",
-        "docker:up": "docker-compose up -d",
-        "docker:down": "docker-compose down",
-        "docker:logs": "docker-compose logs -f postgres"
+        "docker:up": "docker compose up -d --build",
+        "docker:db": "docker compose up -d postgres",
+        "docker:down": "docker compose down",
+        "docker:logs": "docker compose logs -f"
     },
     "keywords": [
         "nestjs",
