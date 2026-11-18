@@ -43,13 +43,13 @@ npm install
 ```bash
 npm run docker:up
 ```
-Sobe o PostgreSQL, a API e o frontend. A API aplica as migrations e o seed sozinha ao iniciar. Na primeira vez, a construção das imagens leva alguns minutos.
+Sobe o PostgreSQL, a API e o frontend em modo de desenvolvimento. O código de `apps/api` e `apps/web` é montado dentro dos containers, então qualquer alteração aparece sem reconstruir nada (recarregamento automático). A API aplica as migrations e o seed sozinha ao iniciar. Na primeira vez, a construção das imagens leva alguns minutos.
 
 * Frontend: **http://localhost:3001**
 * API: **http://localhost:3000** (Swagger em `/api/docs`)
 * Usuários de teste: veja a tabela da etapa 5.
 
-Outros comandos: `npm run docker:logs` (logs), `npm run docker:down` (para os serviços, mantendo os dados) e `docker compose down -v` (apaga também o banco e os uploads). Depois de alterar o código, rode `npm run docker:up` de novo para reconstruir as imagens. O `JWT_SECRET` pode ser definido por variável de ambiente ou em um `.env` na raiz.
+Outros comandos: `npm run docker:logs` (logs), `npm run docker:down` (para os serviços, mantendo os dados) e `docker compose down -v` (apaga também o banco e os uploads). Só é preciso reconstruir (`npm run docker:up`, que já usa `--build`) depois de alterar dependências (`package.json`); se o container ainda usar as antigas, rode `docker compose down -v` antes. O `JWT_SECRET` pode ser definido por variável de ambiente ou em um `.env` na raiz.
 
 Se preferir rodar a API e o frontend direto na máquina, com recarregamento automático, siga as etapas 4 a 6 abaixo.
 
