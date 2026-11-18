@@ -51,12 +51,6 @@ await loadFreights()
     <!-- Header -->
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-bold">Meus Fretes</h1>
-      <div class="flex gap-2">
-        <a href="/client/carrier-catalog" class="btn btn-outline btn-sm"> Buscar Fretistas </a>
-        <a href="/client/freights/create" class="btn bg-amber-500 text-gray-900 rounded-2xl btn-sm">
-          Publicar Anúncio
-        </a>
-      </div>
     </div>
 
     <!-- Tabs -->

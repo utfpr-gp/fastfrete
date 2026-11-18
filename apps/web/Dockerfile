@@ -3,10 +3,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/api/package.json apps/api/
 COPY apps/web/package.json apps/web/
-RUN npm ci -w apps/web --ignore-scripts
-COPY apps/web apps/web
+RUN npm ci -w apps/web --ignore-scripts && chmod -R a+rwX /app/node_modules
+RUN mkdir -p apps/web/node_modules && chmod a+rwX apps/web/node_modules
 WORKDIR /app/apps/web
-RUN npx nuxt prepare && npm run build
-ENV NITRO_HOST=0.0.0.0 NITRO_PORT=3001
 EXPOSE 3001
-CMD ["node", ".output/server/index.mjs"]
+CMD ["sh", "-c", "npx nuxt prepare && npx nuxt dev --host 0.0.0.0 --port 3001"]

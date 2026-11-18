@@ -173,8 +173,6 @@ await Promise.all([loadCities(), loadFreights(), loadMetrics()])
               Confira as oportunidades de frete para o seu veículo hoje.
             </p>
           </div>
-          <a href="/carrier/applications" class="btn btn-outline btn-sm"> Minhas Candidaturas </a>
-          <a href="/carrier/vehicles" class="btn btn-outline btn-sm"> Meus Veículos </a>
         </div>
       </div>
 
