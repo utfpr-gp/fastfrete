@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()]
   },
   runtimeConfig: {
+    apiInternalUrl: '',
     public: {
       baseURL: process.env.API_URL || 'http://localhost:3000'
     }

@@ -1,3 +1,4 @@
+import { useRuntimeConfig } from '#imports'
 import { getAuthCookie } from '~/support/auth-cookie'
 import type { IHttpClient, RequestOptions, HttpResult, HttpError } from './http-client.interface'
 
@@ -5,7 +6,8 @@ export class HttpClient implements IHttpClient {
   private baseURL: string
 
   constructor(baseURL: string) {
-    this.baseURL = baseURL
+    const internalURL = import.meta.server ? useRuntimeConfig().apiInternalUrl : ''
+    this.baseURL = (internalURL as string) || baseURL
   }
 
   async get<T>(url: string, options?: RequestOptions): Promise<HttpResult<T>> {
