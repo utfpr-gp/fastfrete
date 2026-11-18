@@ -32,10 +32,12 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       APP_URL: ${APP_URL:-http://localhost:3001}
       PORT: 3000
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     ports:
       - "3000:3000"
     volumes:
-      - fastfrete_uploads:/app/apps/api/uploads
+      - ./apps/api:/app/apps/api
+      - /app/apps/api/node_modules
 
   web:
     build:
@@ -48,9 +50,12 @@ services:
     environment:
       NUXT_PUBLIC_BASE_URL: ${PUBLIC_API_URL:-http://localhost:3000}
       NUXT_API_INTERNAL_URL: http://api:3000
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     ports:
       - "3001:3001"
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
 
 volumes:
   fastfrete_pgdata:
-  fastfrete_uploads:
