@@ -39,13 +39,27 @@ Instale os pacotes de todo o monorepo de uma só vez, a partir da raiz:
 npm install
 ```
 
-### 3. Suba o banco de dados
+### 3. Suba tudo com Docker (opção mais rápida)
 ```bash
 npm run docker:up
 ```
+Sobe o PostgreSQL, a API e o frontend. A API aplica as migrations e o seed sozinha ao iniciar. Na primeira vez, a construção das imagens leva alguns minutos.
+
+* Frontend: **http://localhost:3001**
+* API: **http://localhost:3000** (Swagger em `/api/docs`)
+* Usuários de teste: veja a tabela da etapa 5.
+
+Outros comandos: `npm run docker:logs` (logs), `npm run docker:down` (para os serviços, mantendo os dados) e `docker compose down -v` (apaga também o banco e os uploads). Depois de alterar o código, rode `npm run docker:up` de novo para reconstruir as imagens. O `JWT_SECRET` pode ser definido por variável de ambiente ou em um `.env` na raiz.
+
+Se preferir rodar a API e o frontend direto na máquina, com recarregamento automático, siga as etapas 4 a 6 abaixo.
+
+### 4. Suba apenas o banco de dados
+```bash
+npm run docker:db
+```
 O PostgreSQL fica disponível em `localhost:5432` (usuário, senha e banco: `fastfrete`).
 
-### 4. Configure as variáveis de ambiente
+### 5. Configure as variáveis de ambiente
 ```bash
 cp apps/api/.env-example apps/api/.env
 cp apps/web/.env-example apps/web/.env
@@ -53,7 +67,7 @@ cp apps/web/.env-example apps/web/.env
 Ajuste o `DATABASE_URL` em `apps/api/.env` para o banco local, por exemplo:
 `postgresql://fastfrete:fastfrete@localhost:5432/fastfrete`. O `API_URL` do frontend aponta para `http://localhost:3000`.
 
-### 5. Aplique as migrations e popule o banco
+### 6. Aplique as migrations e popule o banco
 Execute a partir de `apps/api`:
 ```bash
 cd apps/api
@@ -73,7 +87,7 @@ O seed cria a cidade (Guarapuava), os perfis e permissões, as categorias de ve�
 | Cliente | `john.doe@example.com` | `password123` |
 | Fretista | `jane.smith@example.com` | `password123` |
 
-### 6. Execute em desenvolvimento
+### 7. Execute em desenvolvimento
 Em dois terminais, a partir da raiz:
 ```bash
 # Backend (NestJS) em http://localhost:3000
