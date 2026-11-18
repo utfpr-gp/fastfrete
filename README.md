@@ -2,6 +2,8 @@
 
 🔗 **Link em Produção:** [Aguardando Deploy na Nuvem]
 
+🎬 **Vídeo de Demonstração:** [Assista no YouTube](https://youtu.be/Fm0wxMLPTOs)
+
 👨‍💻 **Autor:** Rian Custódio de Souza Beltrão
 
 ## 🎯 1. Visão Geral
@@ -47,11 +49,17 @@ Sobe o PostgreSQL, a API e o frontend em modo de desenvolvimento. O código de `
 
 * Frontend: **http://localhost:3001**
 * API: **http://localhost:3000** (Swagger em `/api/docs`)
-* Usuários de teste: veja a tabela da etapa 5.
+* Usuários de teste (todos criados pelo seed, somente para desenvolvimento):
+
+| Perfil | E-mail | Senha |
+| :--- | :--- | :--- |
+| Administrador | `admin@fastfrete.com` | `admin123456` |
+| Cliente | `john.doe@example.com` | `password123` |
+| Fretista | `jane.smith@example.com` | `password123` |
 
 Outros comandos: `npm run docker:logs` (logs), `npm run docker:down` (para os serviços, mantendo os dados) e `docker compose down -v` (apaga também o banco e os uploads). Só é preciso reconstruir (`npm run docker:up`, que já usa `--build`) depois de alterar dependências (`package.json`); se o container ainda usar as antigas, rode `docker compose down -v` antes. O `JWT_SECRET` pode ser definido por variável de ambiente ou em um `.env` na raiz.
 
-Se preferir rodar a API e o frontend direto na máquina, com recarregamento automático, siga as etapas 4 a 6 abaixo.
+Se preferir rodar a API e o frontend direto na máquina, com recarregamento automático, siga as etapas 4 a 7 abaixo.
 
 ### 4. Suba apenas o banco de dados
 ```bash
