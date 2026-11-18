@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createUserService } from '~~/domains/users/composition'
 import type { User } from '~~/domains/auth/entities/user.entity'
-import AdminNav from '~/components/admin/AdminNav.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -135,8 +134,6 @@ await loadUsers()
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold">Gestão de Usuários</h1>
     </div>
-
-    <AdminNav />
 
     <!-- Filters -->
     <div class="bg-white rounded-xl p-4 shadow-sm">

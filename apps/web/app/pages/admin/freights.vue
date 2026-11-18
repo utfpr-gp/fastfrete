@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createFreightService } from '~~/domains/freights/composition'
 import type { AdminFreight, FreightStatus } from '~~/domains/freights/entities/freight.entity'
-import AdminNav from '~/components/admin/AdminNav.vue'
 import StatusBadge from '~/components/ui/StatusBadge.vue'
 
 const STATUS_OPTIONS: { value: FreightStatus; label: string }[] = [
@@ -67,8 +66,6 @@ onMounted(loadFreights)
 <template>
   <div class="flex flex-col gap-6">
     <h1 class="text-2xl font-bold">Gestão de Fretes</h1>
-
-    <AdminNav />
 
     <div class="bg-white rounded-xl p-4 shadow-sm">
       <div class="flex flex-wrap items-center gap-4">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createAdminDashboardService } from '~~/domains/admin-dashboard/composition'
 import type { AdminMetrics } from '~~/domains/admin-dashboard/entities/admin-metrics.entity'
-import AdminNav from '~/components/admin/AdminNav.vue'
 import MetricCard from '~/components/carrier/MetricCard.vue'
 
 const toast = useToast()
@@ -29,8 +28,6 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col gap-6">
     <h1 class="text-2xl font-bold">Painel Administrativo</h1>
-
-    <AdminNav />
 
     <div v-if="loading" class="bg-white rounded-xl p-12 flex justify-center">
       <span class="loading loading-spinner loading-lg text-amber-500"></span>
