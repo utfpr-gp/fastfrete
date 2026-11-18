@@ -7,6 +7,9 @@ import type {
   FreightOrderBy,
   FreightsFilterDto
 } from '~~/domains/freights/dtos/freights-filter.dto'
+import { createApplicationService } from '~~/domains/applications/composition'
+import { createUserService } from '~~/domains/users/composition'
+import type { PublicProfileStats } from '~~/domains/users/entities/public-profile.entity'
 import { useAuthStore } from '~~/stores/auth'
 import { VEHICLE_CATEGORIES } from '~/support/vehicle-categories'
 import MetricCard from '~/components/carrier/MetricCard.vue'
@@ -19,10 +22,32 @@ const router = useRouter()
 const { user } = useAuthStore()
 const freightService = createFreightService()
 const cityService = createCityService()
+const applicationService = createApplicationService()
+const userService = createUserService()
 
 const freights = ref<Freight[]>([])
 const cities = ref<City[]>([])
 const loading = ref(true)
+const stats = ref<PublicProfileStats | null>(null)
+const inProgressCount = ref<number | null>(null)
+
+const ratingValue = computed(() => {
+  if (!stats.value) return '—'
+  if (stats.value.totalReviews === 0) return 'Sem avaliações'
+  return `${stats.value.averageRating.toFixed(1)} / 5.0`
+})
+
+const ratingSubtitle = computed(() => {
+  const total = stats.value?.totalReviews ?? 0
+  return `Baseado em ${total} avaliaç${total === 1 ? 'ão' : 'ões'}`
+})
+
+const completedValue = computed(() => String(stats.value?.completedFreights ?? '—'))
+
+const inProgressValue = computed(() => {
+  if (inProgressCount.value === null) return '—'
+  return `${inProgressCount.value} aceito${inProgressCount.value === 1 ? '' : 's'}`
+})
 
 const selectedCategory = computed({
   get: () => (route.query.category as string) || null,
@@ -115,6 +140,15 @@ async function loadCities() {
   }
 }
 
+async function loadMetrics() {
+  const [profile, accepted] = await Promise.all([
+    user?.id ? userService.getPublicProfile(user.id) : null,
+    applicationService.findMyApplications({ status: 'ACCEPTED', limit: 1 })
+  ])
+  if (profile?.success) stats.value = profile.data.stats
+  if (accepted.success) inProgressCount.value = accepted.data.meta.total
+}
+
 watch(
   () => [route.query.category, route.query.orderBy, route.query.city, route.query.compatible],
   () => {
@@ -122,7 +156,7 @@ watch(
   }
 )
 
-await Promise.all([loadCities(), loadFreights()])
+await Promise.all([loadCities(), loadFreights(), loadMetrics()])
 </script>
 
 <template>
@@ -146,13 +180,23 @@ await Promise.all([loadCities(), loadFreights()])
 
       <!-- Métricas -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <MetricCard icon="💰" title="Ganhos da semana" value="R$ 420,00" subtitle="Esta semana" />
-        <MetricCard icon="🚚" title="Próximos fretes" value="2 agendados" subtitle="Esta semana" />
+        <MetricCard
+          icon="✅"
+          title="Fretes concluídos"
+          :value="completedValue"
+          subtitle="Total na plataforma"
+        />
+        <MetricCard
+          icon="🚚"
+          title="Em andamento"
+          :value="inProgressValue"
+          subtitle="Candidaturas aceitas"
+        />
         <MetricCard
           icon="⭐"
           title="Sua avaliação"
-          value="4.9 / 5.0"
-          subtitle="Baseado em 12 avaliações"
+          :value="ratingValue"
+          :subtitle="ratingSubtitle"
         />
       </div>
 
