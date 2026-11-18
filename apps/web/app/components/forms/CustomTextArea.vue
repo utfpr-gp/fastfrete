@@ -15,7 +15,7 @@ defineOptions({
   inheritAttrs: false
 })
 
-const { value, errorMessage } = useField(() => props.name, props.rules)
+const { value, errorMessage } = useField<string>(() => props.name, props.rules)
 </script>
 
 <template>
@@ -26,7 +26,7 @@ const { value, errorMessage } = useField(() => props.name, props.rules)
       <slot name="icon-start"></slot>
       <textarea
         :id="id"
-        v-model="value as string"
+        v-model="value"
         v-bind="$attrs"
         :class="{
           'pl-10': $slots['icon-start'],
