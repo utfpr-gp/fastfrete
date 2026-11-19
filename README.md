@@ -87,14 +87,6 @@ cd ../..
 
 > 🔁 O seed é idempotente. Rode `npm run prisma:seed` novamente sempre que novas permissões forem adicionadas (por exemplo, após atualizar a branch `develop`), pois elas são lidas do banco a cada requisição.
 
-O seed cria a cidade (Guarapuava), os perfis e permissões, as categorias de veículo, os veículos de demonstração e os usuários abaixo (somente para desenvolvimento):
-
-| Perfil | E-mail | Senha |
-| :--- | :--- | :--- |
-| Administrador | `admin@fastfrete.com` | `admin123456` |
-| Cliente | `john.doe@example.com` | `password123` |
-| Fretista | `jane.smith@example.com` | `password123` |
-
 ### 7. Execute em desenvolvimento
 Em dois terminais, a partir da raiz:
 ```bash
