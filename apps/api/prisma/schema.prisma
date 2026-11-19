@@ -1,0 +1,255 @@
+// FastFrete API — PostgreSQL (alinhado ao scaffold fast-frete)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum FreightStatus {
+  OPEN
+  NEGOTIATING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum FreightDateMode {
+  IMMEDIATE
+  SCHEDULED
+  FLEXIBLE
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  COMPLETED
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String
+  phoneNumber         String               @map("phone_number")
+  status              UserStatus           @default(ACTIVE)
+  suspensionReason    String?              @map("suspension_reason") @db.VarChar(500)
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  userRoles           UserRole[]
+  city                City                 @relation(fields: [cityId], references: [id], onDelete: Restrict)
+  cityId              String               @map("city_id")
+  passwordResetTokens PasswordResetToken[]
+  freights            Freight[]
+  applications        Application[]
+  vehicles            Vehicle[]
+  reviewsByReviewer   Review[]    @relation("ReviewByReviewer")
+  reviewsByReviewed   Review[]    @relation("ReviewByReviewed")
+
+  @@map("users")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+model RoleType {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roles     Role[]
+
+  @@map("role_types")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  roleTypeId      String           @map("role_type_id")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  roleType        RoleType         @relation(fields: [roleTypeId], references: [id], onDelete: Cascade)
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @unique
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id")
+  permissionId String     @map("permission_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId    String   @map("user_id")
+  roleId    String   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model VehicleCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  vehicles  Vehicle[]
+
+  @@map("vehicle_categories")
+}
+
+model Vehicle {
+  id                String   @id @default(uuid())
+  userId            String   @map("user_id")
+  vehicleCategoryId String   @map("vehicle_category_id")
+  model             String   @db.VarChar(100)
+  plate             String?  @db.VarChar(20)
+  capacityKg        Decimal  @map("capacity_kg") @db.Decimal(10, 2)
+  color             String?  @db.VarChar(50)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleCategory VehicleCategory @relation(fields: [vehicleCategoryId], references: [id], onDelete: Restrict)
+  applications    Application[]
+
+  @@index([userId])
+  @@map("vehicles")
+}
+
+model City {
+  id                 String    @id @default(uuid())
+  name               String
+  state              String
+  users              User[]
+  originFreights     Freight[] @relation("FreightOriginCity")
+  destinationFreights Freight[] @relation("FreightDestinationCity")
+
+  @@unique([name, state])
+  @@map("cities")
+}
+
+model Freight {
+  id                  String          @id @default(uuid())
+  clientId            String          @map("client_id")
+  title               String          @db.VarChar(150)
+  description         String          @db.Text
+  vehicleCategory     String          @map("vehicle_category") @db.VarChar(50)
+  originCityId        String          @map("origin_city_id")
+  originDistrict      String          @map("origin_district") @db.VarChar(100)
+  originStreet        String          @map("origin_street") @db.VarChar(150)
+  originNumber        String          @map("origin_number") @db.VarChar(20)
+  destinationCityId   String          @map("destination_city_id")
+  destinationDistrict String          @map("destination_district") @db.VarChar(100)
+  destinationStreet   String          @map("destination_street") @db.VarChar(150)
+  destinationNumber   String          @map("destination_number") @db.VarChar(20)
+  dateMode            FreightDateMode @map("date_mode")
+  exactDatetime       DateTime?       @map("exact_datetime")
+  availabilityWindow  String?         @map("availability_window") @db.VarChar(30)
+  suggestedPrice      Decimal?        @map("suggested_price") @db.Decimal(12, 2)
+  status              FreightStatus   @default(OPEN)
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+  selectedApplicationId String?       @unique @map("selected_application_id")
+
+  client              User          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  originCity          City          @relation("FreightOriginCity", fields: [originCityId], references: [id])
+  destinationCity     City          @relation("FreightDestinationCity", fields: [destinationCityId], references: [id])
+  selectedApplication Application?  @relation("FreightSelectedApplication", fields: [selectedApplicationId], references: [id], onDelete: SetNull)
+  applications        Application[] @relation("FreightApplications")
+  reviews             Review[]
+  photos              FreightPhoto[]
+
+  @@index([clientId, createdAt(sort: Desc)])
+  @@map("freights")
+}
+
+model Application {
+  id            String            @id @default(uuid())
+  freightId     String            @map("freight_id")
+  freighterId   String            @map("freighter_id")
+  vehicleId     String            @map("vehicle_id")
+  proposedPrice Decimal           @map("proposed_price") @db.Decimal(12, 2)
+  message       String?
+  status        ApplicationStatus @default(PENDING)
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  freight           Freight    @relation("FreightApplications", fields: [freightId], references: [id], onDelete: Cascade)
+  freighter         User       @relation(fields: [freighterId], references: [id], onDelete: Cascade)
+  vehicle           Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  selectedByFreight Freight?   @relation("FreightSelectedApplication")
+
+  @@unique([freightId, freighterId])
+  @@map("applications")
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  freightId   String   @map("freight_id")
+  reviewerId  String   @map("reviewer_id")
+  reviewedId  String   @map("reviewed_id")
+  rating      Int      @db.SmallInt
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  freight         Freight @relation(fields: [freightId], references: [id], onDelete: Cascade)
+  reviewer        User    @relation("ReviewByReviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewed        User    @relation("ReviewByReviewed", fields: [reviewedId], references: [id], onDelete: Cascade)
+
+  @@unique([freightId, reviewerId])
+  @@index([reviewedId])
+  @@map("reviews")
+}
+
+model FreightPhoto {
+  id        String   @id @default(uuid())
+  freightId String   @map("freight_id")
+  url       String
+  order     Int      @db.SmallInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  freight Freight @relation(fields: [freightId], references: [id], onDelete: Cascade)
+
+  @@index([freightId])
+  @@map("freight_photos")
+}

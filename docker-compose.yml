@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fastfrete-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fastfrete
+      POSTGRES_PASSWORD: fastfrete
+      POSTGRES_DB: fastfrete
+    ports:
+      - "5432:5432"
+    volumes:
+      - fastfrete_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fastfrete -d fastfrete"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: fastfrete-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://fastfrete:fastfrete@postgres:5432/fastfrete?schema=public
+      JWT_SECRET: ${JWT_SECRET:-troque-por-um-segredo-longo-e-aleatorio}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      APP_URL: ${APP_URL:-http://localhost:3001}
+      PORT: 3000
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/api:/app/apps/api
+      - /app/apps/api/node_modules
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: fastfrete-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NUXT_PUBLIC_BASE_URL: ${PUBLIC_API_URL:-http://localhost:3000}
+      NUXT_API_INTERNAL_URL: http://api:3000
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
+
+volumes:
+  fastfrete_pgdata:

@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "testRegex": "test/integration/.*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "transformIgnorePatterns": ["node_modules/(?!(@faker-js/faker)/)"],
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^.*[/\\\\]generated[/\\\\]prisma[/\\\\]client$": "<rootDir>/test/__mocks__/generated-prisma-client.ts"
+  },
+  "collectCoverageFrom": ["src/**/*.(t|j)s", "!src/**/*.spec.ts"],
+  "coverageDirectory": "./coverage/integration",
+  "testEnvironment": "node"
+}
